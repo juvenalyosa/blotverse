@@ -2,6 +2,7 @@
 
 #include <yaml-cpp/yaml.h>
 
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <cmath>
@@ -97,8 +98,9 @@ bool HarnessMetrics::g2_pass() const {
 
 HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, double alpha) {
   HarnessMetrics m;
-  std::vector<double> pos, neg, p_ranges;
+  std::vector<double> pos, neg, pos_eval, neg_eval, p_ranges;
   std::size_t nulls = 0, null_robust = 0, null_joint_sig = 0, null_default_sig = 0;
+  std::size_t nulls_eval = 0, null_joint_sig_eval = 0, main_total = 0, main_eval = 0;
   std::size_t gradient_total = 0, gradient_hits = 0;
   std::map<std::string, std::pair<std::vector<double>, std::vector<double>>> strata;
 
@@ -116,6 +118,16 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
     }
     const bool is_null = r.true_lfc == 0.0;
     (is_null ? neg : pos).push_back(score);
+    const bool evaluable = r.verdict != Verdict::NotEvaluable;
+    ++main_total;
+    if (evaluable) {
+      ++main_eval;
+      (is_null ? neg_eval : pos_eval).push_back(score);
+      if (is_null) {
+        ++nulls_eval;
+        if (r.joint_p < alpha) ++null_joint_sig_eval;
+      }
+    }
     auto& level_stratum = strata[std::string("level=") + artifact_label(r.level)];
     (is_null ? level_stratum.second : level_stratum.first).push_back(score);
     if (!is_null) strata["|lfc|=" + fmt(std::fabs(r.true_lfc), 1)].first.push_back(score);
@@ -128,7 +140,10 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
     if (r.level == ArtifactLevel::Moderate && r.p_min > 0 && std::isfinite(r.p_max))
       p_ranges.push_back(std::log10(r.p_max / r.p_min));
   }
-  if (!pos.empty() && !neg.empty()) m.e2_auc = roc_auc(pos, neg);
+  if (!pos.empty() && !neg.empty()) m.e2_auc_all_designs = roc_auc(pos, neg);
+  if (!pos_eval.empty() && !neg_eval.empty()) m.e2_auc = roc_auc(pos_eval, neg_eval);
+  if (main_total) m.evaluable_fraction = static_cast<double>(main_eval) / static_cast<double>(main_total);
+  if (nulls_eval) m.e4_joint_type1 = static_cast<double>(null_joint_sig_eval) / static_cast<double>(nulls_eval);
   for (auto& [name, sets] : strata) {
     // Effect-size strata are compared against all nulls.
     auto& negatives = sets.second.empty() ? neg : sets.second;
@@ -137,7 +152,7 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
   }
   if (nulls) {
     m.e3_null_robust_rate = static_cast<double>(null_robust) / static_cast<double>(nulls);
-    m.e4_joint_type1 = static_cast<double>(null_joint_sig) / static_cast<double>(nulls);
+    m.e4_joint_type1_all_designs = static_cast<double>(null_joint_sig) / static_cast<double>(nulls);
     m.default_type1 = static_cast<double>(null_default_sig) / static_cast<double>(nulls);
   }
   if (!p_ranges.empty()) {
@@ -212,12 +227,15 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     y << YAML::Key << "failed" << YAML::Value << m.failed;
     y << YAML::Key << "e1_median_log10_p_range" << YAML::Value << m.e1_median_log10_p_range;
     y << YAML::Key << "e1_fraction_over_2_orders" << YAML::Value << m.e1_fraction_over_2_orders;
+    y << YAML::Key << "evaluable_fraction" << YAML::Value << m.evaluable_fraction;
     y << YAML::Key << "e2_auc" << YAML::Value << m.e2_auc;
+    y << YAML::Key << "e2_auc_all_designs" << YAML::Value << m.e2_auc_all_designs;
     y << YAML::Key << "e2_auc_by_stratum" << YAML::Value << YAML::BeginMap;
     for (const auto& [k, v] : m.e2_auc_by_stratum) y << YAML::Key << k << YAML::Value << v;
     y << YAML::EndMap;
     y << YAML::Key << "e3_null_robust_rate" << YAML::Value << m.e3_null_robust_rate;
     y << YAML::Key << "e4_joint_type1" << YAML::Value << m.e4_joint_type1;
+    y << YAML::Key << "e4_joint_type1_all_designs" << YAML::Value << m.e4_joint_type1_all_designs;
     y << YAML::Key << "default_analysis_type1" << YAML::Value << m.default_type1;
     y << YAML::Key << "e5_background_hit_rate" << YAML::Value << m.e5_background_hit_rate;
     y << YAML::Key << "g2_pass" << YAML::Value << m.g2_pass();
@@ -237,18 +255,41 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     md << "| E1 | median log10(p_max/p_min), moderate artefacts | " << fmt(m.e1_median_log10_p_range, 2)
        << " (" << pct(m.e1_fraction_over_2_orders) << " span >= 2 orders) | several orders | "
        << mark(m.e1_median_log10_p_range >= 2.0) << " |\n";
-    md << "| E2 | AUC of R (real vs null) | " << fmt(m.e2_auc) << " | >= 0.85 | " << mark(m.e2_auc >= 0.85) << " |\n";
+    md << "| E2 | AUC of R (real vs null), evaluable designs | " << fmt(m.e2_auc) << " | >= 0.85 | "
+       << mark(m.e2_auc >= 0.85) << " |\n";
+    md << "| E2' | AUC of R, all designs (reference) | " << fmt(m.e2_auc_all_designs) << " | - | - |\n";
     md << "| E3 | nulls labelled Robust | " << pct(m.e3_null_robust_rate) << " | <= 5 % | "
        << mark(m.e3_null_robust_rate <= 0.05) << " |\n";
-    md << "| E4 | joint-test type I error | " << fmt(m.e4_joint_type1) << " | <= 0.05 | "
+    md << "| E4 | joint-test type I error, evaluable designs | " << fmt(m.e4_joint_type1) << " | <= 0.05 | "
        << mark(m.e4_joint_type1 <= 0.05) << " |\n";
+    md << "| E4' | joint-test type I error, all designs (reference) | " << fmt(m.e4_joint_type1_all_designs)
+       << " | - | - |\n";
     md << "| E5 | background is most influential (gradient planted) | " << pct(m.e5_background_hit_rate)
        << " | >= 80 % | " << mark(m.e5_background_hit_rate >= 0.8) << " |\n";
     md << "| E6 | default branch vs Fiji | not run here | r >= 0.99 | see validation/fiji |\n\n";
-    md << "Reference: type I error of the single default analysis = " << fmt(m.default_type1) << ".\n\n";
+    md << "Reference: type I error of the single default analysis = " << fmt(m.default_type1) << ". "
+       << pct(m.evaluable_fraction) << " of experiments had a design the joint test can evaluate.\n\n";
     md << "**Decision point G2 (E2, E3, E4): " << (m.g2_pass() ? "PASS" : "FAIL") << "**\n\n";
     md << "AUC by stratum:\n\n| Stratum | AUC |\n|---|---|\n";
     for (const auto& [k, v] : m.e2_auc_by_stratum) md << "| " << k << " | " << fmt(v) << " |\n";
+
+    // Verdicts by design, separately for real effects and nulls.
+    md << "\nVerdicts by design (gels x replicates per group per gel):\n\n"
+          "| Design | Truth | n | Robust | Fragile | Not supported | Not evaluable |\n|---|---|---|---|---|---|---|\n";
+    std::map<std::pair<std::string, std::string>, std::array<std::size_t, 5>> tally;
+    for (const auto& r : report.records) {
+      if (r.failed || r.set != "main") continue;
+      auto& t = tally[{std::to_string(r.n_gels) + "x" + std::to_string(r.reps_per_gel),
+                       r.true_lfc == 0.0 ? "null" : "real"}];
+      ++t[0];
+      ++t[1 + static_cast<std::size_t>(r.verdict)];
+    }
+    for (const auto& [key, t] : tally) {
+      md << "| " << key.first << " | " << key.second << " | " << t[0];
+      for (std::size_t v = 1; v < 5; ++v)
+        md << " | " << pct(static_cast<double>(t[v]) / static_cast<double>(t[0]));
+      md << " |\n";
+    }
   }
 }
 

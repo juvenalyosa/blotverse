@@ -45,6 +45,7 @@ const char* verdict_class(Verdict v) {
     case Verdict::Robust: return "robust";
     case Verdict::Fragile: return "fragile";
     case Verdict::NotSupported: return "unsupported";
+    case Verdict::NotEvaluable: return "unevaluable";
   }
   return "";
 }
@@ -62,7 +63,7 @@ main { max-width:1080px; margin:0 auto; padding:24px 16px 64px; }
 h1 { font-size:26px; margin:0 0 4px; } h2 { font-size:20px; margin:36px 0 8px; } h3 { font-size:16px; margin:20px 0 6px; }
 .muted { color:var(--muted); } .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:12px 0; }
 .verdict { display:inline-block; font-weight:700; font-size:20px; padding:4px 14px; border-radius:999px; color:#fff; }
-.verdict.robust { background:var(--robust); } .verdict.fragile { background:var(--fragile); } .verdict.unsupported { background:var(--unsupported); }
+.verdict.robust { background:var(--robust); } .verdict.fragile { background:var(--fragile); } .verdict.unsupported { background:var(--unsupported); } .verdict.unevaluable { background:var(--ns); }
 .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:10px; margin-top:12px; }
 .stat b { display:block; font-size:20px; font-variant-numeric:tabular-nums; } .stat span { color:var(--muted); font-size:13px; }
 svg { max-width:100%; height:auto; display:block; } svg text { fill:var(--fg); font-size:11px; }
@@ -253,7 +254,8 @@ std::string render_html_report(const MultiverseSpec& spec, const Experiment& exp
        "listed in the frozen specification was run; all of them are shown. BlotVerse never selects or "
        "recommends a single universe. Verdict thresholds: Robust if R &ge; "
     << spec.verdict.robust_min_r << " and joint p &lt; " << spec.verdict.joint_alpha << "; Fragile if R &ge; "
-    << spec.verdict.fragile_min_r << "; otherwise Not supported. The reproducibility file "
+    << spec.verdict.fragile_min_r << "; otherwise Not supported. Not evaluable means the design "
+       "has too few lanes per blot for the joint test to ever reach its alpha. The reproducibility file "
        "<code>repro.yaml</code> regenerates these numbers exactly on the same platform and compiler.</p></div>";
   h << "</main></body></html>\n";
   return h.str();

@@ -48,7 +48,12 @@ struct DecisionSpec {
 };
 
 // Facts about an experiment that decide which combinations are incoherent.
-enum class ExclusionCondition : std::uint8_t { OverlappingNeighbours, TotalProteinMissing };
+enum class ExclusionCondition : std::uint8_t {
+  OverlappingNeighbours,   // local background strips overlap other bands/lanes
+  TotalProteinMissing,     // no total-protein image for every blot
+  PermutationUnderpowered, // smallest attainable permutation p-value >= alpha
+  SingleLanePerGroup,      // some blot has only one lane of some group
+};
 
 struct ExclusionRule {
   std::string id;
@@ -102,6 +107,8 @@ MultiverseSpec load_spec(const std::filesystem::path& path);
 struct ExperimentFacts {
   bool has_total_protein = false;
   bool local_background_valid = true;
+  bool permutation_can_reach_alpha = true;  // for every contrast
+  bool every_blot_has_two_lanes_per_group = true;
 };
 
 // Returns the reason when the universe is excluded for this experiment.

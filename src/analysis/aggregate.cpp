@@ -46,6 +46,7 @@ const char* verdict_label(Verdict v) {
     case Verdict::Robust: return "Robust";
     case Verdict::Fragile: return "Fragile";
     case Verdict::NotSupported: return "Not supported";
+    case Verdict::NotEvaluable: return "Not evaluable";
   }
   return "?";
 }
@@ -119,18 +120,57 @@ std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseDa
     log_relabelings += std::lgamma(static_cast<double>(members.size()) + 1.0);
     for (const auto& [g, n] : counts) log_relabelings -= std::lgamma(static_cast<double>(n) + 1.0);
   }
-  for (auto& t : tests) t.distinct_relabelings = std::round(std::exp(log_relabelings));
+  const double relabelings = std::round(std::exp(log_relabelings));
+  for (auto& t : tests) t.distinct_relabelings = relabelings;
+
+  // Exact enumeration when every distinct within-blot relabelling fits in the
+  // permutation budget; Monte Carlo otherwise.
+  const bool exact = relabelings <= static_cast<double>(permutations);
+  std::vector<std::vector<int>> label_sets;
+  if (exact) {
+    std::vector<std::vector<std::vector<int>>> per_blot;  // distinct arrangements per blot
+    for (const auto& [blot, members] : by_blot) {
+      std::vector<int> l;
+      for (auto i : members) l.push_back(observed_labels[i]);
+      std::sort(l.begin(), l.end());
+      std::vector<std::vector<int>> arrangements;
+      do arrangements.push_back(l);
+      while (std::next_permutation(l.begin(), l.end()));
+      per_blot.push_back(std::move(arrangements));
+    }
+    std::vector<std::size_t> odometer(per_blot.size(), 0);
+    while (true) {
+      std::vector<int> labels = observed_labels;
+      std::size_t b = 0;
+      for (const auto& [blot, members] : by_blot) {
+        const auto& arrangement = per_blot[b][odometer[b]];
+        for (std::size_t j = 0; j < members.size(); ++j) labels[members[j]] = arrangement[j];
+        ++b;
+      }
+      label_sets.push_back(std::move(labels));
+      std::size_t d = 0;
+      while (d < odometer.size() && ++odometer[d] == per_blot[d].size()) odometer[d++] = 0;
+      if (d == odometer.size()) break;
+    }
+    for (auto& t : tests) t.null_counts.assign(label_sets.size(), 0);
+  }
+  const std::size_t n_perm = exact ? label_sets.size() : permutations;
 
   parallel_for(
-      permutations,
+      n_perm,
       [&](std::size_t k) {
-        Rng rng(derive_seed(spec.inference.seed ^ kJointSeedStream, k));
-        std::vector<int> labels = observed_labels;
-        for (const auto& [blot, members] : by_blot) {
-          std::vector<int> l;
-          for (auto i : members) l.push_back(observed_labels[i]);
-          rng.shuffle(l);
-          for (std::size_t j = 0; j < members.size(); ++j) labels[members[j]] = l[j];
+        std::vector<int> labels;
+        if (exact) {
+          labels = label_sets[k];
+        } else {
+          Rng rng(derive_seed(spec.inference.seed ^ kJointSeedStream, k));
+          labels = observed_labels;
+          for (const auto& [blot, members] : by_blot) {
+            std::vector<int> l;
+            for (auto i : members) l.push_back(observed_labels[i]);
+            rng.shuffle(l);
+            for (std::size_t j = 0; j < members.size(); ++j) labels[members[j]] = l[j];
+          }
         }
         const auto outcomes =
             evaluate_universes(spec, data, result.plan.universes, result.contrasts, labels, 1);
@@ -143,12 +183,20 @@ std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseDa
     std::size_t hits = 0;
     for (auto n : t.null_counts)
       if (n >= t.observed) ++hits;
-    t.p = (1.0 + static_cast<double>(hits)) / (1.0 + static_cast<double>(permutations));
+    // Exact: the observed labelling is among the enumerated ones.
+    t.p = exact ? static_cast<double>(hits) / static_cast<double>(n_perm)
+                : (1.0 + static_cast<double>(hits)) / (1.0 + static_cast<double>(permutations));
+    t.exact = exact;
   }
   return tests;
 }
 
-Verdict decide_verdict(const VerdictSpec& v, double robustness, double joint_p) {
+bool joint_test_evaluable(const JointTest& joint, double alpha) {
+  return joint.distinct_relabelings <= 0 || 2.0 / joint.distinct_relabelings < alpha;
+}
+
+Verdict decide_verdict(const VerdictSpec& v, double robustness, double joint_p, bool design_evaluable) {
+  if (!design_evaluable) return Verdict::NotEvaluable;
   if (!std::isfinite(robustness) || !std::isfinite(joint_p) || !(joint_p < v.joint_alpha))
     return Verdict::NotSupported;
   if (robustness >= v.robust_min_r) return Verdict::Robust;
@@ -232,14 +280,15 @@ ContrastSummary summarize_contrast(const MultiverseSpec& spec, const MultiverseR
 
   // With few lanes per blot the joint test has a floor that no data can beat
   // (the observed labelling and its mirror image are always as extreme).
-  if (s.joint.distinct_relabelings > 0 && 2.0 / s.joint.distinct_relabelings >= spec.verdict.joint_alpha)
+  const bool evaluable = joint_test_evaluable(s.joint, spec.verdict.joint_alpha);
+  if (!evaluable)
     s.notes.push_back("design too small for the joint test: only " +
                       std::to_string(static_cast<long long>(s.joint.distinct_relabelings)) +
                       " within-blot relabellings exist, so its p-value cannot fall below about " +
                       std::to_string(2.0 / s.joint.distinct_relabelings).substr(0, 5) +
-                      "; a 'Robust' verdict is unreachable with this layout");
+                      ". Add replicate lanes per blot to evaluate robustness");
 
-  s.verdict = decide_verdict(spec.verdict, s.robustness, s.joint.p);
+  s.verdict = decide_verdict(spec.verdict, s.robustness, s.joint.p, evaluable);
   return s;
 }
 

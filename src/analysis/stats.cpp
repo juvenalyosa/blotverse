@@ -208,6 +208,13 @@ TestResult mixed_model_test(std::span<const double> y, std::span<const int> trea
   return r;
 }
 
+double permutation_min_p(std::size_t n_control, std::size_t n_treatment, std::size_t max_permutations) {
+  if (n_control == 0 || n_treatment == 0) return 1.0;
+  const std::size_t combos = binomial_capped(n_control + n_treatment, n_treatment, max_permutations + 1);
+  if (combos > max_permutations) return 1.0 / (1.0 + static_cast<double>(max_permutations));
+  return (n_control == n_treatment ? 2.0 : 1.0) / static_cast<double>(combos);
+}
+
 TestResult permutation_test(std::span<const double> control, std::span<const double> treatment,
                             std::size_t max_permutations, std::uint64_t seed) {
   const std::size_t nc = control.size(), nt = treatment.size();

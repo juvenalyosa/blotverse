@@ -55,12 +55,17 @@ struct HarnessMetrics {
   double e1_median_log10_p_range = kNaN;
   double e1_fraction_over_2_orders = kNaN;
   // E2: AUC of R separating real effects from nulls.
-  double e2_auc = kNaN;
+  // E2 and E4 are judged on experiments where the tool issues a verdict
+  // (not "Not evaluable"); the all-design values are reported alongside.
+  double e2_auc = kNaN;             // evaluable designs
+  double e2_auc_all_designs = kNaN;
+  double evaluable_fraction = kNaN;
   std::vector<std::pair<std::string, double>> e2_auc_by_stratum;
   // E3: fraction of null experiments labelled "Robust".
   double e3_null_robust_rate = kNaN;
   // E4: type I error of the joint test at alpha = 0.05.
-  double e4_joint_type1 = kNaN;
+  double e4_joint_type1 = kNaN;             // evaluable designs
+  double e4_joint_type1_all_designs = kNaN;
   double default_type1 = kNaN;  // reference: the single default analysis
   // E5: most influential decision is background when a gradient is planted.
   double e5_background_hit_rate = kNaN;

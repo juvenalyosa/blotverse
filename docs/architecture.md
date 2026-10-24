@@ -69,7 +69,13 @@ so the validation harness measures the tool exactly as a laboratory uses it.
 * **Joint test**: labels permuted *within blots* (every normalisation needs the
   per-blot design intact), the statistical part of all universes rerun, and the
   number of universes significant in the dominant direction compared with the
-  null distribution. When the design has too few distinct within-blot
-  relabellings for p < alpha to be attainable, the report says so.
+  null distribution. When all distinct within-blot relabellings fit in the
+  permutation budget they are enumerated (exact p-value); otherwise Monte
+  Carlo. When there are too few relabellings for p < alpha to be attainable
+  (2 / relabellings >= alpha), the verdict is *Not evaluable*: a design limit,
+  not evidence against the effect.
+* **Design rules** (spec v1.1): the permutation-test branch is excluded when its
+  smallest attainable p-value is >= alpha, and blot-sum / optimal-alignment
+  normalisation are excluded when a blot has a single lane of some group.
 * **Influence**: OLS of lfc on decision dummies; eta^2 of a decision is the
   drop-one increase in residual sum of squares divided by the total.

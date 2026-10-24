@@ -136,3 +136,26 @@ TEST_CASE("multiverse on hand-made numbers") {
   CHECK(s.robustness > 0.6);
   CHECK(s.opposite_fraction == 0.0);
 }
+
+TEST_CASE("design rules exclude underpowered and anti-conservative branches") {
+  const auto& spec = repo_spec();
+  ExperimentFacts small;
+  small.has_total_protein = true;
+  small.permutation_can_reach_alpha = false;
+  small.every_blot_has_two_lanes_per_group = false;
+  const auto plan = plan_universes(spec, small);
+  // Excluded: perm (144) or sum/align (288); overlap 96 -> 336 excluded, 96 remain.
+  CHECK(plan.universes.size() == 96);
+  CHECK(plan.excluded.size() == 336);
+  REQUIRE(plan.default_index);  // the default (fixed / welch) is never excluded
+}
+
+TEST_CASE("Not evaluable when the joint test cannot reach alpha") {
+  JointTest small;
+  small.distinct_relabelings = 8;  // 3 blots x (1 ctrl + 1 treat)
+  CHECK_FALSE(joint_test_evaluable(small, 0.05));
+  JointTest big;
+  big.distinct_relabelings = 216;
+  CHECK(joint_test_evaluable(big, 0.05));
+  CHECK(decide_verdict(VerdictSpec{}, 1.0, 0.25, false) == Verdict::NotEvaluable);
+}

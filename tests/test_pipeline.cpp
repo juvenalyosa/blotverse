@@ -125,3 +125,28 @@ TEST_CASE("3-blot experiment runs well under the 2-minute target (G1)") {
   CHECK(r.seconds < 120.0);
   MESSAGE("3 blots, 432 universes, 1000 joint permutations: " << r.seconds << " s");
 }
+
+TEST_CASE("3 gels x 1 replicate: design rules apply and the verdict is Not evaluable") {
+  SimParams p = sim_preset(ArtifactLevel::Clean);
+  p.n_gels = 3;
+  p.reps_per_gel = 1;
+  p.true_lfc = {0.0, 1.0};
+  p.seed = 77;
+  const auto r = analyze(to_experiment(simulate(p)), repo_spec(), AnalysisOptions{0, 100});
+  CHECK_FALSE(r.data.facts.permutation_can_reach_alpha);
+  CHECK_FALSE(r.data.facts.every_blot_has_two_lanes_per_group);
+  CHECK(r.multiverse.plan.universes.size() == 96);
+  CHECK(r.summaries[0].verdict == Verdict::NotEvaluable);
+  CHECK(r.summaries[0].robustness > 0.5);  // R itself is still reported
+}
+
+TEST_CASE("joint test enumerates every relabelling when they fit the budget") {
+  const auto r = analyze_sim(ArtifactLevel::Clean, 1.0, 21, true, 500);  // 3 gels x (2+2): 216
+  const auto& j = r.summaries[0].joint;
+  CHECK(j.exact);
+  CHECK(j.distinct_relabelings == 216.0);
+  CHECK(j.null_counts.size() == 216);
+  CHECK(j.p >= 2.0 / 216.0);  // observed labelling and its mirror
+  const auto mc = analyze_sim(ArtifactLevel::Clean, 1.0, 21, true, 100);
+  CHECK_FALSE(mc.summaries[0].joint.exact);
+}

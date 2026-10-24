@@ -43,4 +43,9 @@ TestResult mixed_model_test(std::span<const double> y, std::span<const int> trea
 TestResult permutation_test(std::span<const double> control, std::span<const double> treatment,
                             std::size_t max_permutations, std::uint64_t seed);
 
+// Smallest p-value permutation_test() can return for these group sizes: the
+// observed split (and its mirror image when the groups are equal) is always
+// counted as extreme.
+double permutation_min_p(std::size_t n_control, std::size_t n_treatment, std::size_t max_permutations);
+
 }  // namespace blotverse

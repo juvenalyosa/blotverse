@@ -55,6 +55,8 @@ ExclusionCondition parse_condition(const std::string& key) {
   if (key == "overlapping_neighbours" || key == "overlapping_neighbors")
     return ExclusionCondition::OverlappingNeighbours;
   if (key == "total_protein_missing") return ExclusionCondition::TotalProteinMissing;
+  if (key == "permutation_underpowered") return ExclusionCondition::PermutationUnderpowered;
+  if (key == "single_lane_per_group") return ExclusionCondition::SingleLanePerGroup;
   throw SpecError("unknown exclusion condition '" + key + "'");
 }
 
@@ -249,9 +251,13 @@ std::optional<std::string> exclusion_reason(const MultiverseSpec& spec, const Un
   for (const auto& rule : spec.exclusions) {
     const Branch& b = spec.branch(rule.decision, u[static_cast<std::size_t>(rule.decision)]);
     if (b.id != rule.branch_id) continue;
-    const bool applies =
-        (rule.condition == ExclusionCondition::OverlappingNeighbours && !facts.local_background_valid) ||
-        (rule.condition == ExclusionCondition::TotalProteinMissing && !facts.has_total_protein);
+    bool applies = false;
+    switch (rule.condition) {
+      case ExclusionCondition::OverlappingNeighbours: applies = !facts.local_background_valid; break;
+      case ExclusionCondition::TotalProteinMissing: applies = !facts.has_total_protein; break;
+      case ExclusionCondition::PermutationUnderpowered: applies = !facts.permutation_can_reach_alpha; break;
+      case ExclusionCondition::SingleLanePerGroup: applies = !facts.every_blot_has_two_lanes_per_group; break;
+    }
     if (applies) return rule.reason;
   }
   return std::nullopt;

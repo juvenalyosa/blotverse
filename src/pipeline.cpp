@@ -5,6 +5,7 @@
 #include <map>
 #include <stdexcept>
 
+#include "blotverse/analysis/stats.hpp"
 #include "blotverse/core/parallel.hpp"
 #include "blotverse/imaging/background.hpp"
 #include "blotverse/imaging/quantify.hpp"
@@ -99,6 +100,23 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
         data.observations.push_back(
             {static_cast<int>(b), static_cast<int>(l), group_index.at(experiment.blots[b].lanes[l].group)});
     }
+  }
+  // Design facts used by the exclusion rules (computed on the QC-passed lanes).
+  {
+    std::map<std::pair<int, int>, std::size_t> per_blot_group;
+    std::vector<std::size_t> per_group(data.groups.size(), 0);
+    for (const auto& o : data.observations) {
+      ++per_blot_group[{o.blot, o.group}];
+      ++per_group[static_cast<std::size_t>(o.group)];
+    }
+    for (int b = 0; b < data.n_blots; ++b)
+      for (std::size_t g = 0; g < data.groups.size(); ++g) {
+        const auto it = per_blot_group.find({b, static_cast<int>(g)});
+        if (it != per_blot_group.end() && it->second < 2) data.facts.every_blot_has_two_lanes_per_group = false;
+      }
+    for (std::size_t g = 1; g < data.groups.size(); ++g)
+      if (permutation_min_p(per_group[0], per_group[g], spec.inference.test_max_permutations) >= spec.alpha)
+        data.facts.permutation_can_reach_alpha = false;
   }
   if (!experiment.has_total_protein() &&
       std::any_of(experiment.blots.begin(), experiment.blots.end(),

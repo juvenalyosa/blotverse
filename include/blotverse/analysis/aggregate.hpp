@@ -10,7 +10,10 @@
 
 namespace blotverse {
 
-enum class Verdict { Robust, Fragile, NotSupported };
+// NotEvaluable: the design has too few distinct within-blot relabellings for
+// the joint test to reach its alpha, whatever the data (a design limit, not
+// evidence against the effect).
+enum class Verdict { Robust, Fragile, NotSupported, NotEvaluable };
 const char* verdict_label(Verdict v);
 
 // Joint (specification-curve) inference: how many universes are significant
@@ -19,8 +22,11 @@ const char* verdict_label(Verdict v);
 struct JointTest {
   std::size_t observed = 0;               // max(#sig & lfc > 0, #sig & lfc < 0)
   std::vector<std::size_t> null_counts;   // one per permutation
-  double p = kNaN;                        // (1 + #{null >= observed}) / (1 + permutations)
+  // Exact: #{null >= observed} / relabellings (observed included).
+  // Monte Carlo: (1 + #{null >= observed}) / (1 + permutations).
+  double p = kNaN;
   double distinct_relabelings = 0.0;      // within-blot labelings that exist for this design
+  bool exact = false;                     // all relabellings enumerated (no Monte Carlo)
 };
 
 struct ContrastSummary {
@@ -70,6 +76,9 @@ std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseDa
 ContrastSummary summarize_contrast(const MultiverseSpec& spec, const MultiverseResult& result,
                                    std::size_t contrast_index, JointTest joint);
 
-Verdict decide_verdict(const VerdictSpec& v, double robustness, double joint_p);
+Verdict decide_verdict(const VerdictSpec& v, double robustness, double joint_p, bool design_evaluable = true);
+
+// False when 2 / relabellings >= alpha (observed labelling and its mirror).
+bool joint_test_evaluable(const JointTest& joint, double alpha);
 
 }  // namespace blotverse

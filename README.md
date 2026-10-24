@@ -13,7 +13,8 @@ total-protein image, 216 without). It reports:
 * the **distribution of the effect** (median log2 fold change and 5-95 % range);
 * a **specification curve** showing every universe and the branches it uses;
 * the **influence** of each decision (eta^2), i.e. which choice moves the result most;
-* a **joint permutation test** and a one-word verdict: *Robust*, *Fragile* or *Not supported*;
+* a **joint permutation test** and a one-word verdict: *Robust*, *Fragile*, *Not supported*,
+  or *Not evaluable* when the design has too few lanes per blot to test robustness;
 * a **reproducibility file** that regenerates every number exactly (same platform and
   compiler; across platforms, last-digit libm differences are possible).
 

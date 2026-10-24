@@ -1,0 +1,26 @@
+blotverse_version: 0.1.0
+spec_sha256: d332a71088623219838617815e3323d26fafb2f7db0b5ead4da9c32d0190d210
+experiments: 2000
+gradient_experiments: 200
+joint_permutations: 500
+seed: 1
+failed: 0
+e1_median_log10_p_range: 0.73618026508574141
+e1_fraction_over_2_orders: 0.14523449319213314
+evaluable_fraction: 0.48099999999999998
+e2_auc: 0.91300316422865446
+e2_auc_all_designs: 0.86151049999999996
+e2_auc_by_stratum:
+  level=clean: 0.87437379576107899
+  level=moderate: 0.86599278507205768
+  level=severe: 0.84695792597765363
+  "|lfc|=0.3": 0.71494528875379937
+  "|lfc|=0.5": 0.89627575757575761
+  "|lfc|=1.0": 0.96927419354838706
+e3_null_robust_rate: 0.0070000000000000001
+e4_joint_type1: 0.037815126050420166
+e4_joint_type1_all_designs: 0.023
+default_analysis_type1: 0.041000000000000002
+e5_background_hit_rate: 0.34999999999999998
+g2_pass: true
+seconds: 111.59437800000001

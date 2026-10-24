@@ -6,10 +6,20 @@
 # secondary sensitivity analysis, never done silently.
 #
 # 4 x 3 x 2 x 3 x 2 x 3 = 432 universes with a total-protein image,
-# 216 without (the total_protein branch is excluded by rule).
+# 216 without (the total_protein branch is excluded by rule). Small designs
+# lose further universes through the design rules below.
+#
+# Changelog
+#   1.0.0  Initial specification.
+#   1.1.0  Design rules added after level-1 calibration (docs/validation.md),
+#          before freezing: (a) the permutation-test branch is excluded when its
+#          smallest attainable p-value is >= alpha; (b) blot-sum and
+#          optimal-alignment normalisation are excluded when a blot has a single
+#          lane of some group (type I error 0.15-0.17 in simulation); (c) the
+#          verdict is "Not evaluable" when the joint test cannot reach alpha.
 
 name: blotverse-v1
-version: "1.0.0"
+version: "1.1.0"
 alpha: 0.05
 
 decisions:
@@ -115,6 +125,18 @@ exclusions:
     when: {loading: tp}
     condition: total_protein_missing
     reason: no total-protein image for every blot
+  - id: permutation-cannot-reach-alpha
+    when: {test: perm}
+    condition: permutation_underpowered
+    reason: too few replicates for the permutation test to reach alpha
+  - id: blot-sum-single-lane
+    when: {normalization: sum}
+    condition: single_lane_per_group
+    reason: blot-sum normalisation with one lane per group on a blot (anti-conservative)
+  - id: alignment-single-lane
+    when: {normalization: align}
+    condition: single_lane_per_group
+    reason: optimal alignment with one lane per group on a blot (anti-conservative)
 
 qc:
   saturation_min_pixels: 1      # a single pixel at the detector maximum flags the band

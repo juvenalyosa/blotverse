@@ -74,3 +74,13 @@ TEST_CASE("Monte Carlo permutation test is deterministic per seed") {
   CHECK(r1.p > 0.0);
   CHECK(r1.p < 0.2);
 }
+
+TEST_CASE("smallest attainable permutation p-value") {
+  CHECK(permutation_min_p(3, 3, 10000) == doctest::Approx(0.1));        // 2 / 20
+  CHECK(permutation_min_p(4, 4, 10000) == doctest::Approx(2.0 / 70.0));
+  CHECK(permutation_min_p(3, 4, 10000) == doctest::Approx(1.0 / 35.0));  // no mirror image
+  CHECK(permutation_min_p(15, 15, 1000) == doctest::Approx(1.0 / 1001.0));
+  // Agrees with what the test actually returns for perfectly separated groups.
+  const std::vector<double> a{1, 2, 3}, b{7, 8, 9};
+  CHECK(permutation_test(a, b, 10000, 1).p == doctest::Approx(permutation_min_p(3, 3, 10000)));
+}
