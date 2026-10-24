@@ -22,6 +22,9 @@ struct ImageMeta {
   std::uint32_t detector_max = 65535;  // value that marks a saturated pixel
   std::string compression = "none";
   bool lossless = true;
+  int effective_bits = 16;             // 8 when a 16-bit file holds upscaled 8-bit data
+  std::size_t grey_levels = 0;         // distinct pixel values in the image
+  bool appears_inverted = false;       // bright background (dark bands)
   std::string sha256;                  // fingerprint of the decoded pixel data
   std::vector<std::string> warnings;
 };
@@ -31,9 +34,17 @@ struct RawImage {
   ImageMeta meta;
 };
 
-// Loads a single-channel TIFF. 16-bit is the supported input; 8-bit is
-// accepted with a warning; JPEG (as file or as TIFF compression) is rejected.
+// Loads a greyscale TIFF. 16-bit is the supported input; 8-bit is accepted
+// with a warning; RGB files are accepted only when R = G = B; JPEG (as file or
+// as TIFF compression) and pseudo-coloured images are rejected. Upscaled 8-bit
+// data, strong quantisation and inverted images are flagged.
 RawImage read_tiff(const std::filesystem::path& path);
+
+// Grey-level census and inversion check (called by read_tiff).
+void analyse_pixel_depth(RawImage& raw);
+
+// value -> detector_max - value, for images with dark bands on a light background.
+void invert_image(RawImage& raw);
 
 // Writes an uncompressed 16-bit greyscale TIFF.
 void write_tiff16(const std::filesystem::path& path, const ImageU16& image);

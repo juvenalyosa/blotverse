@@ -57,6 +57,11 @@ void add_background(std::vector<double>& img, int width, int height, const SimPa
           p.offset + p.gradient * peak * t +
           p.haze * peak * std::exp(-(dx * dx + dy * dy) / (2 * haze_sigma * haze_sigma));
     }
+  for (int s = 0; s < p.n_blotches; ++s) {
+    const double sigma = rng.uniform(p.blotch_sigma_min, p.blotch_sigma_max);
+    add_band(img, width, height, rng.uniform(0, width), rng.uniform(0, height), sigma,
+             sigma * rng.uniform(0.6, 1.0), 0.0, rng.uniform(0.3, 1.0) * p.blotch_amplitude * peak);
+  }
   for (int s = 0; s < p.n_spots; ++s) {
     const double sigma = rng.uniform(1.5, 5.0);
     add_band(img, width, height, rng.uniform(0, width), rng.uniform(0, height), sigma, sigma, 0.0,

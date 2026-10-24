@@ -58,8 +58,12 @@ Outputs in `demo/report/`: `report.html`, `summary.csv`, `universes.csv`
 
 ## Analysing your own blots
 
-Describe the experiment in YAML. Images must be raw, single-channel TIFFs
-(16-bit preferred; 8-bit is accepted with a warning; JPEG is rejected).
+Describe the experiment in YAML. Images must be raw greyscale TIFFs.
+
+* 16-bit is preferred; 8-bit, or upscaled 8-bit inside a 16-bit file, is accepted with a
+  warning.
+* JPEG, CMYK and pseudo-coloured files are rejected.
+* Add `invert: true` to a blot whose image shows dark bands on a light background.
 
 ```yaml
 name: my-experiment

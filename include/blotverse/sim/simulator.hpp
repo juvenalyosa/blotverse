@@ -19,7 +19,7 @@ namespace blotverse {
 //  a_j  true protein amount; L_j lane loading factor (lognormal), shared by
 //       target, reference and total protein of the lane
 //  f    detector response: linear or hyperbolic S_max*q/(S_max + q)
-//  B    offset + gradient + haze + spots + non-specific bands
+//  B    offset + gradient + haze + blotches + spots + non-specific bands
 //  eps  Poisson (shot) noise plus Gaussian read noise
 enum class ArtifactLevel { Clean, Moderate, Severe };
 enum class DetectorResponse { Linear, Hyperbolic };
@@ -72,6 +72,13 @@ struct SimParams {
   int n_nonspecific = 0;
   double nonspecific_amplitude = 0.1;
   bool nonspecific_near_target = false;
+  // Mid-scale background blotches (uneven substrate, membrane drying): broad
+  // Gaussians whose size lies between the rolling-ball radii, so background
+  // branches genuinely disagree about them.
+  int n_blotches = 0;
+  double blotch_amplitude = 0.3;
+  double blotch_sigma_min = 8.0;
+  double blotch_sigma_max = 30.0;
 
   std::uint64_t seed = 1;
 };

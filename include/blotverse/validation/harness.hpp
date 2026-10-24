@@ -51,9 +51,13 @@ struct ExperimentRecord {
 };
 
 struct HarnessMetrics {
-  // E1: dispersion of p-values across universes (moderate artefacts).
+  // E1: dispersion of p-values across universes, log10(p_max / p_min), for
+  // real effects under moderate artefacts (Gassmann compared procedures on a
+  // blot with a real difference; null p-values are bounded near [0.01, 1]).
   double e1_median_log10_p_range = kNaN;
   double e1_fraction_over_2_orders = kNaN;
+  double e1_null_median = kNaN;  // reference: moderate nulls
+  std::vector<std::pair<std::string, double>> e1_median_by_level;  // real effects
   // E2: AUC of R separating real effects from nulls.
   // E2 and E4 are judged on experiments where the tool issues a verdict
   // (not "Not evaluable"); the all-design values are reported alongside.
@@ -91,5 +95,9 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
 
 // records.csv, metrics.yaml and summary.md
 void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport& report);
+
+// Reloads a finished run (records.csv + metrics.yaml) so metrics can be
+// recomputed without simulating again.
+HarnessReport read_harness_outputs(const std::filesystem::path& dir);
 
 }  // namespace blotverse

@@ -98,7 +98,8 @@ bool HarnessMetrics::g2_pass() const {
 
 HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, double alpha) {
   HarnessMetrics m;
-  std::vector<double> pos, neg, pos_eval, neg_eval, p_ranges;
+  std::vector<double> pos, neg, pos_eval, neg_eval, p_ranges, null_ranges;
+  std::map<std::string, std::vector<double>> ranges_by_level;
   std::size_t nulls = 0, null_robust = 0, null_joint_sig = 0, null_default_sig = 0;
   std::size_t nulls_eval = 0, null_joint_sig_eval = 0, main_total = 0, main_eval = 0;
   std::size_t gradient_total = 0, gradient_hits = 0;
@@ -137,8 +138,11 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
       if (r.joint_p < alpha) ++null_joint_sig;
       if (r.default_p < alpha) ++null_default_sig;
     }
-    if (r.level == ArtifactLevel::Moderate && r.p_min > 0 && std::isfinite(r.p_max))
-      p_ranges.push_back(std::log10(r.p_max / r.p_min));
+    if (r.p_min > 0 && std::isfinite(r.p_max)) {
+      const double range = std::log10(r.p_max / r.p_min);
+      if (!is_null) ranges_by_level[artifact_label(r.level)].push_back(range);
+      if (r.level == ArtifactLevel::Moderate) (is_null ? null_ranges : p_ranges).push_back(range);
+    }
   }
   if (!pos.empty() && !neg.empty()) m.e2_auc_all_designs = roc_auc(pos, neg);
   if (!pos_eval.empty() && !neg_eval.empty()) m.e2_auc = roc_auc(pos_eval, neg_eval);
@@ -155,6 +159,9 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
     m.e4_joint_type1_all_designs = static_cast<double>(null_joint_sig) / static_cast<double>(nulls);
     m.default_type1 = static_cast<double>(null_default_sig) / static_cast<double>(nulls);
   }
+  if (!null_ranges.empty()) m.e1_null_median = median(null_ranges);
+  for (const char* level : {"clean", "moderate", "severe"})
+    if (ranges_by_level.count(level)) m.e1_median_by_level.push_back({level, median(ranges_by_level[level])});
   if (!p_ranges.empty()) {
     m.e1_median_log10_p_range = median(p_ranges);
     std::size_t over = 0;
@@ -227,6 +234,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     y << YAML::Key << "failed" << YAML::Value << m.failed;
     y << YAML::Key << "e1_median_log10_p_range" << YAML::Value << m.e1_median_log10_p_range;
     y << YAML::Key << "e1_fraction_over_2_orders" << YAML::Value << m.e1_fraction_over_2_orders;
+    y << YAML::Key << "e1_null_median" << YAML::Value << m.e1_null_median;
     y << YAML::Key << "evaluable_fraction" << YAML::Value << m.evaluable_fraction;
     y << YAML::Key << "e2_auc" << YAML::Value << m.e2_auc;
     y << YAML::Key << "e2_auc_all_designs" << YAML::Value << m.e2_auc_all_designs;
@@ -252,9 +260,9 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
        << " joint permutations each; seed " << report.config.seed << "; " << fmt(report.seconds, 0) << " s; "
        << m.failed << " failed.\n\nBlotVerse " << kVersion << ", spec sha256 `" << report.spec_sha256 << "`.\n\n";
     md << "| Experiment | Metric | Value | Target | Result |\n|---|---|---|---|---|\n";
-    md << "| E1 | median log10(p_max/p_min), moderate artefacts | " << fmt(m.e1_median_log10_p_range, 2)
-       << " (" << pct(m.e1_fraction_over_2_orders) << " span >= 2 orders) | several orders | "
-       << mark(m.e1_median_log10_p_range >= 2.0) << " |\n";
+    md << "| E1 | median log10(p_max/p_min), real effects, moderate artefacts | "
+       << fmt(m.e1_median_log10_p_range, 2) << " (" << pct(m.e1_fraction_over_2_orders)
+       << " span >= 2 orders) | several orders (>= 2) | " << mark(m.e1_median_log10_p_range >= 2.0) << " |\n";
     md << "| E2 | AUC of R (real vs null), evaluable designs | " << fmt(m.e2_auc) << " | >= 0.85 | "
        << mark(m.e2_auc >= 0.85) << " |\n";
     md << "| E2' | AUC of R, all designs (reference) | " << fmt(m.e2_auc_all_designs) << " | - | - |\n";
@@ -270,6 +278,9 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     md << "Reference: type I error of the single default analysis = " << fmt(m.default_type1) << ". "
        << pct(m.evaluable_fraction) << " of experiments had a design the joint test can evaluate.\n\n";
     md << "**Decision point G2 (E2, E3, E4): " << (m.g2_pass() ? "PASS" : "FAIL") << "**\n\n";
+    md << "E1 by artefact level (real effects, median orders of magnitude):";
+    for (const auto& [k, v] : m.e1_median_by_level) md << " " << k << " " << fmt(v, 2) << ";";
+    md << " moderate nulls (reference) " << fmt(m.e1_null_median, 2) << ".\n\n";
     md << "AUC by stratum:\n\n| Stratum | AUC |\n|---|---|\n";
     for (const auto& [k, v] : m.e2_auc_by_stratum) md << "| " << k << " | " << fmt(v) << " |\n";
 
@@ -291,6 +302,60 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
       md << " |\n";
     }
   }
+}
+
+HarnessReport read_harness_outputs(const std::filesystem::path& dir) {
+  HarnessReport report;
+  const YAML::Node meta = YAML::LoadFile((dir / "metrics.yaml").string());
+  report.config.experiments = meta["experiments"].as<std::size_t>();
+  report.config.gradient_experiments = meta["gradient_experiments"].as<std::size_t>();
+  report.config.joint_permutations = meta["joint_permutations"].as<std::size_t>();
+  report.config.seed = meta["seed"].as<std::uint64_t>();
+  report.seconds = meta["seconds"].as<double>();
+  if (meta["spec_sha256"]) report.spec_sha256 = meta["spec_sha256"].as<std::string>();
+
+  std::ifstream in(dir / "records.csv");
+  if (!in) throw std::runtime_error("cannot read " + (dir / "records.csv").string());
+  std::string line;
+  std::getline(in, line);  // header
+  auto num = [](const std::string& s) { return s == "nan" ? kNaN : std::stod(s); };
+  while (std::getline(in, line)) {
+    if (line.empty()) continue;
+    // Every column but the last (quoted error message) is comma-free.
+    std::vector<std::string> f;
+    std::size_t start = 0;
+    for (std::size_t k = 0; k < 17 + kNumDecisions; ++k) {
+      const std::size_t comma = line.find(',', start);
+      f.push_back(line.substr(start, comma - start));
+      start = comma + 1;
+    }
+    ExperimentRecord r;
+    r.set = f[0];
+    r.id = std::stoul(f[1]);
+    r.level = parse_artifact_level(f[2]);
+    r.true_lfc = num(f[3]);
+    r.n_gels = std::stoi(f[4]);
+    r.reps_per_gel = std::stoi(f[5]);
+    r.failed = f[6] == "1";
+    r.robustness = num(f[7]);
+    r.joint_p = num(f[8]);
+    for (Verdict v : {Verdict::Robust, Verdict::Fragile, Verdict::NotSupported, Verdict::NotEvaluable})
+      if (f[9] == verdict_label(v)) r.verdict = v;
+    r.default_lfc = num(f[10]);
+    r.default_p = num(f[11]);
+    r.median_lfc = num(f[12]);
+    r.p_min = num(f[13]);
+    r.p_max = num(f[14]);
+    r.n_valid = std::stoul(f[15]);
+    for (Decision d : kDecisions)
+      if (f[16] == decision_key(d)) r.most_influential = d;
+    for (std::size_t d = 0; d < kNumDecisions; ++d) r.eta2[d] = num(f[17 + d]);
+    r.error = line.substr(start);
+    if (r.error.size() >= 2 && r.error.front() == '"' && r.error.back() == '"')
+      r.error = r.error.substr(1, r.error.size() - 2);
+    report.records.push_back(std::move(r));
+  }
+  return report;
 }
 
 }  // namespace blotverse

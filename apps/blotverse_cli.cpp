@@ -42,6 +42,7 @@ Usage:
   blotverse reproduce REPRO.yaml [--out DIR] [--threads N]
   blotverse validate  --out DIR [--spec FILE] [--experiments N] [--gradient-experiments N]
                       [--permutations N] [--seed N] [--threads N]
+  blotverse validate  --recompute DIR               recompute metrics from a finished run
   blotverse spec      [--spec FILE]                 summarise the multiverse specification
   blotverse --version
 )";
@@ -200,6 +201,16 @@ int cmd_reproduce(const Args& a) {
 }
 
 int cmd_validate(const Args& a) {
+  if (a.has("recompute")) {
+    // Recompute metrics and summaries of a finished run from its records.
+    const fs::path dir = a.get("recompute");
+    HarnessReport report = read_harness_outputs(dir);
+    report.metrics = compute_metrics(report.records, spec_from(a).alpha);
+    write_harness_outputs(dir, report);
+    std::ifstream summary(dir / "summary.md");
+    std::cout << summary.rdbuf();
+    return report.metrics.g2_pass() ? 0 : 3;
+  }
   const MultiverseSpec spec = spec_from(a);
   HarnessConfig cfg;
   cfg.experiments = static_cast<std::size_t>(a.integer("experiments", 2000));

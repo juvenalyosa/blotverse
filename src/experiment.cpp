@@ -87,9 +87,12 @@ Experiment parse_experiment(const std::string& yaml_text, const std::filesystem:
     if (!ids.insert(b.id).second) throw ExperimentError("duplicate blot id '" + b.id + "'");
     b.image_file = node["image"].as<std::string>();
     b.image = read_tiff(base_dir / b.image_file);
+    b.invert = node["invert"] && node["invert"].as<bool>();
+    if (b.invert) invert_image(b.image);
     if (node["total_protein"]) {
       b.total_protein_file = node["total_protein"].as<std::string>();
       b.total_protein = read_tiff(base_dir / b.total_protein_file);
+      if (b.invert) invert_image(*b.total_protein);
     }
     for (const auto& l : node["lanes"]) {
       LaneSpec lane;
@@ -140,6 +143,7 @@ void save_experiment(const std::filesystem::path& path, const Experiment& experi
     out << YAML::BeginMap;
     out << YAML::Key << "id" << YAML::Value << b.id;
     out << YAML::Key << "image" << YAML::Value << b.image_file;
+    if (b.invert) out << YAML::Key << "invert" << YAML::Value << true;
     if (!b.total_protein_file.empty())
       out << YAML::Key << "total_protein" << YAML::Value << b.total_protein_file;
     if (b.hints.target_y || b.hints.reference_y) {

@@ -5,8 +5,9 @@ gradient_experiments: 200
 joint_permutations: 500
 seed: 1
 failed: 0
-e1_median_log10_p_range: 0.73618026508574141
-e1_fraction_over_2_orders: 0.14523449319213314
+e1_median_log10_p_range: 1.1983077646097495
+e1_fraction_over_2_orders: 0.26646706586826346
+e1_null_median: 0.46472268237153808
 evaluable_fraction: 0.48099999999999998
 e2_auc: 0.91300316422865446
 e2_auc_all_designs: 0.86151049999999996

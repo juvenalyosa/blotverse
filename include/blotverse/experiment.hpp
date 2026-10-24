@@ -29,6 +29,7 @@ struct Blot {
   std::vector<LaneSpec> lanes;
   BandHints hints;
   std::optional<Annotation> annotation;  // manual correction overrides detection
+  bool invert = false;                   // dark bands on a light background
   std::string image_file;                // as written in the experiment file
   std::string total_protein_file;
 };

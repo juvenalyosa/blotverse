@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""E6: Pearson correlation between BlotVerse (rb2_rect) and Fiji band values.
+"""E6: Pearson correlation between BlotVerse rolling-ball band values and Fiji.
 
-Usage: compare_e6.py OUT_DIR [OUT_DIR ...]
-Each OUT_DIR must contain lanes.csv (blotverse run) and fiji_rb2_rect.csv
-(e6_fiji.ijm). Standard library only.
+Usage: compare_e6.py [--factor N] OUT_DIR [OUT_DIR ...]
+Each OUT_DIR must contain lanes.csv (blotverse run) and fiji_rb<N>_rect.csv
+(e6_fiji.ijm). N defaults to 2 (the default branch). Standard library only.
 """
 import csv
 import math
@@ -20,21 +20,26 @@ def pearson(xs, ys):
     return sxy / math.sqrt(sxx * syy)
 
 
-def main(dirs):
+def main(argv):
+    factor = "2"
+    if argv[:1] == ["--factor"]:
+        factor, argv = argv[1], argv[2:]
+    column = f"rb{factor}_rect"
+    dirs = argv
     ours, fiji = [], []
     for d in map(Path, dirs):
         with open(d / "lanes.csv") as f:
-            bv = {(r["blot"], r["lane"], r["band"]): float(r["rb2_rect"]) for r in csv.DictReader(f)}
-        with open(d / "fiji_rb2_rect.csv") as f:
+            bv = {(r["blot"], r["lane"], r["band"]): float(r[column]) for r in csv.DictReader(f)}
+        with open(d / f"fiji_{column}.csv") as f:
             for r in csv.DictReader(f):
                 key = (r["blot"], r["lane"], r["band"])
                 ours.append(bv[key])
-                fiji.append(float(r["fiji_rb2_rect"]))
+                fiji.append(float(r[f"fiji_{column}"]))
     r = pearson(ours, fiji)
     rel = [abs(a - b) / abs(b) for a, b in zip(ours, fiji) if b]
-    print(f"bands compared: {len(ours)}")
+    print(f"branch {column}: bands compared: {len(ours)}")
     print(f"Pearson r = {r:.5f}  (target >= 0.99: {'PASS' if r >= 0.99 else 'FAIL'})")
-    print(f"median relative difference = {sorted(rel)[len(rel) // 2]:.4%}")
+    print(f"median relative difference = {sorted(rel)[len(rel) // 2]:.4%}, max = {max(rel):.4%}")
     return 0 if r >= 0.99 else 1
 
 

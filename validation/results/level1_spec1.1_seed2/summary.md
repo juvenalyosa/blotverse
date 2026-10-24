@@ -6,7 +6,7 @@ BlotVerse 0.1.0, spec sha256 `d332a71088623219838617815e3323d26fafb2f7db0b5ead4d
 
 | Experiment | Metric | Value | Target | Result |
 |---|---|---|---|---|
-| E1 | median log10(p_max/p_min), moderate artefacts | 0.72 (16.5 % span >= 2 orders) | several orders | FAIL |
+| E1 | median log10(p_max/p_min), real effects, moderate artefacts | 1.37 (31.6 % span >= 2 orders) | several orders (>= 2) | FAIL |
 | E2 | AUC of R (real vs null), evaluable designs | 0.907 | >= 0.85 | PASS |
 | E2' | AUC of R, all designs (reference) | 0.846 | - | - |
 | E3 | nulls labelled Robust | 0.5 % | <= 5 % | PASS |
@@ -18,6 +18,8 @@ BlotVerse 0.1.0, spec sha256 `d332a71088623219838617815e3323d26fafb2f7db0b5ead4d
 Reference: type I error of the single default analysis = 0.056. 49.5 % of experiments had a design the joint test can evaluate.
 
 **Decision point G2 (E2, E3, E4): PASS**
+
+E1 by artefact level (real effects, median orders of magnitude): clean 0.92; moderate 1.37; severe 1.96; moderate nulls (reference) 0.44.
 
 AUC by stratum:
 
