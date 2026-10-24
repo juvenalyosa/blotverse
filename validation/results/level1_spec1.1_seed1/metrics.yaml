@@ -4,7 +4,7 @@ experiments: 2000
 gradient_experiments: 200
 joint_permutations: 500
 seed: 1
-failed: 0
+failed: 1
 e1_median_log10_p_range: 1.1983077646097495
 e1_fraction_over_2_orders: 0.26646706586826346
 e1_null_median: 0.46472268237153808
@@ -22,6 +22,8 @@ e3_null_robust_rate: 0.0070000000000000001
 e4_joint_type1: 0.037815126050420166
 e4_joint_type1_all_designs: 0.023
 default_analysis_type1: 0.041000000000000002
-e5_background_hit_rate: 0.34999999999999998
+e5_paired_hit_rate: 0.6733668341708543
+e5_background_hit_rate: 0.18090452261306533
+planted_artefact: {gradient: 1, blotches: 8, blotch_amplitude: 0.40000000000000002}
 g2_pass: true
-seconds: 111.59437800000001
+seconds: 123.17947525

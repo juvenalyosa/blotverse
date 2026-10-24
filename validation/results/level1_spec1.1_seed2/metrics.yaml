@@ -22,6 +22,8 @@ e3_null_robust_rate: 0.0050000000000000001
 e4_joint_type1: 0.034343434343434343
 e4_joint_type1_all_designs: 0.023
 default_analysis_type1: 0.056000000000000001
-e5_background_hit_rate: 0.40000000000000002
+e5_paired_hit_rate: 0.63
+e5_background_hit_rate: 0.17000000000000001
+planted_artefact: {gradient: 1, blotches: 8, blotch_amplitude: 0.40000000000000002}
 g2_pass: true
-seconds: 117.049256333
+seconds: 122.554103959

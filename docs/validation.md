@@ -11,9 +11,9 @@ Each run takes about 4 minutes on a 10-core laptop and covers:
   or 1.0 with random sign.
 * Clean, moderate or severe artefacts.
 * Designs of 3x1, 2x2, 3x2 and 2x3 (gels x lanes per group per gel).
-* 200 experiments with a planted background gradient (E5).
+* 200 experiments with a planted background artefact, each simulated with and without it (E5).
 * The full tool on every experiment: automatic detection, QC, the multiverse and the
-  joint test. 0 of 2200 experiments failed in every run.
+  joint test. 0 of 2200 experiments failed, except one E5 experiment (seed 1) where lane detection asked for a manual annotation.
 
 ## Current results: spec v1.1.0 (sha256 `d332a710…d210`)
 
@@ -25,7 +25,8 @@ Each run takes about 4 minutes on a 10-core laptop and covers:
 | E3 | Nulls labelled "Robust" | **0.7 %** | **0.5 %** | <= 5 % | met |
 | E4 | Joint-test type I error (evaluable designs) | **0.038** | **0.034** | <= 0.05 | met |
 | E4' | Joint-test type I error, all designs (reference) | 0.023 | 0.023 | – | – |
-| E5 | Planted gradient → background most influential | 35 % | 40 % | >= 80 % | **not met** |
+| E5 | Planted background artefact → background + band influence rises most (paired) | 67 % | 63 % | >= 80 % | **not met** |
+| E5' | Background is the single most influential decision (reference) | 18 % | 17 % | – | – |
 | E6 | Rolling-ball branches vs Fiji (r) | **1.00000** | – | >= 0.99 | met |
 
 **G2 (E2 + E3 + E4): met for both seeds. G1 (E6 + speed): met.** The type I error of the single default analysis
@@ -132,7 +133,28 @@ seeds 5000+, not used for the validation runs). Change in mean eta^2:
   correct the local background themselves, so background artefacts are split between
   two decisions.
 
-Conclusion: E5 as specified mixes two things. Background handling lives in both the
+### Paired E5 (pre-specified, then run on seeds 1 and 2)
+
+The criterion was fixed in code before any run. The planted artefact is a gradient of 1x
+the peak signal plus 8 blotches (amplitude 0.4x, sigma 8-30 px). Each experiment is
+simulated with and without it under the same seed. A hit means the influence of
+background + band definition rises by more than that of any other decision.
+
+* Hit rate: 67 % (seed 1) and 63 % (seed 2), below the 80 % target.
+* The direction is right on average. Mean change in eta^2, seed 1:
+
+  | Background | Band definition | Loading control | Others |
+  |---|---|---|---|
+  | +0.055 | +0.113 | -0.256 | ≈ 0 |
+
+* Reference metric (background is the single top decision): 17-18 %.
+* One of the 400 artefact experiments failed: lane detection found 1 of 2 lanes and asked
+  for a manual annotation.
+
+The influence analysis therefore moves the right way, but not reliably enough per
+experiment to meet the 80 % target.
+
+Conclusion: E5 as originally specified mixes two things. Background handling lives in both the
 background and the band-definition decisions, so "background is the single most
 influential decision" is the wrong success criterion. The simulator was not tuned to
 make E5 pass.
@@ -163,7 +185,7 @@ acquisitions. This also matters for level 3: deposited "raw" images are often pr
 
 * **E1:** needs real 16-bit acquisitions (level 2) to decide whether the simulator is too
   mild. Public repositories do not provide them.
-* **E5:** redefine before the next run. A candidate pre-specified criterion: the planted
-  background artefact must produce the largest *increase* in influence for the
-  background-handling decisions (background + band definition), measured in paired
-  simulations.
+* **E5:** the redefined, pre-specified paired criterion reaches 63-67 %, below 80 %. On
+  average the direction is right (see above), but individual experiments are too noisy.
+  Next steps: more replicates per experiment, or a criterion on the average shift across
+  experiments. Either must be fixed before the next run.

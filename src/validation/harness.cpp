@@ -34,7 +34,7 @@ ExperimentRecord run_one(const MultiverseSpec& spec, const HarnessConfig& cfg, s
   Rng rng(derive_seed(cfg.seed, id * 2 + (gradient_set ? 1 : 0)));
   ExperimentRecord rec;
   rec.id = id;
-  rec.set = gradient_set ? "gradient" : "main";
+  rec.set = gradient_set ? "background" : "main";
   rec.level = gradient_set ? ArtifactLevel::Moderate
                            : cfg.levels[static_cast<std::size_t>(rng.uniform_int(cfg.levels.size()))];
   const Design design = kDesigns[rng.uniform_int(std::size(kDesigns))];
@@ -51,7 +51,12 @@ ExperimentRecord run_one(const MultiverseSpec& spec, const HarnessConfig& cfg, s
   p.reps_per_gel = design.reps;
   p.true_lfc = {0.0, rec.true_lfc};
   p.seed = rng.next_u64();
-  if (gradient_set) p.gradient = cfg.planted_gradient;
+  const SimParams baseline = p;
+  if (gradient_set) {
+    p.gradient = cfg.planted_gradient;
+    p.n_blotches = cfg.planted_blotches;
+    p.blotch_amplitude = cfg.planted_blotch_amplitude;
+  }
 
   try {
     const Experiment ex = to_experiment(simulate(p));
@@ -59,6 +64,14 @@ ExperimentRecord run_one(const MultiverseSpec& spec, const HarnessConfig& cfg, s
     opts.threads = 1;
     opts.joint_permutations = cfg.joint_permutations;
     const AnalysisResult res = analyze(ex, spec, opts);
+    if (gradient_set) {
+      // Same experiment (same seed) without the planted artefact; only the
+      // influence analysis is needed, so the joint test is skipped.
+      AnalysisOptions base_opts = opts;
+      base_opts.joint_permutations = 0;
+      rec.baseline_eta2 = analyze(to_experiment(simulate(baseline)), spec, base_opts).summaries.at(0).eta2;
+      rec.paired = true;
+    }
     const auto& s = res.summaries.at(0);
     rec.robustness = s.robustness;
     rec.joint_p = s.joint.p;
@@ -102,7 +115,7 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
   std::map<std::string, std::vector<double>> ranges_by_level;
   std::size_t nulls = 0, null_robust = 0, null_joint_sig = 0, null_default_sig = 0;
   std::size_t nulls_eval = 0, null_joint_sig_eval = 0, main_total = 0, main_eval = 0;
-  std::size_t gradient_total = 0, gradient_hits = 0;
+  std::size_t gradient_total = 0, gradient_hits = 0, paired_total = 0, paired_hits = 0;
   std::map<std::string, std::pair<std::vector<double>, std::vector<double>>> strata;
 
   for (const auto& r : records) {
@@ -112,9 +125,20 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
     }
     // R is undefined when the default universe fails; count it as 0 support.
     const double score = std::isfinite(r.robustness) ? r.robustness : 0.0;
-    if (r.set == "gradient") {
+    if (r.set == "gradient" || r.set == "background") {
       ++gradient_total;
       if (r.most_influential == Decision::Background) ++gradient_hits;
+      if (r.paired) {
+        std::array<double, kNumDecisions> delta{};
+        for (std::size_t d = 0; d < kNumDecisions; ++d) delta[d] = r.eta2[d] - r.baseline_eta2[d];
+        const double handling = delta[static_cast<std::size_t>(Decision::Background)] +
+                                delta[static_cast<std::size_t>(Decision::Band)];
+        double other = -INFINITY;
+        for (Decision d : {Decision::Loading, Decision::Normalization, Decision::Scale, Decision::Test})
+          other = std::max(other, delta[static_cast<std::size_t>(d)]);
+        ++paired_total;
+        if (handling > 0 && handling > other) ++paired_hits;
+      }
       continue;
     }
     const bool is_null = r.true_lfc == 0.0;
@@ -169,6 +193,8 @@ HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, dou
       if (r >= 2.0) ++over;
     m.e1_fraction_over_2_orders = static_cast<double>(over) / static_cast<double>(p_ranges.size());
   }
+  if (paired_total)
+    m.e5_paired_hit_rate = static_cast<double>(paired_hits) / static_cast<double>(paired_total);
   if (gradient_total)
     m.e5_background_hit_rate = static_cast<double>(gradient_hits) / static_cast<double>(gradient_total);
   return m;
@@ -210,6 +236,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     out << "set,id,level,true_lfc,n_gels,reps_per_gel,failed,R,joint_p,verdict,default_lfc,default_p,"
            "median_lfc,p_min,p_max,n_valid,most_influential";
     for (Decision d : kDecisions) out << ",eta2_" << decision_key(d);
+    for (Decision d : kDecisions) out << ",base_eta2_" << decision_key(d);
     out << ",error\n";
     for (const auto& r : report.records) {
       out << r.set << ',' << r.id << ',' << artifact_label(r.level) << ',' << r.true_lfc << ',' << r.n_gels
@@ -218,6 +245,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
           << ',' << r.p_min << ',' << r.p_max << ',' << r.n_valid << ','
           << (r.most_influential ? decision_key(*r.most_influential) : "");
       for (double e : r.eta2) out << ',' << e;
+      for (double e : r.baseline_eta2) out << ',' << (r.paired ? e : kNaN);
       out << ",\"" << r.error << "\"\n";
     }
   }
@@ -245,7 +273,12 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     y << YAML::Key << "e4_joint_type1" << YAML::Value << m.e4_joint_type1;
     y << YAML::Key << "e4_joint_type1_all_designs" << YAML::Value << m.e4_joint_type1_all_designs;
     y << YAML::Key << "default_analysis_type1" << YAML::Value << m.default_type1;
+    y << YAML::Key << "e5_paired_hit_rate" << YAML::Value << m.e5_paired_hit_rate;
     y << YAML::Key << "e5_background_hit_rate" << YAML::Value << m.e5_background_hit_rate;
+    y << YAML::Key << "planted_artefact" << YAML::Value << YAML::Flow << YAML::BeginMap
+      << YAML::Key << "gradient" << YAML::Value << report.config.planted_gradient
+      << YAML::Key << "blotches" << YAML::Value << report.config.planted_blotches
+      << YAML::Key << "blotch_amplitude" << YAML::Value << report.config.planted_blotch_amplitude << YAML::EndMap;
     y << YAML::Key << "g2_pass" << YAML::Value << m.g2_pass();
     y << YAML::Key << "seconds" << YAML::Value << report.seconds;
     y << YAML::EndMap;
@@ -256,7 +289,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     std::ofstream md(dir / "summary.md");
     md << "# BlotVerse level-1 validation\n\n";
     md << report.config.experiments << " simulated experiments (half null) + " << report.config.gradient_experiments
-       << " with a planted background gradient; " << report.config.joint_permutations
+       << " with a planted background artefact (paired with and without it); " << report.config.joint_permutations
        << " joint permutations each; seed " << report.config.seed << "; " << fmt(report.seconds, 0) << " s; "
        << m.failed << " failed.\n\nBlotVerse " << kVersion << ", spec sha256 `" << report.spec_sha256 << "`.\n\n";
     md << "| Experiment | Metric | Value | Target | Result |\n|---|---|---|---|---|\n";
@@ -272,9 +305,11 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
        << mark(m.e4_joint_type1 <= 0.05) << " |\n";
     md << "| E4' | joint-test type I error, all designs (reference) | " << fmt(m.e4_joint_type1_all_designs)
        << " | - | - |\n";
-    md << "| E5 | background is most influential (gradient planted) | " << pct(m.e5_background_hit_rate)
-       << " | >= 80 % | " << mark(m.e5_background_hit_rate >= 0.8) << " |\n";
-    md << "| E6 | default branch vs Fiji | not run here | r >= 0.99 | see validation/fiji |\n\n";
+    md << "| E5 | planted background artefact raises background + band influence most (paired) | "
+       << pct(m.e5_rate()) << " | >= 80 % | " << mark(m.e5_rate() >= 0.8) << " |\n";
+    md << "| E5' | background is the single most influential decision (reference) | "
+       << pct(m.e5_background_hit_rate) << " | - | - |\n";
+    md << "| E6 | rolling-ball branches vs Fiji | separate run | r >= 0.99 | see validation/results/e6_fiji |\n\n";
     md << "Reference: type I error of the single default analysis = " << fmt(m.default_type1) << ". "
        << pct(m.evaluable_fraction) << " of experiments had a design the joint test can evaluate.\n\n";
     md << "**Decision point G2 (E2, E3, E4): " << (m.g2_pass() ? "PASS" : "FAIL") << "**\n\n";
@@ -317,40 +352,58 @@ HarnessReport read_harness_outputs(const std::filesystem::path& dir) {
   std::ifstream in(dir / "records.csv");
   if (!in) throw std::runtime_error("cannot read " + (dir / "records.csv").string());
   std::string line;
-  std::getline(in, line);  // header
-  auto num = [](const std::string& s) { return s == "nan" ? kNaN : std::stod(s); };
+  std::getline(in, line);  // header: columns are located by name
+  std::map<std::string, std::size_t> col;
+  {
+    std::size_t start = 0, k = 0;
+    while (true) {
+      const std::size_t comma = line.find(',', start);
+      col[line.substr(start, comma - start)] = k++;
+      if (comma == std::string::npos) break;
+      start = comma + 1;
+    }
+  }
+  const std::size_t n_cols = col.size();
+  auto num = [](const std::string& v) { return v == "nan" ? kNaN : std::stod(v); };
   while (std::getline(in, line)) {
     if (line.empty()) continue;
     // Every column but the last (quoted error message) is comma-free.
     std::vector<std::string> f;
     std::size_t start = 0;
-    for (std::size_t k = 0; k < 17 + kNumDecisions; ++k) {
+    for (std::size_t k = 0; k + 1 < n_cols; ++k) {
       const std::size_t comma = line.find(',', start);
       f.push_back(line.substr(start, comma - start));
       start = comma + 1;
     }
+    f.push_back(line.substr(start));
+    auto at = [&](const std::string& name) -> const std::string& { return f.at(col.at(name)); };
     ExperimentRecord r;
-    r.set = f[0];
-    r.id = std::stoul(f[1]);
-    r.level = parse_artifact_level(f[2]);
-    r.true_lfc = num(f[3]);
-    r.n_gels = std::stoi(f[4]);
-    r.reps_per_gel = std::stoi(f[5]);
-    r.failed = f[6] == "1";
-    r.robustness = num(f[7]);
-    r.joint_p = num(f[8]);
+    r.set = at("set");
+    r.id = std::stoul(at("id"));
+    r.level = parse_artifact_level(at("level"));
+    r.true_lfc = num(at("true_lfc"));
+    r.n_gels = std::stoi(at("n_gels"));
+    r.reps_per_gel = std::stoi(at("reps_per_gel"));
+    r.failed = at("failed") == "1";
+    r.robustness = num(at("R"));
+    r.joint_p = num(at("joint_p"));
     for (Verdict v : {Verdict::Robust, Verdict::Fragile, Verdict::NotSupported, Verdict::NotEvaluable})
-      if (f[9] == verdict_label(v)) r.verdict = v;
-    r.default_lfc = num(f[10]);
-    r.default_p = num(f[11]);
-    r.median_lfc = num(f[12]);
-    r.p_min = num(f[13]);
-    r.p_max = num(f[14]);
-    r.n_valid = std::stoul(f[15]);
+      if (at("verdict") == verdict_label(v)) r.verdict = v;
+    r.default_lfc = num(at("default_lfc"));
+    r.default_p = num(at("default_p"));
+    r.median_lfc = num(at("median_lfc"));
+    r.p_min = num(at("p_min"));
+    r.p_max = num(at("p_max"));
+    r.n_valid = std::stoul(at("n_valid"));
     for (Decision d : kDecisions)
-      if (f[16] == decision_key(d)) r.most_influential = d;
-    for (std::size_t d = 0; d < kNumDecisions; ++d) r.eta2[d] = num(f[17 + d]);
-    r.error = line.substr(start);
+      if (at("most_influential") == decision_key(d)) r.most_influential = d;
+    for (std::size_t d = 0; d < kNumDecisions; ++d) {
+      r.eta2[d] = num(at(std::string("eta2_") + decision_key(kDecisions[d])));
+      const auto base = col.find(std::string("base_eta2_") + decision_key(kDecisions[d]));
+      if (base != col.end()) r.baseline_eta2[d] = num(f.at(base->second));
+    }
+    r.paired = col.count("base_eta2_background") && !std::isnan(r.baseline_eta2[0]);
+    r.error = at("error");
     if (r.error.size() >= 2 && r.error.front() == '"' && r.error.back() == '"')
       r.error = r.error.substr(1, r.error.size() - 2);
     report.records.push_back(std::move(r));

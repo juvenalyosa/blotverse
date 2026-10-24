@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <filesystem>
@@ -19,10 +20,13 @@ namespace blotverse {
 // run through the complete tool, exactly as a laboratory would use it.
 struct HarnessConfig {
   std::size_t experiments = 2000;          // E1-E4 (half null)
-  std::size_t gradient_experiments = 200;  // E5 (planted background gradient)
+  std::size_t gradient_experiments = 200;  // E5 (planted background artefact, paired)
   std::vector<double> effect_sizes{0.3, 0.5, 1.0};
   std::vector<ArtifactLevel> levels{ArtifactLevel::Clean, ArtifactLevel::Moderate, ArtifactLevel::Severe};
-  double planted_gradient = 2.0;           // E5 gradient amplitude (x peak signal)
+  // E5 planted background artefact (pre-specified before the v1.1 E5 runs).
+  double planted_gradient = 1.0;           // x peak signal
+  int planted_blotches = 8;
+  double planted_blotch_amplitude = 0.4;   // x peak signal
   std::size_t joint_permutations = 200;
   std::uint64_t seed = 1;
   unsigned threads = 0;
@@ -48,6 +52,9 @@ struct ExperimentRecord {
   std::size_t n_valid = 0;
   std::optional<Decision> most_influential;
   std::array<double, kNumDecisions> eta2{};
+  // E5 only: influence in the same experiment without the planted artefact.
+  bool paired = false;
+  std::array<double, kNumDecisions> baseline_eta2{};
 };
 
 struct HarnessMetrics {
@@ -72,10 +79,16 @@ struct HarnessMetrics {
   double e4_joint_type1_all_designs = kNaN;
   double default_type1 = kNaN;  // reference: the single default analysis
   // E5: most influential decision is background when a gradient is planted.
-  double e5_background_hit_rate = kNaN;
+  // E5 (paired, primary): the planted background artefact raises the
+  // influence of the background-handling decisions (background + band
+  // definition) by more than that of any other decision.
+  double e5_paired_hit_rate = kNaN;
+  double e5_background_hit_rate = kNaN;  // reference: background is the top decision
   std::size_t failed = 0;
 
   bool g2_pass() const;
+  // Primary E5 value: the paired rate when available, else the literal one.
+  double e5_rate() const { return std::isnan(e5_paired_hit_rate) ? e5_background_hit_rate : e5_paired_hit_rate; }
 };
 
 struct HarnessReport {

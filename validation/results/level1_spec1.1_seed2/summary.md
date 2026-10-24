@@ -1,6 +1,6 @@
 # BlotVerse level-1 validation
 
-2000 simulated experiments (half null) + 200 with a planted background gradient; 500 joint permutations each; seed 2; 117 s; 0 failed.
+2000 simulated experiments (half null) + 200 with a planted background artefact (paired with and without it); 500 joint permutations each; seed 2; 123 s; 0 failed.
 
 BlotVerse 0.1.0, spec sha256 `d332a71088623219838617815e3323d26fafb2f7db0b5ead4da9c32d0190d210`.
 
@@ -12,8 +12,9 @@ BlotVerse 0.1.0, spec sha256 `d332a71088623219838617815e3323d26fafb2f7db0b5ead4d
 | E3 | nulls labelled Robust | 0.5 % | <= 5 % | PASS |
 | E4 | joint-test type I error, evaluable designs | 0.034 | <= 0.05 | PASS |
 | E4' | joint-test type I error, all designs (reference) | 0.023 | - | - |
-| E5 | background is most influential (gradient planted) | 40.0 % | >= 80 % | FAIL |
-| E6 | default branch vs Fiji | not run here | r >= 0.99 | see validation/fiji |
+| E5 | planted background artefact raises background + band influence most (paired) | 63.0 % | >= 80 % | FAIL |
+| E5' | background is the single most influential decision (reference) | 17.0 % | - | - |
+| E6 | rolling-ball branches vs Fiji | separate run | r >= 0.99 | see validation/results/e6_fiji |
 
 Reference: type I error of the single default analysis = 0.056. 49.5 % of experiments had a design the joint test can evaluate.
 
