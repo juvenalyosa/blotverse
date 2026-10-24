@@ -119,8 +119,8 @@ SimParams sim_preset(ArtifactLevel level) {
     case ArtifactLevel::Moderate:
       p.response = DetectorResponse::Hyperbolic;
       p.s_max = 80000.0;
-      p.gradient = 0.3;
-      p.haze = 0.15;
+      p.gradient = 0.04;
+      p.haze = 0.02;
       p.n_spots = 4;
       p.n_nonspecific = 2;
       p.band_curvature = 2.0;
@@ -131,8 +131,8 @@ SimParams sim_preset(ArtifactLevel level) {
       p.response = DetectorResponse::Hyperbolic;
       p.s_max = 40000.0;
       p.peak_per_unit = 15000.0;
-      p.gradient = 0.8;
-      p.haze = 0.4;
+      p.gradient = 0.15;
+      p.haze = 0.08;
       p.n_spots = 10;
       p.spot_amplitude = 0.5;
       p.n_nonspecific = 4;

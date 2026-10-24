@@ -95,10 +95,12 @@ std::vector<double> lane_row_profile(const ImageF& image, const Rect& lane) {
 
 // Target and reference rows: near the hints when given, else the two strongest peaks.
 std::pair<int, int> find_band_rows(const std::vector<double>& rows, const BandHints& hints, int H) {
-  const int search = std::max(8, H / 30);
+  int search = std::max(8, H / 30);
   if (hints.target_y && hints.reference_y) {
     const int t = static_cast<int>(*hints.target_y);
     const int r = static_cast<int>(*hints.reference_y);
+    // Never let one hint's search window reach the other band.
+    search = std::min(search, std::max(2, std::abs(t - r) / 2 - 1));
     return {argmax_in(rows, t - search, t + search), argmax_in(rows, r - search, r + search)};
   }
   const auto peaks = pick_peaks(box_smooth(rows, 1), 2, std::max(10, H / 15));
@@ -113,6 +115,56 @@ int band_half_height_from(const std::vector<double>& rows, int target_row, int r
   const int edge_room = std::min({target_row, reference_row, H - 1 - target_row, H - 1 - reference_row});
   const int max_half = std::max(3, std::min({H / 12, std::abs(reference_row - target_row) / 3, edge_room - 2}));
   return std::clamp(static_cast<int>(std::ceil(1.1 * fwhm)), 3, max_half);
+}
+
+// Lane centres: the evenly spaced comb x0 + k * pitch (k = 0..n-1) with the
+// most lane-versus-gap contrast in the band-row signal. Optional first/last
+// lane hints pin it.
+std::vector<double> fit_lane_comb(const std::vector<double>& signal, std::size_t n, const BandHints& hints,
+                                  int W) {
+  std::vector<double> s(signal.size());
+  for (std::size_t i = 0; i < s.size(); ++i) s[i] = std::max(0.0, signal[i]);
+  auto sample = [&](double x) {
+    const int x0 = static_cast<int>(std::floor(x));
+    if (x0 < 0 || x0 + 1 >= W) return 0.0;
+    const double t = x - x0;
+    return (1 - t) * s[static_cast<std::size_t>(x0)] + t * s[static_cast<std::size_t>(x0 + 1)];
+  };
+  const double dn = static_cast<double>(n);
+  if (n == 1) {
+    if (hints.first_lane_x) return {*hints.first_lane_x};
+    return {static_cast<double>(std::max_element(s.begin(), s.end()) - s.begin())};
+  }
+  double pmin = std::max(4.0, 0.25 * W / dn), pmax = (W - 1.0) / (dn - 1.0);
+  double xlo = 0.0, xhi = W - 1.0;
+  if (hints.first_lane_x && hints.last_lane_x) {
+    const double p = (*hints.last_lane_x - *hints.first_lane_x) / (dn - 1.0);
+    pmin = 0.9 * p;
+    pmax = 1.1 * p;
+    xlo = *hints.first_lane_x - 0.25 * p;
+    xhi = *hints.first_lane_x + 0.25 * p;
+  }
+  double best = -1.0, best_p = pmin, best_x0 = xlo;
+  for (double p = pmin; p <= pmax; p += 0.25) {
+    for (double x0 = xlo; x0 <= xhi && x0 + (dn - 1.0) * p <= W - 1.0; x0 += 1.0) {
+      // Contrast: signal on each lane minus the signal in the gaps around it,
+      // so a half-pitch comb (whose "gaps" fall on lanes) cannot win.
+      double score = 0.0;
+      for (std::size_t k = 0; k < n; ++k) {
+        const double x = x0 + static_cast<double>(k) * p;
+        score += sample(x) - 0.5 * (sample(x - 0.5 * p) + sample(x + 0.5 * p));
+      }
+      if (score > best) {
+        best = score;
+        best_p = p;
+        best_x0 = x0;
+      }
+    }
+  }
+  if (best <= 0.0) throw std::runtime_error("lane detection found no lane signal; supply a manual annotation");
+  std::vector<double> centres;
+  for (std::size_t k = 0; k < n; ++k) centres.push_back(best_x0 + static_cast<double>(k) * best_p);
+  return centres;
 }
 
 }  // namespace
@@ -186,35 +238,25 @@ Annotation detect_annotation(const ImageF& image, std::size_t n_lanes, const Ban
   }
   const double nominal_pitch = static_cast<double>(W) / static_cast<double>(n_lanes);
   const auto col_signal = box_smooth(cols, std::max(1, static_cast<int>(nominal_pitch / 12)));
-  // W / n overestimates the pitch because of the side margins (badly so for
-  // few lanes), so the minimum separation is kept well below it.
-  const auto lane_peaks = pick_peaks(col_signal, n_lanes, std::max(3, static_cast<int>(0.4 * nominal_pitch)));
-  if (lane_peaks.size() != n_lanes)
-    throw std::runtime_error("lane detection found " + std::to_string(lane_peaks.size()) + " of " +
-                             std::to_string(n_lanes) + " lanes; supply a manual annotation");
-
-  double pitch = nominal_pitch;
-  if (n_lanes > 1) {
-    std::vector<double> gaps;
-    for (std::size_t i = 1; i < lane_peaks.size(); ++i)
-      gaps.push_back(lane_peaks[i] - lane_peaks[i - 1]);
-    pitch = median(gaps);
-  }
+  const std::vector<double> comb = fit_lane_comb(col_signal, n_lanes, hints, W);
+  const double pitch = n_lanes > 1 ? (comb.back() - comb.front()) / static_cast<double>(n_lanes - 1)
+                                   : nominal_pitch;
 
   Annotation ann;
   ann.source = "auto";
   const double lane_width = std::max(4.0, std::round(0.75 * pitch));
-  for (int p : lane_peaks) {
-    // Refine to the signal centroid around the peak.
+  for (double c : comb) {
+    // Refine each comb position to the signal centroid within +/- 0.3 pitch.
     double sw = 0.0, sxw = 0.0;
-    const int half = static_cast<int>(0.4 * pitch);
+    const int half = std::max(1, static_cast<int>(0.3 * pitch));
+    const int p = static_cast<int>(std::lround(c));
     for (int x = std::max(0, p - half); x <= std::min(W - 1, p + half); ++x) {
       const double w = std::max(0.0, col_signal[static_cast<std::size_t>(x)]);
       sw += w;
       sxw += w * x;
     }
     // Keep the whole lane inside the image (edge lanes next to a bright margin).
-    const double centre = sw > 0 ? sxw / sw : static_cast<double>(p);
+    const double centre = sw > 0 ? sxw / sw : c;
     ann.lanes.push_back({std::clamp(centre, 0.5 * lane_width + 1.0, W - 0.5 * lane_width - 1.0), lane_width});
   }
 

@@ -1,5 +1,7 @@
 #include "blotverse/experiment.hpp"
 
+#include "blotverse/io/image_file.hpp"
+
 #include <yaml-cpp/yaml.h>
 
 #include <algorithm>
@@ -86,12 +88,12 @@ Experiment parse_experiment(const std::string& yaml_text, const std::filesystem:
     b.id = node["id"].as<std::string>();
     if (!ids.insert(b.id).second) throw ExperimentError("duplicate blot id '" + b.id + "'");
     b.image_file = node["image"].as<std::string>();
-    b.image = read_tiff(base_dir / b.image_file);
+    b.image = read_image(base_dir / b.image_file);
     b.invert = node["invert"] && node["invert"].as<bool>();
     if (b.invert) invert_image(b.image);
     if (node["total_protein"]) {
       b.total_protein_file = node["total_protein"].as<std::string>();
-      b.total_protein = read_tiff(base_dir / b.total_protein_file);
+      b.total_protein = read_image(base_dir / b.total_protein_file);
       if (b.invert) invert_image(*b.total_protein);
     }
     for (const auto& l : node["lanes"]) {
@@ -106,6 +108,12 @@ Experiment parse_experiment(const std::string& yaml_text, const std::filesystem:
       if (h["target_y"]) b.hints.target_y = h["target_y"].as<double>();
       if (h["reference_y"]) b.hints.reference_y = h["reference_y"].as<double>();
       if (h["target_above_reference"]) b.hints.target_above_reference = h["target_above_reference"].as<bool>();
+    }
+    if (const auto lx = node["lanes_x"]) {
+      if (!lx.IsSequence() || lx.size() != 2)
+        throw ExperimentError("blot '" + b.id + "': lanes_x must be [first_lane_centre, last_lane_centre]");
+      b.hints.first_lane_x = lx[0].as<double>();
+      b.hints.last_lane_x = lx[1].as<double>();
     }
     if (node["annotation"]) {
       b.annotation = annotation_from_yaml(node["annotation"]);
@@ -153,6 +161,9 @@ void save_experiment(const std::filesystem::path& path, const Experiment& experi
       out << YAML::Key << "target_above_reference" << YAML::Value << b.hints.target_above_reference;
       out << YAML::EndMap;
     }
+    if (b.hints.first_lane_x && b.hints.last_lane_x)
+      out << YAML::Key << "lanes_x" << YAML::Value << YAML::Flow << YAML::BeginSeq << *b.hints.first_lane_x
+          << *b.hints.last_lane_x << YAML::EndSeq;
     out << YAML::Key << "lanes" << YAML::Value << YAML::BeginSeq;
     for (const auto& l : b.lanes) {
       out << YAML::Flow << YAML::BeginMap;

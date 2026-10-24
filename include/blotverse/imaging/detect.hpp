@@ -31,18 +31,24 @@ struct Annotation {
   void validate(int image_width, int image_height) const;
 };
 
-// Approximate band rows the user knows from molecular weight (optional).
+// What the user roughly knows about the layout (all optional): band rows from
+// molecular weight, and the centres of the first and last sample lanes (which
+// keeps ladders and membrane edges out of the lane fit).
 struct BandHints {
   std::optional<double> target_y;
   std::optional<double> reference_y;
   bool target_above_reference = true;
+  std::optional<double> first_lane_x;
+  std::optional<double> last_lane_x;
 };
 
 Rect lane_rect(const Annotation& ann, std::size_t lane);
 Rect band_window(const Annotation& ann, std::size_t lane, BandKind kind);
 
-// Automatic detection: lanes from the column projection, bands from the row
-// profile, then per-lane refinement of each band centre (handles smiling).
+// Automatic detection: band rows from the row profile; lanes by fitting an
+// evenly spaced comb of n positions to the band-row column signal (robust to
+// ladders, edges and spots, unlike picking the n strongest peaks); then
+// per-lane refinement of each band centre (handles smiling).
 // Throws std::runtime_error when the expected lanes cannot be found.
 Annotation detect_annotation(const ImageF& image, std::size_t n_lanes, const BandHints& hints);
 

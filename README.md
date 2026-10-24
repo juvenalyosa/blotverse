@@ -58,7 +58,8 @@ Outputs in `demo/report/`: `report.html`, `summary.csv`, `universes.csv`
 
 ## Analysing your own blots
 
-Describe the experiment in YAML. Images must be raw greyscale TIFFs.
+Describe the experiment in YAML. Images must be raw greyscale acquisitions: Bio-Rad Image Lab
+`.scn` (read natively), ImageQuant/Molecular Dynamics `.gel`, or TIFF.
 
 * 16-bit is preferred; 8-bit, or upscaled 8-bit inside a 16-bit file, is accepted with a
   warning.
@@ -73,6 +74,7 @@ blots:
     image: gel1.tif                 # target and housekeeping bands
     total_protein: gel1_stain.tif   # optional, registered to gel1.tif
     bands: {target_y: 95, reference_y: 205}   # approximate rows (optional hints)
+    lanes_x: [56, 344]              # centres of first and last sample lane (optional)
     lanes:                          # left to right
       - {group: ctrl, sample: c1}
       - {group: treat, sample: t1}
@@ -80,7 +82,9 @@ blots:
       - {group: treat, sample: t2}
 ```
 
-Check the automatic lane and band detection, and correct it by hand if needed:
+Check the automatic lane and band detection, and correct it by hand if needed.
+`lanes_x` keeps ladders and blank lanes from misleading the lane fit. A quick look at a
+single image: `blotverse lanes IMAGE --lanes N --target-y Y --reference-y Y`.
 
 ```bash
 build/apps/blotverse detect my/experiment.yaml --out my/experiment_annotated.yaml
@@ -107,6 +111,10 @@ before looking at validation results. `blotverse spec` prints a summary.
 Default universe: `rb2 / profile / hk / fixed / log / welch`.
 
 ## Validation
+
+Real data: public raw 16-bit acquisitions, the simulator realism check (`blotverse
+imagestats`) and lane detection against authors' Image Lab annotations are in
+[`docs/real_data.md`](docs/real_data.md).
 
 `blotverse validate` runs the level-1 validation (plan section 8): simulated
 blots with known truth go through the complete tool. The latest results are in

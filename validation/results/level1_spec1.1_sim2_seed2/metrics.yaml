@@ -1,0 +1,30 @@
+blotverse_version: 0.1.0
+spec_sha256: d332a71088623219838617815e3323d26fafb2f7db0b5ead4da9c32d0190d210
+simulator_presets: 2
+experiments: 2000
+gradient_experiments: 200
+joint_permutations: 500
+seed: 2
+failed: 1
+e1_median_log10_p_range: 1.1004809791257439
+e1_fraction_over_2_orders: 0.26548672566371684
+e1_null_median: 0.35147863664916729
+evaluable_fraction: 0.4955
+e2_auc: 0.90500366568914958
+e2_auc_all_designs: 0.84464150000000005
+e2_auc_by_stratum:
+  level=clean: 0.84896315457085758
+  level=moderate: 0.8533227065354807
+  level=severe: 0.83513911921872119
+  "|lfc|=0.3": 0.69345352112676051
+  "|lfc|=0.5": 0.8722817589576547
+  "|lfc|=1.0": 0.97832840236686391
+e3_null_robust_rate: 0.0070000000000000001
+e4_joint_type1: 0.042424242424242427
+e4_joint_type1_all_designs: 0.029000000000000001
+default_analysis_type1: 0.050999999999999997
+e5_paired_hit_rate: 0.65326633165829151
+e5_background_hit_rate: 0.1306532663316583
+planted_artefact: {gradient: 1, blotches: 8, blotch_amplitude: 0.40000000000000002}
+g2_pass: true
+seconds: 133.44426949999999

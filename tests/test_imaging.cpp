@@ -156,3 +156,45 @@ TEST_CASE("linear range flags the flattening part of a dilution series") {
   const auto flags = linear_range_flags(load, signal, 0.8);
   CHECK(flags == std::vector<bool>{false, false, false, false, true, true});
 }
+
+TEST_CASE("lane fit ignores a ladder lane and honours lane hints") {
+  SimParams p = sim_preset(ArtifactLevel::Clean);
+  p.n_gels = 1;
+  p.reps_per_gel = 3;  // 6 sample lanes
+  p.margin = 80;
+  p.seed = 12;
+  const auto sim = simulate(p);
+  ImageF img = to_float(sim.blots[0].image);
+  // Molecular-weight ladder one pitch left of the first sample lane: strong
+  // bands at other rows, one weaker band on the target row.
+  const double ladder_x = sim.blots[0].lanes[0].x - p.lane_pitch;
+  for (double y : {40.0, 150.0, 260.0}) add_gaussian(img, ladder_x, y, 7, 3, 20000);
+  add_gaussian(img, ladder_x, p.target_y, 7, 3, 4000);
+  BandHints hints;
+  hints.target_y = p.target_y;
+  hints.reference_y = p.reference_y;
+  const Annotation ann = detect_annotation(img, 6, hints);
+  for (std::size_t i = 0; i < 6; ++i) CHECK(std::fabs(ann.lanes[i].x_center - sim.blots[0].lanes[i].x) < 3.0);
+
+  hints.first_lane_x = sim.blots[0].lanes[0].x + 2;
+  hints.last_lane_x = sim.blots[0].lanes[5].x - 2;
+  const Annotation pinned = detect_annotation(img, 6, hints);
+  for (std::size_t i = 0; i < 6; ++i) CHECK(std::fabs(pinned.lanes[i].x_center - sim.blots[0].lanes[i].x) < 3.0);
+}
+
+TEST_CASE("close band hints do not collapse onto the same band (doublets)") {
+  SimParams p = sim_preset(ArtifactLevel::Clean);
+  p.n_gels = 1;
+  p.target_y = 120;
+  p.reference_y = 142;  // 22 rows apart, like a JNK p46/p54 doublet
+  p.seed = 4;
+  const auto sim = simulate(p);
+  BandHints hints;
+  hints.target_y = 120;
+  hints.reference_y = 142;
+  const Annotation ann = detect_annotation(to_float(sim.blots[0].image), sim.blots[0].lanes.size(), hints);
+  for (std::size_t i = 0; i < ann.lane_count(); ++i) {
+    CHECK(std::fabs(ann.target_y[i] - 120) <= 2.0);
+    CHECK(std::fabs(ann.reference_y[i] - 142) <= 2.0);
+  }
+}

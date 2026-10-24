@@ -96,6 +96,7 @@ struct HarnessReport {
   std::vector<ExperimentRecord> records;
   HarnessMetrics metrics;
   std::string spec_sha256;
+  int simulator_presets = 0;
   double seconds = 0.0;
 };
 

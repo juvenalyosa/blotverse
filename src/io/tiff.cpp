@@ -111,6 +111,20 @@ RawImage read_tiff(const std::filesystem::path& path) {
   TIFFGetFieldDefaulted(tif.get(), TIFFTAG_PHOTOMETRIC, &photometric);
   if (photometric == PHOTOMETRIC_SEPARATED)
     throw ImageRejected("CMYK file (a figure prepared for print, not an acquisition): " + path.string());
+  // Molecular Dynamics / ImageQuant .gel: MD FileTag (33445) = 2 means the
+  // pixels are square-root encoded, which densitometry must not read as linear.
+  if (const TIFFField* md = TIFFFindField(tif.get(), 33445, TIFF_ANY)) {
+    std::uint32_t count = 0;
+    void* value = nullptr;
+    if (TIFFFieldPassCount(md) ? TIFFGetField(tif.get(), 33445, &count, &value)
+                               : TIFFGetField(tif.get(), 33445, &value)) {
+      std::uint32_t code = 0;
+      if (value && TIFFFieldDataType(md) == TIFF_LONG) std::memcpy(&code, value, sizeof code);
+      else if (value && TIFFFieldDataType(md) == TIFF_SHORT) code = *static_cast<std::uint16_t*>(value);
+      if (code == 2)
+        throw ImageRejected("square-root encoded .gel file; export a linear image instead: " + path.string());
+    }
+  }
   if (samples != 1 && samples != 3 && samples != 4)
     throw ImageRejected("only greyscale images are supported in v1: " + path.string());
   if (samples > 1 && planar != PLANARCONFIG_CONTIG)

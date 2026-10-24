@@ -1,13 +1,17 @@
 blotverse_version: 0.1.0
 spec_sha256: cfe7af63d43f2f1b9044b49a293b37bd9f0e99c35943a419821731205f647206
+simulator_presets: 1
 experiments: 2000
 gradient_experiments: 200
 joint_permutations: 500
 seed: 1
 failed: 0
-e1_median_log10_p_range: 0.97749325264596953
-e1_fraction_over_2_orders: 0.22239031770045387
+e1_median_log10_p_range: 1.7041043713533528
+e1_fraction_over_2_orders: 0.39820359281437123
+e1_null_median: 0.54406804437199041
+evaluable_fraction: 1
 e2_auc: 0.88049549999999999
+e2_auc_all_designs: 0.88049549999999999
 e2_auc_by_stratum:
   level=clean: 0.89656849252224979
   level=moderate: 0.88695544690435646
@@ -17,7 +21,10 @@ e2_auc_by_stratum:
   "|lfc|=1.0": 0.98425806451612907
 e3_null_robust_rate: 0.01
 e4_joint_type1: 0.032000000000000001
+e4_joint_type1_all_designs: 0.032000000000000001
 default_analysis_type1: 0.041000000000000002
+e5_paired_hit_rate: .nan
 e5_background_hit_rate: 0.35999999999999999
+planted_artefact: {gradient: 1, blotches: 8, blotch_amplitude: 0.40000000000000002}
 g2_pass: true
 seconds: 228.85401541600001

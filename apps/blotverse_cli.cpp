@@ -20,6 +20,8 @@
 #include "blotverse/analysis/spec.hpp"
 #include "blotverse/experiment.hpp"
 #include "blotverse/imaging/detect.hpp"
+#include "blotverse/imaging/image_stats.hpp"
+#include "blotverse/io/image_file.hpp"
 #include "blotverse/io/sha256.hpp"
 #include "blotverse/pipeline.hpp"
 #include "blotverse/report/report.hpp"
@@ -44,6 +46,10 @@ Usage:
                       [--permutations N] [--seed N] [--threads N]
   blotverse validate  --recompute DIR               recompute metrics from a finished run
   blotverse spec      [--spec FILE]                 summarise the multiverse specification
+  blotverse lanes     IMAGE --lanes N --target-y Y --reference-y Y [--lanes-x FIRST,LAST]
+                                                    automatic lane/band detection on one image (TSV)
+  blotverse imagestats FILE... | --simulate LEVEL [--count N]
+                                                    image statistics for the realism check
   blotverse --version
 )";
 
@@ -231,6 +237,60 @@ int cmd_validate(const Args& a) {
   return report.metrics.g2_pass() ? 0 : 3;
 }
 
+int cmd_imagestats(const Args& a) {
+  std::cout << "image\twidth\theight\tgrey_levels\tbackground\tnoise\tpeak_snr\tforeground_frac"
+               "\tbackground_variation\tsaturated_frac\n";
+  auto print = [](const std::string& name, const RawImage& img) {
+    const ImageStats s = compute_image_stats(img);
+    std::cout << name << '\t' << s.width << '\t' << s.height << '\t' << s.grey_levels << '\t'
+              << std::setprecision(6) << s.background << '\t' << s.noise << '\t' << s.peak_snr << '\t'
+              << s.foreground_fraction << '\t' << s.background_variation << '\t' << s.saturated_fraction << '\n';
+  };
+  if (a.has("simulate")) {
+    const ArtifactLevel level = parse_artifact_level(a.get("simulate"));
+    const auto count = a.integer("count", 10);
+    for (long long i = 0; i < count; ++i) {
+      SimParams p = sim_preset(level);
+      p.n_gels = 1;
+      p.reps_per_gel = 3;
+      p.seed = static_cast<std::uint64_t>(1000 + i);
+      print(std::string("sim_") + artifact_label(level) + "_" + std::to_string(i),
+            make_raw_image(simulate(p).blots[0].image, "sim"));
+    }
+    return 0;
+  }
+  for (const auto& f : a.positional) {
+    try {
+      print(fs::path(f).filename().string(), read_image(f));
+    } catch (const std::exception& e) {
+      std::cerr << f << ": " << e.what() << "\n";
+    }
+  }
+  return 0;
+}
+
+int cmd_lanes(const Args& a) {
+  if (a.positional.size() != 1) throw std::runtime_error("lanes needs one IMAGE");
+  const RawImage raw = read_image(a.positional[0]);
+  BandHints hints;
+  hints.target_y = std::stod(a.require("target-y"));
+  hints.reference_y = std::stod(a.require("reference-y"));
+  if (a.has("lanes-x")) {
+    const std::string v = a.get("lanes-x");
+    const auto comma = v.find(',');
+    if (comma == std::string::npos) throw std::runtime_error("--lanes-x expects FIRST,LAST");
+    hints.first_lane_x = std::stod(v.substr(0, comma));
+    hints.last_lane_x = std::stod(v.substr(comma + 1));
+  }
+  const Annotation ann =
+      detect_annotation(to_float(raw.pixels), static_cast<std::size_t>(std::stoul(a.require("lanes"))), hints);
+  std::cout << "lane\tx_center\twidth\ttarget_y\treference_y\n" << std::fixed << std::setprecision(1);
+  for (std::size_t i = 0; i < ann.lane_count(); ++i)
+    std::cout << i + 1 << '\t' << ann.lanes[i].x_center << '\t' << ann.lanes[i].width << '\t' << ann.target_y[i]
+              << '\t' << ann.reference_y[i] << '\n';
+  return 0;
+}
+
 int cmd_spec(const Args& a) {
   const MultiverseSpec spec = spec_from(a);
   std::cout << spec.name << " v" << spec.version << "  (sha256 " << sha256_hex(spec.source_text).substr(0, 16)
@@ -271,6 +331,8 @@ int main(int argc, char** argv) {
     if (cmd == "reproduce") return cmd_reproduce(args);
     if (cmd == "validate") return cmd_validate(args);
     if (cmd == "spec") return cmd_spec(args);
+    if (cmd == "imagestats") return cmd_imagestats(args);
+    if (cmd == "lanes") return cmd_lanes(args);
     std::cerr << "unknown command '" << cmd << "'\n\n" << kUsage;
     return 1;
   } catch (const std::exception& e) {

@@ -2,7 +2,7 @@
 
 2000 simulated experiments (half null) + 200 with a planted background artefact (paired with and without it); 500 joint permutations each; seed 1; 123 s; 1 failed.
 
-BlotVerse 0.1.0, spec sha256 `d332a71088623219838617815e3323d26fafb2f7db0b5ead4da9c32d0190d210`.
+BlotVerse 0.1.0, spec sha256 `d332a71088623219838617815e3323d26fafb2f7db0b5ead4da9c32d0190d210`, simulator presets v1.
 
 | Experiment | Metric | Value | Target | Result |
 |---|---|---|---|---|

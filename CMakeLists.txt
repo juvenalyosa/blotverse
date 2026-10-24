@@ -32,10 +32,12 @@ add_library(blotverse
   src/core/numeric.cpp
   src/io/sha256.cpp
   src/io/tiff.cpp
+  src/io/image_file.cpp
   src/imaging/background.cpp
   src/imaging/detect.cpp
   src/imaging/quantify.cpp
   src/imaging/qc.cpp
+  src/imaging/image_stats.cpp
   src/analysis/spec.cpp
   src/analysis/stats.cpp
   src/analysis/normalization.cpp

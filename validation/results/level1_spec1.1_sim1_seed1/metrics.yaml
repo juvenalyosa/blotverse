@@ -1,5 +1,6 @@
 blotverse_version: 0.1.0
 spec_sha256: d332a71088623219838617815e3323d26fafb2f7db0b5ead4da9c32d0190d210
+simulator_presets: 1
 experiments: 2000
 gradient_experiments: 200
 joint_permutations: 500

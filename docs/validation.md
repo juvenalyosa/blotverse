@@ -13,28 +13,34 @@ Each run takes about 4 minutes on a 10-core laptop and covers:
 * Designs of 3x1, 2x2, 3x2 and 2x3 (gels x lanes per group per gel).
 * 200 experiments with a planted background artefact, each simulated with and without it (E5).
 * The full tool on every experiment: automatic detection, QC, the multiverse and the
-  joint test. 0 of 2200 experiments failed, except one E5 experiment (seed 1) where lane detection asked for a manual annotation.
+  joint test.
 
-## Current results: spec v1.1.0 (sha256 `d332a710…d210`)
+## Current results: spec v1.1.0 (sha256 `d332a710…d210`), simulator presets v2
+
+Simulator presets v2 are calibrated to 18 real 16-bit acquisitions; lane detection uses
+the comb fit. See [real_data.md](real_data.md).
 
 | Exp. | Question | seed 1 | seed 2 (new data) | Target | Result |
 |---|---|---|---|---|---|
-| E1 | p-value spread across universes, real effects, moderate artefacts (median orders of magnitude) | 1.20 (27 % ≥ 2) | 1.37 (32 % ≥ 2) | several orders (≥ 2) | **not met** |
-| E2 | AUC of R, real vs null (evaluable designs) | **0.913** | **0.907** | >= 0.85 | met |
-| E2' | AUC of R, all designs (reference) | 0.862 | 0.846 | – | – |
-| E3 | Nulls labelled "Robust" | **0.7 %** | **0.5 %** | <= 5 % | met |
-| E4 | Joint-test type I error (evaluable designs) | **0.038** | **0.034** | <= 0.05 | met |
-| E4' | Joint-test type I error, all designs (reference) | 0.023 | 0.023 | – | – |
-| E5 | Planted background artefact → background + band influence rises most (paired) | 67 % | 63 % | >= 80 % | **not met** |
-| E5' | Background is the single most influential decision (reference) | 18 % | 17 % | – | – |
+| E1 | p-value spread across universes, real effects, moderate artefacts (median orders of magnitude) | 0.96 (24 % ≥ 2) | 1.10 (27 % ≥ 2) | several orders (≥ 2) | **not met** |
+| E2 | AUC of R, real vs null (evaluable designs) | **0.918** | **0.905** | >= 0.85 | met |
+| E2' | AUC of R, all designs (reference) | 0.860 | 0.845 | – | – |
+| E3 | Nulls labelled "Robust" | **0.6 %** | **0.7 %** | <= 5 % | met |
+| E4 | Joint-test type I error (evaluable designs) | **0.042** | **0.042** | <= 0.05 | met |
+| E4' | Joint-test type I error, all designs (reference) | 0.024 | 0.029 | – | – |
+| E5 | Planted background artefact → background + band influence rises most (paired) | 74 % | 65 % | >= 80 % | **not met** |
+| E5' | Background is the single most influential decision (reference) | 20 % | 13 % | – | – |
 | E6 | Rolling-ball branches vs Fiji (r) | **1.00000** | – | >= 0.99 | met |
 
-**G2 (E2 + E3 + E4): met for both seeds. G1 (E6 + speed): met.** The type I error of the single default analysis
-is 0.041 and 0.056 (1000 nulls each).
+**G2 (E2 + E3 + E4): met for both seeds. G1 (E6 + speed): met.** The type I error of the
+single default analysis is 0.040 and 0.051 (1000 nulls each).
 
-Seed 2 never informed any design decision, so it serves as a held-out check.
+Failures: 1 of 2200 experiments in seed 2. It is an E5 experiment with 8 planted blotches
+and only 2 lanes per gel, where lane detection found no lane contrast and asked for a
+manual annotation. Seed 1 had none.
 
-Raw data for each run is in `validation/results/level1_spec1.1_seed{1,2}/records.csv`.
+Seed 2 never informed any design decision, so it serves as a held-out check. Raw data:
+`validation/results/level1_spec1.1_sim2_seed{1,2}/records.csv`.
 
 ### Verdicts by design (seed 2, real effects)
 
@@ -42,10 +48,21 @@ Raw data for each run is in `validation/results/level1_spec1.1_seed{1,2}/records
 |---|---|---|---|---|
 | 3x1 | – | – | – | 100 % |
 | 2x2 | – | – | – | 100 % |
-| 3x2 | 58 % | 7 % | 35 % | – |
-| 2x3 | 59 % | 10 % | 31 % | – |
+| 3x2 | 61 % | 6 % | 33 % | – |
+| 2x3 | 64 % | 7 % | 29 % | – |
 
-In evaluable designs, nulls are labelled Robust in at most 1.6 % of experiments.
+### Earlier runs
+
+The earlier runs are kept for transparency in `validation/results/*_sim1_*`.
+
+* **Spec v1.1 with simulator presets v1** (harsher than any real image, with the old
+  lane detection), seeds 1 / 2:
+  * E2 0.913 / 0.907;
+  * E3 0.7 / 0.5 %;
+  * E4 0.038 / 0.034;
+  * E5 (paired) 67 / 63 %;
+  * E1 1.20 / 1.37.
+* **Spec v1.0**: see the next sections.
 
 ## Why E2 and E4 use evaluable designs
 
@@ -67,7 +84,7 @@ relabellings. Examples:
 
 ## Changes from spec v1.0 to v1.1 (made before freezing)
 
-The v1.0 run (seed 1) is kept in `validation/results/level1_spec1.0_seed1`. It gave E2 0.880,
+The v1.0 run (seed 1) is kept in `validation/results/level1_spec1.0_sim1_seed1`. It gave E2 0.880,
 E3 1.0 % and E4 0.032. It also revealed the following problems:
 
 1. **Monte Carlo noise in small designs.** In the 2x2 design, about one in three real effects
@@ -99,7 +116,7 @@ The port reproduces ImageJ's arithmetic, including shrinking, ball trimming,
 interpolation and pre-smoothing. Profile-peak areas are not compared: Fiji's Gel Analyzer
 needs hand-drawn baselines.
 
-## E1 in detail
+## E1 in detail (simulator presets v1)
 
 E1 now uses real effects only. Gassmann et al. compared procedures on a blot with a real
 difference, while null p-values are bounded to roughly [0.01, 1]. The v1.1 summaries were
@@ -115,8 +132,12 @@ Median orders of magnitude between the smallest and largest p-value across unive
 | nulls | 0.30 | 0.46 | 0.87 |
 
 The spread grows with artefacts and with effect size (2.6 orders at |lfc| = 1, moderate).
-The Gassmann range (~5 orders) appears only in the tail (maximum 5.9). Whether the
-simulator is too mild cannot be settled with public data; see the audit below.
+The Gassmann range (~5 orders) appears only in the tail (maximum 5.9).
+
+The realism check against real acquisitions ([real_data.md](real_data.md)) shows that these
+v1 presets were *harsher* than real images, not milder. The small spread therefore reflects a
+branch set that is more homogeneous than the procedures Gassmann compared, not a mild
+simulator.
 
 ## E5 in detail (paired diagnostic)
 
@@ -133,14 +154,15 @@ seeds 5000+, not used for the validation runs). Change in mean eta^2:
   correct the local background themselves, so background artefacts are split between
   two decisions.
 
-### Paired E5 (pre-specified, then run on seeds 1 and 2)
+### Paired E5 (pre-specified, then run on seeds 1 and 2; presets v1)
 
 The criterion was fixed in code before any run. The planted artefact is a gradient of 1x
 the peak signal plus 8 blotches (amplitude 0.4x, sigma 8-30 px). Each experiment is
 simulated with and without it under the same seed. A hit means the influence of
 background + band definition rises by more than that of any other decision.
 
-* Hit rate: 67 % (seed 1) and 63 % (seed 2), below the 80 % target.
+* Hit rate: 67 % (seed 1) and 63 % (seed 2), below the 80 % target. With the calibrated
+  presets v2: 74 % and 65 %.
 * The direction is right on average. Mean change in eta^2, seed 1:
 
   | Background | Band definition | Loading control | Others |
@@ -178,14 +200,16 @@ As a result, BlotVerse now:
 * names CMYK files explicitly;
 * flags inverted images, which `invert: true` corrects.
 
-The realism check, and therefore a fair E1, needs the level-2 BlotVerse-Bench
-acquisitions. This also matters for level 3: deposited "raw" images are often processed.
+This matters for level 3: deposited "raw" images are often processed. Native imager files
+(`.scn`, `.gel`) are reliable; [real_data.md](real_data.md) lists datasets that hold them.
 
 ## Open items
 
-* **E1:** needs real 16-bit acquisitions (level 2) to decide whether the simulator is too
-  mild. Public repositories do not provide them.
-* **E5:** the redefined, pre-specified paired criterion reaches 63-67 %, below 80 %. On
+* **E1:** not met, but the realism check rules out a mild simulator. The target ("several
+  orders of magnitude", as in Gassmann) probably does not apply to a curated,
+  literature-justified branch set. Consider restating E1 as a descriptive result rather
+  than a pass/fail criterion.
+* **E5:** the redefined, pre-specified paired criterion reaches 65-74 %, below 80 %. On
   average the direction is right (see above), but individual experiments are too noisy.
   Next steps: more replicates per experiment, or a criterion on the average shift across
   experiments. Either must be fixed before the next run.

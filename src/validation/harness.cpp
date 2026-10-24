@@ -206,6 +206,7 @@ HarnessReport run_harness(const MultiverseSpec& spec, const HarnessConfig& confi
   HarnessReport report;
   report.config = config;
   report.spec_sha256 = sha256_hex(spec.source_text);
+  report.simulator_presets = kSimulatorPresetVersion;
   const std::size_t total = config.experiments + config.gradient_experiments;
   report.records.resize(total);
   std::atomic<std::size_t> done{0};
@@ -255,6 +256,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     y << YAML::BeginMap;
     y << YAML::Key << "blotverse_version" << YAML::Value << kVersion;
     y << YAML::Key << "spec_sha256" << YAML::Value << report.spec_sha256;
+    y << YAML::Key << "simulator_presets" << YAML::Value << report.simulator_presets;
     y << YAML::Key << "experiments" << YAML::Value << report.config.experiments;
     y << YAML::Key << "gradient_experiments" << YAML::Value << report.config.gradient_experiments;
     y << YAML::Key << "joint_permutations" << YAML::Value << report.config.joint_permutations;
@@ -291,7 +293,8 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     md << report.config.experiments << " simulated experiments (half null) + " << report.config.gradient_experiments
        << " with a planted background artefact (paired with and without it); " << report.config.joint_permutations
        << " joint permutations each; seed " << report.config.seed << "; " << fmt(report.seconds, 0) << " s; "
-       << m.failed << " failed.\n\nBlotVerse " << kVersion << ", spec sha256 `" << report.spec_sha256 << "`.\n\n";
+       << m.failed << " failed.\n\nBlotVerse " << kVersion << ", spec sha256 `" << report.spec_sha256 << "`, simulator presets v"
+       << report.simulator_presets << ".\n\n";
     md << "| Experiment | Metric | Value | Target | Result |\n|---|---|---|---|---|\n";
     md << "| E1 | median log10(p_max/p_min), real effects, moderate artefacts | "
        << fmt(m.e1_median_log10_p_range, 2) << " (" << pct(m.e1_fraction_over_2_orders)
@@ -348,6 +351,7 @@ HarnessReport read_harness_outputs(const std::filesystem::path& dir) {
   report.config.seed = meta["seed"].as<std::uint64_t>();
   report.seconds = meta["seconds"].as<double>();
   if (meta["spec_sha256"]) report.spec_sha256 = meta["spec_sha256"].as<std::string>();
+  report.simulator_presets = meta["simulator_presets"] ? meta["simulator_presets"].as<int>() : 1;
 
   std::ifstream in(dir / "records.csv");
   if (!in) throw std::runtime_error("cannot read " + (dir / "records.csv").string());

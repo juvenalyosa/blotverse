@@ -21,6 +21,10 @@ namespace blotverse {
 //  f    detector response: linear or hyperbolic S_max*q/(S_max + q)
 //  B    offset + gradient + haze + blotches + spots + non-specific bands
 //  eps  Poisson (shot) noise plus Gaussian read noise
+// Preset version. 2: moderate/severe background amplitudes calibrated to 18
+// real 16-bit acquisitions (docs/validation.md, realism check); 1: original.
+inline constexpr int kSimulatorPresetVersion = 2;
+
 enum class ArtifactLevel { Clean, Moderate, Severe };
 enum class DetectorResponse { Linear, Hyperbolic };
 
