@@ -1,0 +1,269 @@
+// BlotVerse command line interface.
+//
+//   blotverse simulate  --out DIR [--level clean|moderate|severe] [--lfc X] ...
+//   blotverse detect    EXPERIMENT.yaml --out ANNOTATED.yaml
+//   blotverse run       EXPERIMENT.yaml --out DIR [--spec FILE] [--permutations N]
+//   blotverse reproduce DIR/repro.yaml [--out DIR]
+//   blotverse validate  --out DIR [--experiments N] [--permutations N] ...
+//   blotverse spec      [--spec FILE]
+
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <set>
+#include <string>
+#include <vector>
+
+#include "blotverse/analysis/spec.hpp"
+#include "blotverse/experiment.hpp"
+#include "blotverse/imaging/detect.hpp"
+#include "blotverse/io/sha256.hpp"
+#include "blotverse/pipeline.hpp"
+#include "blotverse/report/report.hpp"
+#include "blotverse/sim/simulator.hpp"
+#include "blotverse/validation/harness.hpp"
+#include "blotverse/version.hpp"
+
+namespace fs = std::filesystem;
+using namespace blotverse;
+
+namespace {
+
+constexpr const char* kUsage = R"(BlotVerse - does a western blot conclusion survive every defensible quantification?
+
+Usage:
+  blotverse simulate  --out DIR [--level clean|moderate|severe] [--lfc X] [--gels N]
+                      [--reps N] [--seed N] [--no-total-protein]
+  blotverse detect    EXPERIMENT.yaml --out FILE    write detected lanes/bands for manual correction
+  blotverse run       EXPERIMENT.yaml --out DIR [--spec FILE] [--permutations N] [--threads N]
+  blotverse reproduce REPRO.yaml [--out DIR] [--threads N]
+  blotverse validate  --out DIR [--spec FILE] [--experiments N] [--gradient-experiments N]
+                      [--permutations N] [--seed N] [--threads N]
+  blotverse spec      [--spec FILE]                 summarise the multiverse specification
+  blotverse --version
+)";
+
+struct Args {
+  std::vector<std::string> positional;
+  std::map<std::string, std::string> options;
+  std::set<std::string> flags;
+
+  bool has(const std::string& k) const { return options.count(k) || flags.count(k); }
+  std::string get(const std::string& k, const std::string& fallback = "") const {
+    const auto it = options.find(k);
+    return it == options.end() ? fallback : it->second;
+  }
+  std::string require(const std::string& k) const {
+    if (!options.count(k)) throw std::runtime_error("missing required option --" + k);
+    return options.at(k);
+  }
+  long long integer(const std::string& k, long long fallback) const {
+    return options.count(k) ? std::stoll(options.at(k)) : fallback;
+  }
+  double number(const std::string& k, double fallback) const {
+    return options.count(k) ? std::stod(options.at(k)) : fallback;
+  }
+};
+
+Args parse_args(int argc, char** argv, int first, const std::set<std::string>& boolean_flags) {
+  Args a;
+  for (int i = first; i < argc; ++i) {
+    std::string s = argv[i];
+    if (s.rfind("--", 0) == 0) {
+      const std::string key = s.substr(2);
+      if (boolean_flags.count(key)) {
+        a.flags.insert(key);
+      } else {
+        if (i + 1 >= argc) throw std::runtime_error("option --" + key + " needs a value");
+        a.options[key] = argv[++i];
+      }
+    } else {
+      a.positional.push_back(s);
+    }
+  }
+  return a;
+}
+
+fs::path default_spec_path() {
+  if (const char* env = std::getenv("BLOTVERSE_SPEC")) return env;
+#ifdef BLOTVERSE_SOURCE_DIR
+  const fs::path in_tree = fs::path(BLOTVERSE_SOURCE_DIR) / "spec" / "multiverse.yaml";
+  if (fs::exists(in_tree)) return in_tree;
+#endif
+  return "spec/multiverse.yaml";
+}
+
+MultiverseSpec spec_from(const Args& a) {
+  return load_spec(a.has("spec") ? fs::path(a.get("spec")) : default_spec_path());
+}
+
+void print_summary(const AnalysisResult& result) {
+  std::cout << std::fixed << std::setprecision(3);
+  for (const auto& s : result.summaries) {
+    std::cout << "\n  " << s.contrast.label << ": " << verdict_label(s.verdict) << "\n"
+              << "    R = " << s.robustness << "   joint p = " << s.joint.p << "\n"
+              << "    default lfc = " << s.default_lfc << " (p = " << std::setprecision(4) << s.default_p
+              << std::setprecision(3) << ")   median lfc = " << s.median_lfc << " [" << s.lfc_q05 << ", "
+              << s.lfc_q95 << "]\n"
+              << "    most influential decision: "
+              << (s.most_influential ? decision_label(*s.most_influential) : "-") << "\n";
+  }
+  if (!result.warnings.empty()) {
+    std::cout << "\n  Quality control:\n";
+    for (const auto& w : result.warnings) std::cout << "    - " << w << "\n";
+  }
+}
+
+void write_outputs(const fs::path& out, const MultiverseSpec& spec, const Experiment& ex,
+                   const fs::path& experiment_dir, const AnalysisResult& result) {
+  fs::create_directories(out);
+  std::ofstream(out / "report.html") << render_html_report(spec, ex, result);
+  write_universes_csv(out / "universes.csv", spec, result);
+  write_summary_csv(out / "summary.csv", result);
+  write_lanes_csv(out / "lanes.csv", spec, ex, result);
+  write_repro_file(out / "repro.yaml", spec, ex, experiment_dir, result);
+}
+
+int cmd_simulate(const Args& a) {
+  const fs::path out = a.require("out");
+  SimParams p = sim_preset(parse_artifact_level(a.get("level", "moderate")));
+  p.true_lfc = {0.0, a.number("lfc", 1.0)};
+  p.n_gels = static_cast<int>(a.integer("gels", 3));
+  p.reps_per_gel = static_cast<int>(a.integer("reps", 2));
+  p.seed = static_cast<std::uint64_t>(a.integer("seed", 1));
+  p.total_protein = !a.has("no-total-protein");
+  write_simulation(out, simulate(p));
+  std::cout << "Simulated " << p.n_gels << " blot(s), " << p.reps_per_gel * p.n_gels
+            << " replicates per group, true lfc " << p.true_lfc[1] << " -> " << out / "experiment.yaml" << "\n";
+  return 0;
+}
+
+int cmd_detect(const Args& a) {
+  if (a.positional.size() != 1) throw std::runtime_error("detect needs EXPERIMENT.yaml");
+  const fs::path in = a.positional[0];
+  Experiment ex = load_experiment(in);
+  for (auto& b : ex.blots) {
+    if (!b.annotation)
+      b.annotation = detect_annotation(to_float(b.image.pixels), b.lanes.size(), b.hints);
+  }
+  fs::path out = a.require("out");
+  // Image paths stay valid when the annotated file is written next to the original.
+  if (fs::absolute(out).parent_path() != fs::absolute(in).parent_path())
+    std::cerr << "warning: image paths are relative; keep " << out << " next to the images\n";
+  save_experiment(out, ex);
+  std::cout << "Wrote detected lanes and bands to " << out
+            << "\nEdit the 'annotation' blocks to correct them, then run: blotverse run " << out << "\n";
+  return 0;
+}
+
+int cmd_run(const Args& a) {
+  if (a.positional.size() != 1) throw std::runtime_error("run needs EXPERIMENT.yaml");
+  const fs::path in = a.positional[0];
+  const MultiverseSpec spec = spec_from(a);
+  const Experiment ex = load_experiment(in);
+  AnalysisOptions opts;
+  opts.threads = static_cast<unsigned>(a.integer("threads", 0));
+  if (a.has("permutations")) opts.joint_permutations = static_cast<std::size_t>(a.integer("permutations", 0));
+  std::cout << "BlotVerse " << kVersion << ": " << ex.name << " (" << ex.blots.size() << " blots)\n";
+  const AnalysisResult result = analyze(ex, spec, opts);
+  const fs::path out = a.require("out");
+  write_outputs(out, spec, ex, in.parent_path(), result);
+  std::cout << "  " << result.multiverse.plan.universes.size() << " universes ("
+            << result.multiverse.plan.excluded.size() << " excluded), " << result.joint_permutations
+            << " joint permutations, " << std::setprecision(1) << std::fixed << result.seconds << " s";
+  print_summary(result);
+  std::cout << "\n  Report: " << out / "report.html" << "\n";
+  return 0;
+}
+
+int cmd_reproduce(const Args& a) {
+  if (a.positional.size() != 1) throw std::runtime_error("reproduce needs REPRO.yaml");
+  const ReproRecord record = read_repro_file(a.positional[0]);
+  const MultiverseSpec spec = parse_spec(record.spec_text);
+  const Experiment ex = experiment_from_repro(record);
+  AnalysisOptions opts;
+  opts.threads = static_cast<unsigned>(a.integer("threads", 0));
+  opts.joint_permutations = record.joint_permutations;
+  const AnalysisResult result = analyze(ex, spec, opts);
+  if (a.has("out")) write_outputs(a.get("out"), spec, ex, record.experiment_dir, result);
+  const auto diffs = compare_with_repro(record, result);
+  if (diffs.empty()) {
+    std::cout << "Reproduced: image fingerprints and every headline number are identical.\n";
+    return 0;
+  }
+  std::cout << "NOT reproduced:\n";
+  for (const auto& d : diffs) std::cout << "  - " << d << "\n";
+  return 2;
+}
+
+int cmd_validate(const Args& a) {
+  const MultiverseSpec spec = spec_from(a);
+  HarnessConfig cfg;
+  cfg.experiments = static_cast<std::size_t>(a.integer("experiments", 2000));
+  cfg.gradient_experiments = static_cast<std::size_t>(a.integer("gradient-experiments", 200));
+  cfg.joint_permutations = static_cast<std::size_t>(a.integer("permutations", 200));
+  cfg.seed = static_cast<std::uint64_t>(a.integer("seed", 1));
+  cfg.threads = static_cast<unsigned>(a.integer("threads", 0));
+  const fs::path out = a.require("out");
+  std::cout << "Level-1 validation: " << cfg.experiments << " + " << cfg.gradient_experiments
+            << " simulated experiments, " << cfg.joint_permutations << " joint permutations each\n";
+  const auto report = run_harness(spec, cfg, [](std::size_t done, std::size_t total) {
+    if (done % 50 == 0 || done == total) std::cerr << "\r  " << done << "/" << total << std::flush;
+  });
+  std::cerr << "\n";
+  write_harness_outputs(out, report);
+  std::ifstream summary(out / "summary.md");
+  std::cout << summary.rdbuf();
+  return report.metrics.g2_pass() ? 0 : 3;
+}
+
+int cmd_spec(const Args& a) {
+  const MultiverseSpec spec = spec_from(a);
+  std::cout << spec.name << " v" << spec.version << "  (sha256 " << sha256_hex(spec.source_text).substr(0, 16)
+            << "...)\n";
+  for (Decision d : kDecisions) {
+    std::cout << "  " << std::left << std::setw(26) << decision_label(d);
+    for (const auto& b : spec.decision(d).branches) std::cout << b.id << ' ';
+    std::cout << "\n";
+  }
+  ExperimentFacts with_tp{true, true}, without_tp{false, true};
+  std::cout << "  universes: " << plan_universes(spec, with_tp).universes.size()
+            << " with total protein, " << plan_universes(spec, without_tp).universes.size() << " without\n"
+            << "  default:   " << spec.describe(spec.default_universe) << "\n";
+  return 0;
+}
+
+}  // namespace
+
+int main(int argc, char** argv) {
+  if (argc < 2) {
+    std::cerr << kUsage;
+    return 1;
+  }
+  const std::string cmd = argv[1];
+  try {
+    if (cmd == "--version" || cmd == "version") {
+      std::cout << "blotverse " << kVersion << "\n";
+      return 0;
+    }
+    if (cmd == "-h" || cmd == "--help" || cmd == "help") {
+      std::cout << kUsage;
+      return 0;
+    }
+    const Args args = parse_args(argc, argv, 2, {"no-total-protein"});
+    if (cmd == "simulate") return cmd_simulate(args);
+    if (cmd == "detect") return cmd_detect(args);
+    if (cmd == "run") return cmd_run(args);
+    if (cmd == "reproduce") return cmd_reproduce(args);
+    if (cmd == "validate") return cmd_validate(args);
+    if (cmd == "spec") return cmd_spec(args);
+    std::cerr << "unknown command '" << cmd << "'\n\n" << kUsage;
+    return 1;
+  } catch (const std::exception& e) {
+    std::cerr << "error: " << e.what() << "\n";
+    return 1;
+  }
+}

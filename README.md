@@ -1,0 +1,125 @@
+# BlotVerse
+
+**Does a western blot conclusion survive every defensible way of quantifying it?**
+
+BlotVerse runs a *multiverse analysis* of western blot densitometry. Instead of
+one analysis path, it runs every combination of defensible choices for
+background subtraction, band definition, loading control, replicate
+normalisation, effect scale and statistical test (432 "universes" with a
+total-protein image, 216 without). It reports:
+
+* a **robustness score R**: the fraction of universes that agree with the
+  pre-registered default analysis (same direction, p < 0.05);
+* the **distribution of the effect** (median log2 fold change and 5-95 % range);
+* a **specification curve** showing every universe and the branches it uses;
+* the **influence** of each decision (eta^2), i.e. which choice moves the result most;
+* a **joint permutation test** and a one-word verdict: *Robust*, *Fragile* or *Not supported*;
+* a **reproducibility file** that regenerates every number exactly.
+
+It never suggests a "best" universe.
+
+Motivation: applying different common densitometry procedures to the same blot
+gave p-values from 0.000013 to 0.76 (Gassmann et al., 2009).
+
+## Build
+
+Requirements: a C++20 compiler, CMake >= 3.25, libtiff and Eigen 3.
+yaml-cpp and doctest are fetched automatically at pinned versions.
+
+```bash
+# macOS
+brew install cmake libtiff eigen
+# Debian/Ubuntu
+sudo apt-get install cmake libtiff-dev libeigen3-dev
+
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+ctest --test-dir build --output-on-failure
+```
+
+## Quick start
+
+```bash
+# 1. Simulate an experiment with known truth (3 gels x 2 replicates, true log2 FC = 1)
+build/apps/blotverse simulate --out demo --level moderate --lfc 1.0 --gels 3 --reps 2
+
+# 2. Run the full multiverse
+build/apps/blotverse run demo/experiment.yaml --out demo/report
+
+# 3. Reproduce it exactly from the reproducibility file
+build/apps/blotverse reproduce demo/report/repro.yaml
+```
+
+Outputs in `demo/report/`: `report.html`, `summary.csv`, `universes.csv`
+(every universe), `lanes.csv` (band windows and raw signals per branch) and
+`repro.yaml`.
+
+## Analysing your own blots
+
+Describe the experiment in YAML. Images must be raw, single-channel TIFFs
+(16-bit preferred; 8-bit is accepted with a warning; JPEG is rejected).
+
+```yaml
+name: my-experiment
+control_group: ctrl
+blots:
+  - id: gel1
+    image: gel1.tif                 # target and housekeeping bands
+    total_protein: gel1_stain.tif   # optional, registered to gel1.tif
+    bands: {target_y: 95, reference_y: 205}   # approximate rows (optional hints)
+    lanes:                          # left to right
+      - {group: ctrl, sample: c1}
+      - {group: treat, sample: t1}
+      - {group: ctrl, sample: c2}
+      - {group: treat, sample: t2}
+```
+
+Check the automatic lane and band detection, and correct it by hand if needed:
+
+```bash
+build/apps/blotverse detect my/experiment.yaml --out my/experiment_annotated.yaml
+# edit the 'annotation' blocks, then:
+build/apps/blotverse run my/experiment_annotated.yaml --out my/report
+```
+
+## The multiverse specification
+
+`spec/multiverse.yaml` defines the six decisions, their branches (each with a
+literature reference), the default universe, exclusion rules, QC and verdict
+thresholds, and the seeds. Freeze and pre-register it (e.g. its SHA-256 on OSF)
+before looking at validation results. `blotverse spec` prints a summary.
+
+| Decision | Branches |
+|---|---|
+| Background subtraction | rolling ball with radius 1x, 2x, 4x band height; local background (same lane) |
+| Band definition | fixed rectangle; lane-profile peak; Otsu threshold mask |
+| Loading control | housekeeping protein; total protein (if imaged) |
+| Replicate normalisation | fixed point (control); blot sum; optimal alignment (Degasperi 2014) |
+| Effect scale | linear ratio; log ratio |
+| Statistical test | Welch t; mixed model with random gel; permutation |
+
+Default universe: `rb2 / profile / hk / fixed / log / welch`.
+
+## Validation
+
+`blotverse validate` runs the level-1 validation (plan section 8): simulated
+blots with known truth go through the complete tool. The latest results are in
+[`docs/validation.md`](docs/validation.md). E6 (agreement with Fiji) needs Fiji
+and is scripted in [`validation/fiji`](validation/fiji).
+
+## Repository layout
+
+See [`docs/architecture.md`](docs/architecture.md). The project plan (in
+Spanish) is in [`docs/plan/BlotVerse_plan.txt`](docs/plan/BlotVerse_plan.txt).
+
+## References
+
+* Gassmann et al. 2009. Quantifying Western blots: pitfalls of densitometry. *Electrophoresis*.
+* Degasperi et al. 2014. Evaluating strategies to normalise biological replicates of Western blot data. *PLOS ONE*.
+* Misleading Westerns: common quantification mistakes in Western blot densitometry and proposed corrective measures, 2019.
+* blotRig: improving rigor and reproducibility in western blot experiments. *Scientific Reports*, 2024.
+* ImageJ `BackgroundSubtracter` (rolling-ball algorithm, Sternberg 1983).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

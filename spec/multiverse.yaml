@@ -1,0 +1,142 @@
+# BlotVerse multiverse specification v1.
+#
+# Pre-registration artefact: freeze this file (and publish its SHA-256 on OSF)
+# before looking at any validation result. Every branch carries at least one
+# literature reference; adding or removing branches is reported as a
+# secondary sensitivity analysis, never done silently.
+#
+# 4 x 3 x 2 x 3 x 2 x 3 = 432 universes with a total-protein image,
+# 216 without (the total_protein branch is excluded by rule).
+
+name: blotverse-v1
+version: "1.0.0"
+alpha: 0.05
+
+decisions:
+  background:
+    - id: rb1
+      method: rolling_ball
+      radius_factor: 1.0          # radius = 1 x band height
+      references: [Gassmann2009, ImageJ-BackgroundSubtracter]
+      rationale: Smallest radius that still spans a band vertically.
+    - id: rb2
+      method: rolling_ball
+      radius_factor: 2.0
+      references: [Gassmann2009, ImageJ-BackgroundSubtracter]
+      rationale: Typical ImageJ advice (radius larger than the largest object).
+    - id: rb4
+      method: rolling_ball
+      radius_factor: 4.0
+      references: [Gassmann2009, ImageJ-BackgroundSubtracter]
+      rationale: Conservative large radius; follows only slow background trends.
+    - id: local
+      method: local
+      references: [LICOR-Empiria-Background, Gassmann2009]
+      rationale: Median of strips just above and below each band in the same lane.
+
+  band:
+    - id: rect
+      method: fixed_rectangle
+      references: [Gassmann2009, Fiji-GelAnalyzer]
+      rationale: Same rectangle in every lane, integrated density.
+    - id: profile
+      method: profile_peak
+      references: [Fiji-GelAnalyzer, Gassmann2009]
+      rationale: Lane profile peak area above a straight baseline.
+    - id: mask
+      method: threshold_mask
+      references: [Gassmann2009]
+      rationale: Pixels above an Otsu threshold inside the band window.
+
+  loading:
+    - id: hk
+      method: housekeeping
+      references: [MisleadingWesterns2019]
+      rationale: Target divided by the housekeeping band of the same lane.
+    - id: tp
+      method: total_protein
+      references: [MisleadingWesterns2019]
+      rationale: Target divided by the total-protein signal of the lane.
+
+  normalization:
+    - id: fixed
+      method: fixed_point
+      references: [Degasperi2014]
+      rationale: Each blot divided by the mean of its control lanes.
+    - id: sum
+      method: blot_sum
+      references: [Degasperi2014]
+      rationale: Each blot divided by the sum of its lanes.
+    - id: align
+      method: optimal_alignment
+      references: [Degasperi2014]
+      rationale: Per-blot scale factors that best align replicates.
+
+  scale:
+    - id: lin
+      method: linear
+      references: [Degasperi2014]
+      rationale: Ratios analysed on the linear scale.
+    - id: log
+      method: log
+      references: [blotRig2024, Degasperi2014]
+      rationale: Log2 ratios (multiplicative errors become additive).
+
+  test:
+    - id: welch
+      method: welch
+      references: [blotRig2024]
+      rationale: Welch t test.
+    - id: mixed
+      method: mixed_model
+      references: [blotRig2024]
+      rationale: Linear mixed model with a random gel intercept (REML).
+    - id: perm
+      method: permutation
+      references: [blotRig2024]
+      rationale: Two-sided permutation test on the difference in means.
+
+# Fixed in advance; R is defined relative to this universe.
+default_universe:
+  background: rb2
+  band: profile
+  loading: hk
+  normalization: fixed
+  scale: log
+  test: welch
+
+# Incoherent combinations, excluded and logged (they are not branches).
+exclusions:
+  - id: local-background-overlap
+    when: {background: local}
+    condition: overlapping_neighbours
+    reason: local background strips overlap neighbouring bands or lanes
+  - id: no-total-protein-image
+    when: {loading: tp}
+    condition: total_protein_missing
+    reason: no total-protein image for every blot
+
+qc:
+  saturation_min_pixels: 1      # a single pixel at the detector maximum flags the band
+  linear_range_min_slope: 0.8   # dilution series: log-log slope below this is non-linear
+
+# Provisional thresholds, to be calibrated at level 1 before freezing.
+verdict:
+  robust_min_r: 0.9
+  fragile_min_r: 0.5
+  joint_alpha: 0.05
+
+inference:
+  joint_permutations: 1000
+  test_max_permutations: 10000
+  seed: 20261024
+
+# Every key used in a branch's 'references' must be defined here.
+references:
+  Gassmann2009: "Gassmann M. et al. (2009) Quantifying Western blots: pitfalls of densitometry. Electrophoresis."
+  Degasperi2014: "Degasperi A. et al. (2014) Evaluating strategies to normalise biological replicates of Western blot data. PLOS ONE 9:e87293."
+  MisleadingWesterns2019: "Misleading Westerns: common quantification mistakes in Western blot densitometry and proposed corrective measures (2019). PMC6360618."
+  blotRig2024: "blotRig: improving rigor and reproducibility in western blot experiments (2024). Scientific Reports."
+  ImageJ-BackgroundSubtracter: "ImageJ Process > Subtract Background (rolling ball; ij.plugin.filter.BackgroundSubtracter)."
+  Fiji-GelAnalyzer: "ImageJ/Fiji Analyze > Gels (lane profile plots with drawn baselines)."
+  LICOR-Empiria-Background: "LI-COR Empiria Studio: Introduction to Background Subtraction."

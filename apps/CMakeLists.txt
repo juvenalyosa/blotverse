@@ -1,0 +1,5 @@
+add_executable(blotverse_cli blotverse_cli.cpp)
+set_target_properties(blotverse_cli PROPERTIES OUTPUT_NAME blotverse)
+target_link_libraries(blotverse_cli PRIVATE blotverse::blotverse)
+blotverse_set_warnings(blotverse_cli)
+target_compile_definitions(blotverse_cli PRIVATE BLOTVERSE_SOURCE_DIR="${PROJECT_SOURCE_DIR}")

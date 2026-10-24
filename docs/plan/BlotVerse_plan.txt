@@ -1,0 +1,358 @@
+BLOTVERSE: PLAN DE IMPLEMENTACIÓN Y VALIDACIÓN
+24 de octubre de 2026
+
+======================================================================
+1. RESUMEN EJECUTIVO
+======================================================================
+
+BlotVerse es una herramienta de código abierto que responde una pregunta: ¿la conclusión de un western blot sobrevive a todas las formas defendibles de cuantificarlo? El nombre une "blot" y "multiverse", el análisis en que se basa.
+
+El problema. Aplicar distintos procedimientos habituales de densitometría al mismo blot dio p-valores entre 0,000013 y 0,76, y ninguno de 100 artículos revisados explicaba cómo cuantificó (Gassmann et al., 2009). Hoy cada laboratorio elige una sola vía de análisis y nadie ve las demás.
+
+La propuesta. BlotVerse ejecuta todas las combinaciones defendibles de sustracción de fondo, definición de banda, normalización y estadística (unos 200 a 430 "universos"). Devuelve una puntuación de robustez, una curva de especificación y la decisión que más mueve el resultado.
+
+Hipótesis a validar:
+
+- H1. En blots simulados con verdad conocida, la puntuación de robustez separa efectos reales de espurios (AUC ≥ 0,85).
+- H2. En series de dilución reales, BlotVerse clasifica bien los contrastes conocidos y marca las exposiciones saturadas.
+- H3 (exploratoria). Una fracción sustancial de las cuantificaciones publicadas con imágenes crudas es frágil.
+
+Resultado esperado: dos artículos (herramienta y meta-investigación), un benchmark abierto de imágenes con verdad conocida y una primera versión usable en 26 semanas.
+
+======================================================================
+2. POSICIONAMIENTO
+======================================================================
+
+Ninguna herramienta o estudio revisado combina las decisiones de imagen, normalización y estadística en un solo análisis de robustez. Cada trabajo previo cubre una pieza; BlotVerse las une y añade la validación con verdad conocida.
+
+| Trabajo o herramienta | Qué cubre | Qué no cubre | Relación con BlotVerse |
+| BandQuant (2026) | Cuantificación web completa; concuerda con Fiji (r = 0,994) | Una sola vía de análisis; no mide robustez | Referencia de exactitud y de lugar de publicación |
+| blotRig (2024) | Estadística de controles de carga y réplicas; gel como efecto aleatorio | Decisiones de imagen | Su modelo mixto entra como una rama estadística |
+| Degasperi et al. (2014) | Tres estrategias de normalización entre réplicas, con simulación | Imagen y fondo | Sus tres estrategias entran como ramas |
+| Gassmann et al. (2009) | Demuestra que el procedimiento cambia el p-valor | Sin herramienta ni sistematización | Problema de partida; se reproduce en el nivel 1 |
+| LI-COR, sustracción adaptativa | Reconoce que el algoritmo de fondo cambia la precisión | Software comercial, una sola salida | Confirma que el fondo es una decisión crítica |
+| ImageJ / Fiji | Estándar de facto para densitometría | Manual, una vía, poco documentado | Referencia de exactitud en el nivel 1 |
+
+El análisis multiverso ya se usa en psicología y neurociencia; no se encontró ninguna aplicación a western blots. Esto debe revisarse de nuevo justo antes de enviar el primer artículo.
+
+======================================================================
+3. ALCANCE DE LA VERSIÓN 1
+======================================================================
+
+La v1 analiza blots de un canal con un diseño de dos o más grupos y réplicas biológicas; todo lo demás queda para después.
+
+Hace:
+
+- Carga imágenes crudas TIFF de 16 bits; acepta 8 bits con advertencia y rechaza JPEG.
+- Detecta carriles y bandas automáticamente y permite corregirlos a mano.
+- Detecta saturación y otros problemas de calidad antes de cuantificar.
+- Ejecuta el multiverso completo y genera un informe con puntuación, curva de especificación e influencia de cada decisión.
+- Guarda un archivo de reproducibilidad: configuración, huella de la imagen, versión y semillas.
+- Incluye el simulador de blots como parte del paquete, para que otros puedan validar.
+
+No hace en la v1:
+
+- Adquisición de imágenes ni control del equipo.
+- Fluorescencia multicanal simultánea (prevista para la v2).
+- Western capilar (Simple Western) ni cuantificación absoluta con estándares.
+- Detección de manipulación de imágenes: es otro problema y otro público.
+- Elegir "el mejor universo": la herramienta nunca sugiere la vía que da el p-valor más bajo.
+
+======================================================================
+4. ARQUITECTURA TÉCNICA
+======================================================================
+
+BlotVerse es una cadena de seis pasos, de la imagen cruda al informe, con el motor multiverso en el centro. El simulador entra por el mismo sitio que una imagen real, lo que permite validar la herramienta completa y no solo partes.
+
+Flujo principal:
+
+  [1] Imagen cruda ............... TIFF de 16 bits del equipo de imagen
+        |
+        v
+  [2] Control de calidad ......... Saturación, profundidad de bits, compresión
+        |
+        v
+  [3] Carriles y bandas .......... Detección automática y corrección manual
+        |
+        v
+  [4] Motor multiverso ........... Seis decisiones, de 216 a 432 universos;
+        |                          cuantificación guardada en caché por rama
+        v
+  [5] Agregador .................. Robustez R, curva de especificación,
+        |                          influencia y prueba de permutación
+        v
+  [6] Informe .................... HTML o PDF y archivo de reproducibilidad
+
+Componentes laterales:
+
+  - Simulador (blotverse.sim): blots sintéticos con verdad conocida.
+      -> envía imágenes al paso [1]
+      -> envía la verdad conocida al Arnés de validación
+  - Especificación del multiverso: YAML congelado y prerregistrado; define ramas y reglas de exclusión.
+      -> configura el paso [4]
+  - Arnés de validación: compara R y efectos con la verdad; calcula AUC, error tipo I y acierto.
+      <- recibe los resultados del paso [5]
+
+Como las imágenes reales y las simuladas recorren el mismo camino, el arnés de validación mide el acierto de la herramienta tal como la usará un laboratorio. La especificación del multiverso vive en un archivo aparte, así que se puede prerregistrar sin tocar el código.
+
+======================================================================
+5. EL ESPACIO MULTIVERSO
+======================================================================
+
+Seis decisiones generan 432 universos cuando hay imagen de proteína total y 216 cuando no. Cada rama debe tener una justificación publicada; el espacio se congela y se prerregistra antes de mirar cualquier resultado de validación.
+
+| Decisión | Ramas defendibles | N.º | Justificación |
+| 1. Sustracción de fondo | Rolling ball con 3 radios (escalados a la altura de banda); fondo local en el mismo carril | 4 | Gassmann 2009; guías de ImageJ; LI-COR |
+| 2. Definición de banda | Rectángulo fijo común a todos los carriles; integración del pico en el perfil del carril; máscara por umbral | 3 | Práctica habitual en Fiji y software comercial |
+| 3. Control de carga | Proteína de referencia (housekeeping); proteína total, si hay imagen | 1–2 | Misleading Westerns 2019; recomendaciones de revistas |
+| 4. Normalización entre réplicas | Punto fijo (control); suma del blot; alineamiento óptimo | 3 | Degasperi 2014 |
+| 5. Escala del efecto | Cociente lineal; log-cociente | 2 | Práctica habitual |
+| 6. Prueba estadística | t de Welch sobre log-cocientes; modelo mixto con gel aleatorio; prueba de permutación | 3 | blotRig 2024 |
+
+Reglas de exclusión. Estas condiciones no son ramas, son controles de calidad que se aplican antes del multiverso:
+
+- Banda saturada (píxeles en el máximo del detector): se marca y no se cuantifica en ningún universo.
+- Imagen comprimida o de 8 bits: se analiza con una advertencia visible en el informe.
+- Fuera del rango lineal (cuando hay serie de dilución en el mismo blot): se marca.
+- Combinaciones incoherentes, como fondo local con bandas vecinas solapadas: se excluyen y se registran.
+
+Principio clave. Incluir ramas malas inflaría la fragilidad aparente de todo. Por eso cada rama se justifica con literatura, y la sensibilidad del propio espacio (quitar o añadir una decisión) se publica como análisis secundario.
+
+======================================================================
+6. SALIDAS Y MÉTRICAS
+======================================================================
+
+El usuario recibe un veredicto en una palabra, respaldado por cuatro salidas que cualquiera puede revisar.
+
+1. Puntuación de robustez (R). Fracción de universos en que la conclusión coincide con la del análisis por defecto: misma dirección y significación con α = 0,05. Se informa también la fracción con efecto en dirección contraria.
+2. Distribución del efecto. Mediana del log fold change entre universos y su intervalo del 5 al 95 %.
+3. Curva de especificación. Todos los universos ordenados por tamaño de efecto, con un panel inferior que muestra qué ramas usa cada uno.
+4. Análisis de influencia. Regresión del efecto sobre las seis decisiones; la proporción de varianza explicada (η²) señala la decisión que más mueve el resultado.
+
+Inferencia conjunta. Una prueba de permutación al estilo del análisis de curva de especificación compara cuántos universos son significativos con lo esperado si no hubiera efecto. Para ello se permutan las etiquetas de grupo y se repite el multiverso completo.
+
+Fórmula:
+
+  R = (1 / |U|) · Σ_{u ∈ U} 1[ signo(β̂_u) = signo(β̂_0)  y  p_u < 0,05 ]
+
+Donde U es el conjunto de universos válidos, β̂_u el efecto estimado en el universo u y β̂_0 el del análisis por defecto.
+
+Veredicto para el usuario. Los umbrales son provisionales y se calibran en el nivel 1 antes de congelarlos:
+
+| Veredicto | Condición provisional |
+| Robusta | R ≥ 0,9 y prueba conjunta con p < 0,05 |
+| Frágil | 0,5 ≤ R < 0,9 y prueba conjunta con p < 0,05 |
+| No sostenida | R < 0,5 o prueba conjunta con p ≥ 0,05 |
+
+Cada informe incluye el archivo de reproducibilidad: con él, otra persona obtiene exactamente los mismos números.
+
+======================================================================
+7. FASES DE IMPLEMENTACIÓN
+======================================================================
+
+Nueve fases llevan de un repositorio vacío a dos artículos enviados; el cronograma de más abajo muestra cuándo ocurre cada una y dónde están los puntos de decisión. El orden pone primero lo que valida la idea sin depender de nadie: el simulador y el motor.
+
+| Fase | Entregable | Hecho cuando |
+| F0. Arranque | Repositorio, licencia abierta (MIT o BSD), integración continua, especificación del multiverso congelada en OSF | La especificación tiene sello de tiempo público |
+| F1. Simulador | Módulo blotverse.sim y 500 blots de prueba con verdad conocida | Genera blots con todos los artefactos de la sección de nivel 1 |
+| F2. Motor de cuantificación | Carga de TIFF, control de calidad, detección de carriles y bandas, todas las ramas de fondo y de banda | En blots simples coincide con Fiji (r ≥ 0,99) |
+| F3. Multiverso y estadística | Normalizaciones, pruebas, agregador, curva de especificación, prueba conjunta, informe | Un experimento de 3 blots se analiza en menos de 2 minutos en un portátil |
+| F4. Validación nivel 1 | Resultados de los seis experimentos simulados | Se cumple el punto de decisión G2 |
+| F5. Validación nivel 2 | Series de dilución analizadas y benchmark BlotVerse-Bench publicado con DOI | Se cumple G3 |
+| F6. Interfaz web | Subir imagen, corregir carriles, ver informe; documentación y tutorial | Tres usuarios de laboratorio completan un análisis sin ayuda |
+| F7. Validación nivel 3 | Reanálisis de 30 a 50 experimentos publicados | Plan prerregistrado ejecutado completo |
+| F8. Publicación | Preprints y envío de los artículos A y B | Ambos enviados a revista |
+
+Stack propuesto: Python 3.12, NumPy y SciPy, scikit-image para la imagen, statsmodels para modelos mixtos, pandas y joblib para paralelizar. Primero una librería con línea de comandos; la interfaz web va después, cuando el núcleo esté validado.
+
+======================================================================
+8. VALIDACIÓN NIVEL 1: SIMULACIÓN CON VERDAD CONOCIDA
+======================================================================
+
+El nivel 1 decide si la idea funciona y no depende de nadie: se generan blots donde se sabe exactamente cuánta proteína hay y si el efecto es real. No se encontró ningún conjunto público de imágenes con esa verdad, así que el simulador es imprescindible.
+
+Modelo del simulador. Cada imagen es fondo más bandas más ruido:
+
+  I(x,y) = min( B(x,y) + Σ_j f(a_j · L_j) · G_j(x,y) + ε(x,y) ,  2^16 − 1 )
+
+- G_j: forma de la banda j, una gaussiana 2D anisotrópica con curvatura opcional (efecto "sonrisa").
+- a_j y L_j: cantidad real de proteína y factor de carga del carril (lognormal, CV del 10 al 20 %), compartido por la diana y la proteína de referencia.
+- f: respuesta del detector, lineal o hiperbólica S_max·q / (K + q). La no linealidad y la saturación son frecuentes en series de dilución reales (Misleading Westerns, 2019).
+- B: fondo con gradiente, manchas y bandas inespecíficas.
+- ε: ruido de Poisson más ruido de lectura. El mínimo con 2^16 − 1 reproduce el techo del detector.
+
+Diseño simulado. De 3 a 6 réplicas por grupo repartidas en varios geles con efecto aleatorio de gel. Los log fold change verdaderos son 0 (nulo), 0,3, 0,5 y 1,0, y cada condición se cruza con niveles de artefacto limpio, moderado y severo.
+
+| Experimento | Pregunta | Métrica | Objetivo |
+| E1. Reproducir Gassmann | ¿Vemos la misma dispersión de p-valores entre procedimientos? | Rango de p-valores entre universos | Dispersión de varios órdenes de magnitud con artefactos moderados |
+| E2. Discriminación | ¿R separa efectos reales de nulos? | AUC sobre 2.000 experimentos (mitad nulos) | AUC ≥ 0,85 |
+| E3. Falsos positivos | ¿Cuántos nulos salen "Robusta"? | Tasa en experimentos nulos | ≤ 5 % |
+| E4. Calibración | ¿La prueba conjunta respeta su nivel? | Error tipo I con α = 0,05 | ≤ 0,05 |
+| E5. Diagnóstico | Si se planta un gradiente de fondo, ¿la influencia señala la decisión de fondo? | Acierto de la decisión más influyente | ≥ 80 % |
+| E6. Exactitud | ¿La rama por defecto coincide con Fiji en blots simples? | Correlación de Pearson | r ≥ 0,99 |
+
+Control de realismo. Se comparan estadísticas de imagen (histogramas, perfil de fondo, forma de banda) entre 500 blots simulados y unas 50 imágenes crudas públicas. Si difieren mucho, se ajustan los parámetros del simulador antes de correr E2 a E5.
+
+======================================================================
+9. VALIDACIÓN NIVEL 2: SERIES DE DILUCIÓN EN LABORATORIO
+======================================================================
+
+El nivel 2 aporta verdad real: membranas donde se conoce la cantidad relativa de proteína cargada. Requiere un laboratorio colaborador y se estima en una o dos semanas de trabajo de banco; esa estimación debe confirmarla el propio laboratorio.
+
+Diseño propuesto (a ajustar con el laboratorio):
+
+1. Serie de dilución. Un lisado en diluciones dobles de 8 puntos, para medir el rango lineal real de cada anticuerpo y detector.
+2. Spike-in con fold change conocido. Proteína total constante por carril y una proteína recombinante añadida en proporciones conocidas (por ejemplo 1×, 1,5× y 2×, más un contraste nulo 1× contra 1×). Es el enfoque de Misleading Westerns.
+3. Varias exposiciones de cada membrana con quimioluminiscencia y cámara CCD, incluida una saturada a propósito; fluorescencia de infrarrojo cercano si el laboratorio la tiene.
+4. Réplicas: 3 geles independientes por condición y, si es posible, 2 operadores distintos.
+
+Qué se mide:
+
+- Error absoluto medio entre el log fold change estimado y el verdadero, por universo y para la rama por defecto.
+- Porcentaje de contrastes bien clasificados: los reales como efecto y el nulo como sin efecto.
+- Porcentaje de exposiciones saturadas que el control de calidad marca (objetivo: todas).
+- Si el intervalo de efectos entre universos contiene el valor verdadero.
+
+Benchmark abierto: BlotVerse-Bench. Las imágenes crudas de 16 bits se publican en Zenodo con DOI y licencia CC-BY. Cada imagen lleva sus metadatos: cantidades cargadas, exposición, detector y anotación de carriles. Este conjunto no parece existir hoy y es una contribución por sí mismo.
+
+======================================================================
+10. VALIDACIÓN NIVEL 3: REANÁLISIS DE BLOTS PUBLICADOS
+======================================================================
+
+El nivel 3 no tiene verdad conocida, pero responde la pregunta de mayor impacto: ¿qué fracción de las cuantificaciones publicadas es robusta? Cada vez más autores depositan imágenes crudas sin recortar, por ejemplo en Mendeley Data, Zenodo y Harvard Dataverse. Este último caso incluye además el análisis de densidad hecho por los autores con FIJI.
+
+Criterios de inclusión:
+
+- Imagen cruda sin recortar, preferiblemente TIFF.
+- Al menos 3 réplicas biológicas por grupo.
+- Grupos y carriles identificables a partir del artículo o los metadatos.
+- Cuantificación de los autores publicada, para poder comparar.
+
+Procedimiento:
+
+1. Prerregistrar en OSF el plan de análisis y la hipótesis H3 antes de descargar nada.
+2. Buscar de forma sistemática en los repositorios hasta reunir de 30 a 50 experimentos que cumplan los criterios.
+3. Dos personas anotan carriles, grupos y bandas por separado; se mide su acuerdo (coeficiente de correlación intraclase) y se resuelven las diferencias.
+4. Ejecutar BlotVerse con la especificación congelada.
+5. Informar el porcentaje de conclusiones robustas, frágiles y no sostenidas, qué decisiones pesan más en la práctica y la concordancia con lo publicado.
+
+Limitaciones y ética. Quien deposita imágenes crudas probablemente es más cuidadoso que la media, así que la fragilidad real podría estar subestimada; esto se declara como sesgo de selección. Los resultados se publican agregados, sin señalar artículos concretos: el estudio trata de métodos, no de conducta científica.
+
+======================================================================
+11. CRITERIOS DE ÉXITO Y PUNTOS DE DECISIÓN
+======================================================================
+
+Cuatro puntos de decisión evitan invertir meses en algo que no funciona; G2 es el decisivo. Los umbrales se fijan en el prerregistro, antes de ver resultados.
+
+| Punto | Semana | Criterio para seguir | Si no se cumple |
+| G1. Motor fiable | 10 | Rama por defecto coincide con Fiji (r ≥ 0,99); un experimento de 3 blots en menos de 2 minutos | Optimizar o reducir el espacio antes de validar |
+| G2. La idea funciona | 12 | E2: AUC ≥ 0,85; E3: ≤ 5 % de nulos "Robusta"; E4: error tipo I ≤ 0,05 | Rediseñar la métrica una vez; si sigue fallando, publicar solo el estudio de simulación |
+| G3. Funciona con datos reales | 16 | ≥ 80 % de contrastes bien clasificados; todas las exposiciones saturadas marcadas | Revisar reglas de calidad y ramas; documentar los límites |
+| G4. Listo para enviar A | 22 | Código abierto con tests y documentación; benchmark con DOI; interfaz probada por 3 usuarios | Retrasar el envío, no recortar la validación |
+
+Incluso un G2 fallido deja un resultado publicable: un estudio de simulación que cuantifica cuánto cambian las conclusiones según las decisiones de análisis.
+
+======================================================================
+12. PLAN DE PUBLICACIÓN
+======================================================================
+
+El proyecto da para dos artículos y un conjunto de datos citable; el artículo A se envía en la semana 22 y el B en la 26.
+
+| Producto | Contenido | Destinos posibles | Base para elegirlos |
+| Artículo A: herramienta | BlotVerse, niveles 1 y 2, benchmark | Bioinformatics Advances, Scientific Reports, PLOS ONE, Electrophoresis | Ahí se publicaron BandQuant, blotRig, Degasperi y Gassmann, respectivamente |
+| Artículo B: meta-investigación | Nivel 3, fragilidad de lo publicado | Revistas con sección de meta-investigación, como PLOS Biology o eLife | Por confirmar según el alcance final |
+| BlotVerse-Bench | Imágenes crudas con verdad conocida | Zenodo con DOI; quizá un artículo descriptor de datos | Contribución independiente y citable |
+
+Prácticas que piden los revisores en este tipo de trabajo:
+
+- Prerregistro del espacio multiverso, los umbrales y el plan del nivel 3 en OSF.
+- Preprint en bioRxiv al enviar cada artículo. Si aparece competencia, publicar antes el preprint del nivel 1, tras G2.
+- Código y datos abiertos: repositorio en GitHub archivado en Zenodo con DOI, simulador incluido, y scripts que regeneran cada figura.
+- Coautoría para el laboratorio colaborador del nivel 2 y para quien haga la segunda anotación del nivel 3.
+
+======================================================================
+13. CRONOGRAMA
+======================================================================
+
+El plan dura 26 semanas suponiendo dedicación casi completa de una persona; la semana 12 (G2) decide si la idea funciona antes de invertir en interfaz y reanálisis.
+
+| Fase | Semanas |
+| F0 Arranque | 1 |
+| F1 Simulador | 2–5 |
+| F2 Motor de cuantificación | 3–8 |
+| F3 Multiverso y estadística | 6–10 |
+| F4 Validación nivel 1 | 9–12 |
+| F5 Validación nivel 2 | 10–16 |
+| F6 Interfaz web | 13–20 |
+| F7 Validación nivel 3 | 14–22 |
+| F8 Publicación | 18–26 |
+
+Puntos de decisión: G1 en la semana 10; G2 en la 12 (el decisivo); G3 en la 16; G4 y envío del artículo A en la 22; envío del artículo B en la 26.
+
+Las fases se solapan a propósito: el contacto con el laboratorio empieza en la semana 1 aunque el nivel 2 no arranque hasta la 10. A tiempo parcial, el mismo orden vale pero cada fase se alarga en proporción.
+
+======================================================================
+14. RIESGOS Y MITIGACIONES
+======================================================================
+
+El riesgo más serio es metodológico: que el espacio multiverso parezca arbitrario. El más probable es práctico: no conseguir laboratorio a tiempo para el nivel 2.
+
+| Riesgo | Consecuencia | Mitigación |
+| El espacio multiverso parece arbitrario | Revisores rechazan la puntuación de robustez | Cada rama con referencia; prerregistro; análisis de sensibilidad del propio espacio |
+| No se consigue laboratorio colaborador | Sin nivel 2 ni benchmark | Contactar 3 a 5 laboratorios o core facilities desde la semana 1; ofrecer coautoría; plan B: artículo A solo con nivel 1 |
+| El simulador no es realista | La validación del nivel 1 no convence | Control de realismo frente a imágenes crudas públicas; el nivel 2 aporta verdad real |
+| La detección automática de carriles falla en imágenes reales | Errores o trabajo manual excesivo | Corrección manual en la interfaz; anotación asistida |
+| Alguien publica algo similar antes | Se pierde la novedad | Preprint temprano tras G2; diferenciarse por el benchmark y la validación |
+| Se usa la herramienta para buscar el universo que da p < 0,05 | El efecto contrario al buscado | Se informan siempre todos los universos; la rama por defecto se fija de antemano; no existe un botón de "mejor universo" |
+| El nivel 3 se lee como acusación | Conflictos con autores | Resultados solo agregados; enfoque en métodos |
+
+El coste de cómputo no es un riesgo real: 432 universos sobre unas decenas de bandas son operaciones baratas, y el fondo de cada imagen se calcula una vez por rama y se reutiliza. La prueba de permutación solo repite la parte estadística, no la cuantificación de la imagen.
+
+======================================================================
+15. RECURSOS Y PRÓXIMOS PASOS
+======================================================================
+
+El proyecto necesita sobre todo tiempo de una persona y un laboratorio dispuesto a colaborar; el resto es gratuito o barato.
+
+| Recurso | Para qué | Coste aproximado |
+| Una persona con Python y estadística, unas 26 semanas | Desarrollo, validación y redacción | Tiempo propio |
+| Laboratorio colaborador | Nivel 2: membranas y exposiciones | Una o dos semanas de banco y reactivos, a confirmar con el laboratorio |
+| Segunda persona anotadora | Nivel 3: acuerdo entre anotadores | Unos días repartidos |
+| Asesor estadístico (opcional) | Revisar el prerregistro y la prueba conjunta | Unas horas |
+| GitHub, OSF, Zenodo, bioRxiv | Código, prerregistro, datos, preprints | Gratis |
+| Portátil normal, sin GPU | Todo el cómputo | Ninguno adicional |
+
+Esta semana:
+
+[ ] Escribir la especificación del multiverso (la tabla de seis decisiones) con una referencia por rama.
+[ ] Crear el repositorio con la estructura del paquete, la licencia y la integración continua.
+[ ] Empezar el simulador: una banda gaussiana con fondo plano y ruido de Poisson.
+[ ] Hacer una lista de 3 a 5 laboratorios o core facilities a contactar para el nivel 2.
+[ ] Descargar 10 imágenes crudas públicas para el control de realismo y las primeras pruebas del motor.
+
+======================================================================
+16. REFERENCIAS
+======================================================================
+
+- Gassmann et al. 2009. Quantifying Western blots: Pitfalls of densitometry. Electrophoresis.
+  https://agris.fao.org/search/ar/records/65deacef63b8185d9ca902aa
+- Degasperi et al. 2014. Evaluating Strategies to Normalise Biological Replicates of Western Blot Data. PLOS ONE.
+  https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0087293
+- Misleading Westerns: Common Quantification Mistakes in Western Blot Densitometry, 2019.
+  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC6360618/
+- Misleading Westerns, registro en Open Research Newcastle.
+  https://openresearch.newcastle.edu.au/articles/journal_contribution/Misleading_Westerns_common_quantification_mistakes_in_Western_blot_densitometry_and_proposed_corrective_measures/29028593
+- blotRig: Improving rigor and reproducibility in western blot experiments. Scientific Reports, 2024.
+  https://www.nature.com/articles/s41598-024-70096-0
+- BandQuant: a web application for western blot quantification. Bioinformatics Advances, 2026.
+  https://www.ncbi.nlm.nih.gov/pmc/articles/PMC13661006/
+- LI-COR Empiria Studio: Introduction to Background Subtraction.
+  https://bio.licor.com/bio/help/empiria_studio/software/empiria_studio/calculate/blot/background-concept.html
+- Multiverse analysis (Wikipedia).
+  https://en.wikipedia.org/wiki/Multiverse_analysis
+- Mendeley Data: imágenes crudas de western blot.
+  https://data.mendeley.com/datasets/czm3p6t2xk/3
+- Zenodo: Source Data for Western Blots.
+  https://zenodo.org/records/14291079
+- Harvard Dataverse: Western Blot Images & Analysis.
+  https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/YC4PS4
