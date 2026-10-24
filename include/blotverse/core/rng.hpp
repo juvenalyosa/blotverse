@@ -10,8 +10,9 @@ namespace blotverse {
 //
 // The engine (mt19937_64) is fully specified by the C++ standard, but the
 // std::*_distribution classes are not, so results would differ between
-// libc++ and libstdc++. All distributions are therefore implemented here,
-// which makes every seed reproduce bit-identical numbers on every platform.
+// libc++ and libstdc++. All distributions are therefore implemented here, so
+// the engine stream is identical everywhere; draws that pass through libm
+// (exp, log, sqrt) are bit-identical on the same platform and compiler.
 class Rng {
  public:
   explicit Rng(std::uint64_t seed) : engine_(seed) {}

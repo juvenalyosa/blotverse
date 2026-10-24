@@ -14,7 +14,8 @@ total-protein image, 216 without). It reports:
 * a **specification curve** showing every universe and the branches it uses;
 * the **influence** of each decision (eta^2), i.e. which choice moves the result most;
 * a **joint permutation test** and a one-word verdict: *Robust*, *Fragile* or *Not supported*;
-* a **reproducibility file** that regenerates every number exactly.
+* a **reproducibility file** that regenerates every number exactly (same platform and
+  compiler; across platforms, last-digit libm differences are possible).
 
 It never suggests a "best" universe.
 

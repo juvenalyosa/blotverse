@@ -254,7 +254,7 @@ std::string render_html_report(const MultiverseSpec& spec, const Experiment& exp
        "recommends a single universe. Verdict thresholds: Robust if R &ge; "
     << spec.verdict.robust_min_r << " and joint p &lt; " << spec.verdict.joint_alpha << "; Fragile if R &ge; "
     << spec.verdict.fragile_min_r << "; otherwise Not supported. The reproducibility file "
-       "<code>repro.yaml</code> regenerates these numbers exactly.</p></div>";
+       "<code>repro.yaml</code> regenerates these numbers exactly on the same platform and compiler.</p></div>";
   h << "</main></body></html>\n";
   return h.str();
 }
