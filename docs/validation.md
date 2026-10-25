@@ -15,45 +15,73 @@ Each run takes about 4 minutes on a 10-core laptop and covers:
 * The full tool on every experiment: automatic detection, QC, the multiverse and the
   joint test.
 
-## Current results: spec v1.1.0 (sha256 `d332a710…d210`), simulator presets v2
+## Current results: protocol v2 (confirmatory)
 
-Simulator presets v2 are calibrated to 18 real 16-bit acquisitions; lane detection uses
-the comb fit. See [real_data.md](real_data.md).
+Criteria, intervals and decision rules were fixed in
+[validation_protocol.md](validation_protocol.md) and committed before the confirmatory run
+(commit `9c0eff8`). Setup:
 
-| Exp. | Question | seed 1 | seed 2 (new data) | Target | Result |
-|---|---|---|---|---|---|
-| E1 | p-value spread across universes, real effects, moderate artefacts (median orders of magnitude) | 0.96 (24 % ≥ 2) | 1.10 (27 % ≥ 2) | several orders (≥ 2) | **not met** |
-| E2 | AUC of R, real vs null (evaluable designs) | **0.918** | **0.905** | >= 0.85 | met |
-| E2' | AUC of R, all designs (reference) | 0.860 | 0.845 | – | – |
-| E3 | Nulls labelled "Robust" | **0.6 %** | **0.7 %** | <= 5 % | met |
-| E4 | Joint-test type I error (evaluable designs) | **0.042** | **0.042** | <= 0.05 | met |
-| E4' | Joint-test type I error, all designs (reference) | 0.024 | 0.029 | – | – |
-| E5 | Planted background artefact → background + band influence rises most (paired) | 74 % | 65 % | >= 80 % | **not met** |
-| E5' | Background is the single most influential decision (reference) | 20 % | 13 % | – | – |
-| E6 | Rolling-ball branches vs Fiji (r) | **1.00000** | – | >= 0.99 | met |
+* spec v1.1.0 (sha256 `d332a710…d210`);
+* simulator presets v2, calibrated to real images ([real_data.md](real_data.md));
+* comb-fit lane detection.
 
-**G2 (E2 + E3 + E4): met for both seeds. G1 (E6 + speed): met.** The type I error of the
-single default analysis is 0.040 and 0.051 (1000 nulls each).
+**Confirmatory run (seed 3):** 6000 main experiments and 600 paired E5 experiments; 0
+failures. Intervals are 95 %; E5 uses Bonferroni-adjusted 98.75 %.
 
-Failures: 1 of 2200 experiments in seed 2. It is an E5 experiment with 8 planted blotches
-and only 2 lanes per gel, where lane detection found no lane contrast and asked for a
-manual annotation. Seed 1 had none.
-
-Seed 2 never informed any design decision, so it serves as a held-out check. Raw data:
-`validation/results/level1_spec1.1_sim2_seed{1,2}/records.csv`.
-
-### Verdicts by design (seed 2, real effects)
-
-| Design | Robust | Fragile | Not supported | Not evaluable |
+| Criterion | Estimate [CI] | n | Rule | Result |
 |---|---|---|---|---|
-| 3x1 | – | – | – | 100 % |
-| 2x2 | – | – | – | 100 % |
-| 3x2 | 61 % | 6 % | 33 % | – |
-| 2x3 | 64 % | 7 % | 29 % | – |
+| E2 AUC of R, evaluable designs | **0.925** [0.915, 0.934] | 3028 | lower bound ≥ 0.85 | **met** |
+| E3 evaluable nulls labelled Robust | **1.8 %** [1.2, 2.6] | 1523 | upper bound ≤ 5 % | **met** |
+| E4 joint-test type I error, evaluable nulls | **0.033** [0.026, 0.044] | 1523 | estimate ≤ 0.05, not detectably above | **met** |
+| E5 mean change in background + band influence (H) | **+0.179** [0.148, 0.210] | 600 | lower bound > 0 | **met** |
+| E5 margin H − change in loading | 0.508 [0.448, 0.572] | 600 | lower bound > 0 | met |
+| E5 margin H − change in normalisation | 0.189 [0.158, 0.220] | 600 | lower bound > 0 | met |
+| E5 margin H − change in scale | 0.233 [0.199, 0.270] | 600 | lower bound > 0 | met |
+| E5 margin H − change in test | 0.179 [0.148, 0.210] | 600 | lower bound > 0 | met (trivially: see note) |
+| E6 rolling-ball branches vs Fiji | r = 1.00000 (1440 bands) | | r ≥ 0.99 | **met** |
+
+**G1, G2 and E5 are met in the confirmatory run.** The exploratory seeds 1 and 2 agree:
+
+* E2: 0.918 [0.900, 0.935] and 0.905 [0.887, 0.924];
+* E4: 0.042 [0.027, 0.064] in both;
+* E5: met in both.
+
+Seed 2 had one E5 failure: lane detection asked for a manual annotation, in a 2-lane gel
+with 8 blotches.
+
+Notes:
+
+* **E5, "test" comparison.** The choice of statistical test barely changes the estimated
+  effect, so its influence change is ≈ 0. That comparison is satisfied by construction and
+  adds no evidence; the loading, normalisation and scale margins carry the result.
+* **Per-experiment E5.** The protocol-v1 rule (hit rate) is 72 % [69, 76], still below
+  80 %. The influence analysis points to background handling reliably on average, not in
+  every single experiment.
+* **E3 denominator.** Protocol v2 uses evaluable nulls only, which is stricter than the
+  all-null denominator of v1.
+* **Single default analysis.** Its type I error is 0.036 [0.030, 0.043].
+
+### E1: spread of evidence across universes (descriptive, confirmatory run)
+
+| Level | Truth | Median orders of magnitude, p_max/p_min [CI] | Universes disagree on significance [CI] |
+|---|---|---|---|
+| clean | real | 0.93 [0.88, 1.01] | 23.5 % [21.0, 26.2] |
+| clean | null | 0.28 [0.27, 0.30] | 9.1 % [7.5, 11.0] |
+| moderate | real | 1.10 [1.02, 1.20] | 23.8 % [21.2, 26.5] |
+| moderate | null | 0.34 [0.33, 0.36] | 10.0 % [8.3, 12.1] |
+| severe | real | 1.54 [1.45, 1.59] | **58.6 %** [55.6, 61.6] |
+| severe | null | 0.65 [0.62, 0.69] | 18.1 % [15.8, 20.7] |
+
+This is the conclusion-level analogue of Gassmann et al. (2009). Among real effects,
+defensible procedures disagree about statistical significance in about one experiment in
+four with typical artefacts, and in more than half with severe ones.
+
+Raw data: `validation/results/level1_protocol2_seed{1,2}_exploratory/` and
+`level1_protocol2_seed3_confirmatory/`.
 
 ### Earlier runs
 
-The earlier runs are kept for transparency in `validation/results/*_sim1_*`.
+The earlier runs are kept for transparency in `validation/results/*_sim1_*`. They were judged by point estimates (protocol v1).
 
 * **Spec v1.1 with simulator presets v1** (harsher than any real image, with the old
   lane detection), seeds 1 / 2:
@@ -62,6 +90,16 @@ The earlier runs are kept for transparency in `validation/results/*_sim1_*`.
   * E4 0.038 / 0.034;
   * E5 (paired) 67 / 63 %;
   * E1 1.20 / 1.37.
+* **Spec v1.1 with presets v2, protocol v1** (seeds 1 / 2; in git history at commit
+  `744e498`):
+  * E2 0.918 / 0.905;
+  * E3 0.6 / 0.7 % of all nulls;
+  * E4 0.042 / 0.042;
+  * E5 hit rate 74 / 65 %;
+  * E1 0.96 / 1.10.
+
+  Seeds 1 and 2 were rerun under protocol v2 to add the significance-disagreement
+  column; the simulated experiments are identical.
 * **Spec v1.0**: see the next sections.
 
 ## Why E2 and E4 use evaluable designs
@@ -205,11 +243,10 @@ This matters for level 3: deposited "raw" images are often processed. Native ima
 
 ## Open items
 
-* **E1:** not met, but the realism check rules out a mild simulator. The target ("several
-  orders of magnitude", as in Gassmann) probably does not apply to a curated,
-  literature-justified branch set. Consider restating E1 as a descriptive result rather
-  than a pass/fail criterion.
-* **E5:** the redefined, pre-specified paired criterion reaches 65-74 %, below 80 %. On
-  average the direction is right (see above), but individual experiments are too noisy.
-  Next steps: more replicates per experiment, or a criterion on the average shift across
-  experiments. Either must be fixed before the next run.
+* **E1 and E5:** resolved by protocol v2, which was pre-specified and confirmed on seed 3.
+  E1 is descriptive; E5 is the paired average criterion.
+* **Known truth on real images:** Pillai-Kastoori et al. (2020) deposited raw LI-COR
+  acquisitions of a 40–1.25 µg dilution series. They are being integrated as a
+  real-image linearity check; see real_data.md.
+* **Level 2:** a laboratory dilution and spike-in series (BlotVerse-Bench) is still needed
+  for a full known-truth validation on real images.
