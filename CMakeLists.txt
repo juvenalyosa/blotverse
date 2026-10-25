@@ -54,6 +54,8 @@ add_library(blotverse
   src/validation/metrics.cpp
   src/validation/dilution.cpp
   src/validation/exposure.cpp
+  src/forensics/forensics.cpp
+  src/validation/forensics_bench.cpp
 )
 add_library(blotverse::blotverse ALIAS blotverse)
 

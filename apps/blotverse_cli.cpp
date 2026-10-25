@@ -19,6 +19,7 @@
 
 #include "blotverse/analysis/spec.hpp"
 #include "blotverse/experiment.hpp"
+#include "blotverse/forensics/forensics.hpp"
 #include "blotverse/imaging/detect.hpp"
 #include "blotverse/imaging/image_stats.hpp"
 #include "blotverse/io/image_file.hpp"
@@ -28,6 +29,7 @@
 #include "blotverse/sim/simulator.hpp"
 #include "blotverse/validation/dilution.hpp"
 #include "blotverse/validation/exposure.hpp"
+#include "blotverse/validation/forensics_bench.hpp"
 #include "blotverse/validation/harness.hpp"
 #include "blotverse/version.hpp"
 
@@ -55,6 +57,13 @@ Usage:
   blotverse exposure  CONFIG.yaml --out DIR [--spec FILE]
                                                     one membrane at several exposures: ratio invariance
                                                     per branch and saturation QC
+  blotverse forensics IMAGE... --out DIR [--patch N] [--min-ncc X] [--min-patches N]
+                      [--no-flips] [--no-cross] [--threads N]
+                                                    image-integrity screening: duplicated regions
+                                                    (shared noise), straight seams, flat regions
+  blotverse forensics-bench IMAGE... --out DIR [--repeats N] [--seed N] [--patch N] [--threads N]
+                                                    inject known manipulations into raw images and
+                                                    measure detection and false findings
   blotverse imagestats FILE... | --simulate LEVEL [--count N]
                                                     image statistics for the realism check
   blotverse --version
@@ -321,6 +330,50 @@ int cmd_exposure(const Args& a) {
   return 0;
 }
 
+int cmd_forensics(const Args& a) {
+  if (a.positional.empty()) throw std::runtime_error("forensics needs at least one IMAGE");
+  ForensicsOptions opt;
+  opt.patch = static_cast<int>(a.integer("patch", opt.patch));
+  opt.min_ncc = a.number("min-ncc", opt.min_ncc);
+  opt.min_patches = static_cast<std::size_t>(a.integer("min-patches", static_cast<long long>(opt.min_patches)));
+  opt.flips = !a.has("no-flips");
+  opt.cross = !a.has("no-cross");
+  opt.threads = static_cast<unsigned>(a.integer("threads", 0));
+  std::vector<RawImage> images;
+  std::vector<std::string> names;
+  for (const auto& f : a.positional) {
+    images.push_back(read_image(f));
+    names.push_back(fs::path(f).filename().string());
+  }
+  const fs::path out = a.require("out");
+  const ForensicsResult result = analyze_forensics(images, names, opt);
+  write_forensics_outputs(out, result, images);
+  std::cout << "Screened " << images.size() << " image(s) in " << std::fixed << std::setprecision(1)
+            << result.seconds << " s: " << result.identical_files.size() << " identical pair(s), "
+            << result.duplicates.size() << " duplicated region(s), " << result.seams.size() << " seam(s), "
+            << result.flats.size() << " flat region(s) to review.\n  Report: " << out / "forensics.md" << "\n";
+  return 0;
+}
+
+int cmd_forensics_bench(const Args& a) {
+  if (a.positional.empty()) throw std::runtime_error("forensics-bench needs at least one IMAGE");
+  ForensicsBenchConfig cfg;
+  for (const auto& f : a.positional) cfg.images.emplace_back(f);
+  cfg.repeats = static_cast<std::size_t>(a.integer("repeats", 5));
+  cfg.seed = static_cast<std::uint64_t>(a.integer("seed", 1));
+  cfg.options.threads = static_cast<unsigned>(a.integer("threads", 0));
+  cfg.options.patch = static_cast<int>(a.integer("patch", cfg.options.patch));
+  const fs::path out = a.require("out");
+  const auto result = run_forensics_bench(cfg, [](std::size_t done, std::size_t total) {
+    std::cerr << "\r  " << done << "/" << total << std::flush;
+  });
+  std::cerr << "\n";
+  write_forensics_bench(out, result);
+  std::ifstream md(out / "forensics_bench.md");
+  std::cout << md.rdbuf();
+  return 0;
+}
+
 int cmd_spec(const Args& a) {
   const MultiverseSpec spec = spec_from(a);
   std::cout << spec.name << " v" << spec.version << "  (sha256 " << sha256_hex(spec.source_text).substr(0, 16)
@@ -354,7 +407,7 @@ int main(int argc, char** argv) {
       std::cout << kUsage;
       return 0;
     }
-    const Args args = parse_args(argc, argv, 2, {"no-total-protein"});
+    const Args args = parse_args(argc, argv, 2, {"no-total-protein", "no-flips", "no-cross"});
     if (cmd == "simulate") return cmd_simulate(args);
     if (cmd == "detect") return cmd_detect(args);
     if (cmd == "run") return cmd_run(args);
@@ -365,6 +418,8 @@ int main(int argc, char** argv) {
     if (cmd == "lanes") return cmd_lanes(args);
     if (cmd == "dilution") return cmd_dilution(args);
     if (cmd == "exposure") return cmd_exposure(args);
+    if (cmd == "forensics") return cmd_forensics(args);
+    if (cmd == "forensics-bench") return cmd_forensics_bench(args);
     std::cerr << "unknown command '" << cmd << "'\n\n" << kUsage;
     return 1;
   } catch (const std::exception& e) {

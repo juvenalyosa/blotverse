@@ -7,6 +7,7 @@ add_executable(blotverse_tests
   test_sim.cpp
   test_pipeline.cpp
   test_validation.cpp
+  test_forensics.cpp
 )
 target_link_libraries(blotverse_tests PRIVATE blotverse::blotverse doctest::doctest_with_main TIFF::TIFF)
 target_compile_definitions(blotverse_tests PRIVATE BLOTVERSE_SPEC_PATH="${PROJECT_SOURCE_DIR}/spec/multiverse.yaml")

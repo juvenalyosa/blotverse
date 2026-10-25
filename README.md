@@ -156,6 +156,16 @@ whose ratios are compressed. Protocol: [`docs/exposure_protocol.md`](docs/exposu
 results: [`docs/exposure_bench.md`](docs/exposure_bench.md).
 To run it: `validation/exposure/run_all.sh`.
 
+Image integrity: `blotverse forensics IMAGE... --out DIR` screens raw acquisitions for
+regions a person should review. It finds duplicated regions, including copies with changed
+brightness or contrast and flipped copies, by their shared camera noise. It also recognises
+captures of the same membrane across files, and reports straight seams and flat (erased)
+areas. Findings are never evidence of misconduct on their own. `blotverse forensics-bench`
+injects known manipulations into real images to measure detection and false findings.
+Protocol: [`docs/forensics_protocol.md`](docs/forensics_protocol.md); results:
+[`docs/forensics_bench.md`](docs/forensics_bench.md); to run it:
+`validation/forensics/run_all.sh`.
+
 Published experiments (plan level 3): reanalysis of raw images deposited with articles,
 compared with the authors' own quantification, in [`docs/level3.md`](docs/level3.md).
 
