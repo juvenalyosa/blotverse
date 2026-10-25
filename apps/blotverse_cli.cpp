@@ -211,7 +211,7 @@ int cmd_validate(const Args& a) {
     // Recompute metrics and summaries of a finished run from its records.
     const fs::path dir = a.get("recompute");
     HarnessReport report = read_harness_outputs(dir);
-    report.metrics = compute_metrics(report.records, spec_from(a).alpha);
+    report.metrics = compute_metrics(report.records, spec_from(a).alpha, report.config.seed);
     write_harness_outputs(dir, report);
     std::ifstream summary(dir / "summary.md");
     std::cout << summary.rdbuf();

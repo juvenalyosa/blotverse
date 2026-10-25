@@ -26,8 +26,9 @@ TEST_CASE("harness outputs can be reloaded and give the same metrics") {
   const HarnessReport again = read_harness_outputs(dir);
   REQUIRE(again.records.size() == report.records.size());
   CHECK(again.spec_sha256 == report.spec_sha256);
-  const HarnessMetrics m = compute_metrics(again.records, spec.alpha);
-  CHECK(m.e3_null_robust_rate == report.metrics.e3_null_robust_rate);
+  const HarnessMetrics m = compute_metrics(again.records, spec.alpha, cfg.seed);
+  CHECK(m.e3_null_robust.estimate == report.metrics.e3_null_robust.estimate);
+  CHECK(m.e2_auc.lo == doctest::Approx(report.metrics.e2_auc.lo));
   for (std::size_t i = 0; i < again.records.size(); ++i) {
     CHECK(again.records[i].verdict == report.records[i].verdict);
     CHECK(again.records[i].most_influential == report.records[i].most_influential);
@@ -48,12 +49,40 @@ TEST_CASE("paired E5 criterion") {
   };
   std::vector<ExperimentRecord> recs;
   // Background + band rise (0.10 + 0.05) more than loading (0.02): hit.
-  recs.push_back(make({0.1, 0.2, 0.4, 0, 0, 0}, {0.2, 0.25, 0.42, 0, 0, 0}));
-  // Loading rises most: miss.
-  recs.push_back(make({0.1, 0.2, 0.4, 0, 0, 0}, {0.1, 0.2, 0.6, 0, 0, 0}));
-  // Background-handling influence falls: miss.
-  recs.push_back(make({0.3, 0.3, 0.2, 0, 0, 0}, {0.2, 0.2, 0.2, 0, 0, 0}));
-  const HarnessMetrics m = compute_metrics(recs, 0.05);
-  CHECK(m.e5_paired_hit_rate == doctest::Approx(1.0 / 3.0));
-  CHECK(m.e5_rate() == m.e5_paired_hit_rate);
+  for (int i = 0; i < 30; ++i) recs.push_back(make({0.1, 0.2, 0.4, 0, 0, 0}, {0.2, 0.25, 0.42, 0, 0, 0}));
+  // Loading rises most: miss (a minority).
+  for (int i = 0; i < 5; ++i) recs.push_back(make({0.1, 0.2, 0.4, 0, 0, 0}, {0.1, 0.2, 0.6, 0, 0, 0}));
+  const HarnessMetrics m = compute_metrics(recs, 0.05, 1);
+  CHECK(m.e5.n == 35);
+  CHECK(m.e5.hit_rate.estimate == doctest::Approx(30.0 / 35.0));
+  CHECK(m.e5.mean_handling.lo > 0.0);
+  CHECK(m.e5_pass());
+  // If loading usually rises most, the average criterion fails.
+  for (int i = 0; i < 60; ++i) recs.push_back(make({0.1, 0.2, 0.4, 0, 0, 0}, {0.1, 0.2, 0.6, 0, 0, 0}));
+  CHECK_FALSE(compute_metrics(recs, 0.05, 1).e5_pass());
+}
+
+TEST_CASE("Wilson interval matches reference values") {
+  // Reference: statsmodels proportion_confint(5, 100, method="wilson").
+  const Interval w = wilson_interval(5, 100);
+  CHECK(w.estimate == doctest::Approx(0.05));
+  CHECK(w.lo == doctest::Approx(0.021543).epsilon(1e-4));
+  CHECK(w.hi == doctest::Approx(0.111750).epsilon(1e-4));
+  const Interval zero = wilson_interval(0, 500);
+  CHECK(zero.lo == 0.0);
+  CHECK(zero.hi == doctest::Approx(0.007625).epsilon(1e-3));
+}
+
+TEST_CASE("bootstrap intervals are reproducible and cover the estimate") {
+  std::vector<double> v;
+  for (int i = 0; i < 200; ++i) v.push_back(i % 17);
+  const Interval a = bootstrap_median(v, 7), b = bootstrap_median(v, 7);
+  CHECK(a.lo == b.lo);
+  CHECK(a.hi == b.hi);
+  CHECK(a.lo <= a.estimate);
+  CHECK(a.estimate <= a.hi);
+  const std::vector<double> pos{0.9, 0.8, 0.85, 0.7, 0.95}, neg{0.1, 0.3, 0.2, 0.75, 0.05};
+  const Interval auc = bootstrap_auc(pos, neg, 3);
+  CHECK(auc.estimate == doctest::Approx(0.96));
+  CHECK(auc.lo <= auc.estimate);
 }

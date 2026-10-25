@@ -50,6 +50,7 @@ add_library(blotverse
   src/report/repro.cpp
   src/report/tables.cpp
   src/validation/harness.cpp
+  src/validation/metrics.cpp
 )
 add_library(blotverse::blotverse ALIAS blotverse)
 

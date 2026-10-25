@@ -81,6 +81,7 @@ ExperimentRecord run_one(const MultiverseSpec& spec, const HarnessConfig& cfg, s
     rec.median_lfc = s.median_lfc;
     rec.p_min = s.p_min;
     rec.p_max = s.p_max;
+    rec.significant_fraction = s.significant_fraction;
     rec.n_valid = s.n_valid;
     rec.most_influential = s.most_influential;
     rec.eta2 = s.eta2;
@@ -104,101 +105,6 @@ std::string fmt(double v, int precision = 3) {
 }
 
 }  // namespace
-
-bool HarnessMetrics::g2_pass() const {
-  return e2_auc >= 0.85 && e3_null_robust_rate <= 0.05 && e4_joint_type1 <= 0.05;
-}
-
-HarnessMetrics compute_metrics(const std::vector<ExperimentRecord>& records, double alpha) {
-  HarnessMetrics m;
-  std::vector<double> pos, neg, pos_eval, neg_eval, p_ranges, null_ranges;
-  std::map<std::string, std::vector<double>> ranges_by_level;
-  std::size_t nulls = 0, null_robust = 0, null_joint_sig = 0, null_default_sig = 0;
-  std::size_t nulls_eval = 0, null_joint_sig_eval = 0, main_total = 0, main_eval = 0;
-  std::size_t gradient_total = 0, gradient_hits = 0, paired_total = 0, paired_hits = 0;
-  std::map<std::string, std::pair<std::vector<double>, std::vector<double>>> strata;
-
-  for (const auto& r : records) {
-    if (r.failed) {
-      ++m.failed;
-      continue;
-    }
-    // R is undefined when the default universe fails; count it as 0 support.
-    const double score = std::isfinite(r.robustness) ? r.robustness : 0.0;
-    if (r.set == "gradient" || r.set == "background") {
-      ++gradient_total;
-      if (r.most_influential == Decision::Background) ++gradient_hits;
-      if (r.paired) {
-        std::array<double, kNumDecisions> delta{};
-        for (std::size_t d = 0; d < kNumDecisions; ++d) delta[d] = r.eta2[d] - r.baseline_eta2[d];
-        const double handling = delta[static_cast<std::size_t>(Decision::Background)] +
-                                delta[static_cast<std::size_t>(Decision::Band)];
-        double other = -INFINITY;
-        for (Decision d : {Decision::Loading, Decision::Normalization, Decision::Scale, Decision::Test})
-          other = std::max(other, delta[static_cast<std::size_t>(d)]);
-        ++paired_total;
-        if (handling > 0 && handling > other) ++paired_hits;
-      }
-      continue;
-    }
-    const bool is_null = r.true_lfc == 0.0;
-    (is_null ? neg : pos).push_back(score);
-    const bool evaluable = r.verdict != Verdict::NotEvaluable;
-    ++main_total;
-    if (evaluable) {
-      ++main_eval;
-      (is_null ? neg_eval : pos_eval).push_back(score);
-      if (is_null) {
-        ++nulls_eval;
-        if (r.joint_p < alpha) ++null_joint_sig_eval;
-      }
-    }
-    auto& level_stratum = strata[std::string("level=") + artifact_label(r.level)];
-    (is_null ? level_stratum.second : level_stratum.first).push_back(score);
-    if (!is_null) strata["|lfc|=" + fmt(std::fabs(r.true_lfc), 1)].first.push_back(score);
-    if (is_null) {
-      ++nulls;
-      if (r.verdict == Verdict::Robust) ++null_robust;
-      if (r.joint_p < alpha) ++null_joint_sig;
-      if (r.default_p < alpha) ++null_default_sig;
-    }
-    if (r.p_min > 0 && std::isfinite(r.p_max)) {
-      const double range = std::log10(r.p_max / r.p_min);
-      if (!is_null) ranges_by_level[artifact_label(r.level)].push_back(range);
-      if (r.level == ArtifactLevel::Moderate) (is_null ? null_ranges : p_ranges).push_back(range);
-    }
-  }
-  if (!pos.empty() && !neg.empty()) m.e2_auc_all_designs = roc_auc(pos, neg);
-  if (!pos_eval.empty() && !neg_eval.empty()) m.e2_auc = roc_auc(pos_eval, neg_eval);
-  if (main_total) m.evaluable_fraction = static_cast<double>(main_eval) / static_cast<double>(main_total);
-  if (nulls_eval) m.e4_joint_type1 = static_cast<double>(null_joint_sig_eval) / static_cast<double>(nulls_eval);
-  for (auto& [name, sets] : strata) {
-    // Effect-size strata are compared against all nulls.
-    auto& negatives = sets.second.empty() ? neg : sets.second;
-    if (!sets.first.empty() && !negatives.empty())
-      m.e2_auc_by_stratum.push_back({name, roc_auc(sets.first, negatives)});
-  }
-  if (nulls) {
-    m.e3_null_robust_rate = static_cast<double>(null_robust) / static_cast<double>(nulls);
-    m.e4_joint_type1_all_designs = static_cast<double>(null_joint_sig) / static_cast<double>(nulls);
-    m.default_type1 = static_cast<double>(null_default_sig) / static_cast<double>(nulls);
-  }
-  if (!null_ranges.empty()) m.e1_null_median = median(null_ranges);
-  for (const char* level : {"clean", "moderate", "severe"})
-    if (ranges_by_level.count(level)) m.e1_median_by_level.push_back({level, median(ranges_by_level[level])});
-  if (!p_ranges.empty()) {
-    m.e1_median_log10_p_range = median(p_ranges);
-    std::size_t over = 0;
-    for (double r : p_ranges)
-      if (r >= 2.0) ++over;
-    m.e1_fraction_over_2_orders = static_cast<double>(over) / static_cast<double>(p_ranges.size());
-  }
-  if (paired_total)
-    m.e5_paired_hit_rate = static_cast<double>(paired_hits) / static_cast<double>(paired_total);
-  if (gradient_total)
-    m.e5_background_hit_rate = static_cast<double>(gradient_hits) / static_cast<double>(gradient_total);
-  return m;
-}
 
 HarnessReport run_harness(const MultiverseSpec& spec, const HarnessConfig& config,
                           const ProgressCallback& progress) {
@@ -224,7 +130,7 @@ HarnessReport run_harness(const MultiverseSpec& spec, const HarnessConfig& confi
         }
       },
       config.threads);
-  report.metrics = compute_metrics(report.records, spec.alpha);
+  report.metrics = compute_metrics(report.records, spec.alpha, config.seed);
   report.seconds = std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
   return report;
 }
@@ -235,7 +141,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     std::ofstream out(dir / "records.csv");
     out << std::setprecision(10);
     out << "set,id,level,true_lfc,n_gels,reps_per_gel,failed,R,joint_p,verdict,default_lfc,default_p,"
-           "median_lfc,p_min,p_max,n_valid,most_influential";
+           "median_lfc,p_min,p_max,sig_fraction,n_valid,most_influential";
     for (Decision d : kDecisions) out << ",eta2_" << decision_key(d);
     for (Decision d : kDecisions) out << ",base_eta2_" << decision_key(d);
     out << ",error\n";
@@ -243,7 +149,7 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
       out << r.set << ',' << r.id << ',' << artifact_label(r.level) << ',' << r.true_lfc << ',' << r.n_gels
           << ',' << r.reps_per_gel << ',' << r.failed << ',' << r.robustness << ',' << r.joint_p << ','
           << verdict_label(r.verdict) << ',' << r.default_lfc << ',' << r.default_p << ',' << r.median_lfc
-          << ',' << r.p_min << ',' << r.p_max << ',' << r.n_valid << ','
+          << ',' << r.p_min << ',' << r.p_max << ',' << r.significant_fraction << ',' << r.n_valid << ','
           << (r.most_influential ? decision_key(*r.most_influential) : "");
       for (double e : r.eta2) out << ',' << e;
       for (double e : r.baseline_eta2) out << ',' << (r.paired ? e : kNaN);
@@ -251,9 +157,15 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     }
   }
   const auto& m = report.metrics;
+  auto emit_interval = [](YAML::Emitter& y, const char* key, const Interval& v) {
+    y << YAML::Key << key << YAML::Value << YAML::Flow << YAML::BeginMap << YAML::Key << "estimate" << YAML::Value
+      << v.estimate << YAML::Key << "lo" << YAML::Value << v.lo << YAML::Key << "hi" << YAML::Value << v.hi
+      << YAML::Key << "n" << YAML::Value << v.n << YAML::EndMap;
+  };
   {
     YAML::Emitter y;
     y << YAML::BeginMap;
+    y << YAML::Key << "protocol" << YAML::Value << 2;
     y << YAML::Key << "blotverse_version" << YAML::Value << kVersion;
     y << YAML::Key << "spec_sha256" << YAML::Value << report.spec_sha256;
     y << YAML::Key << "simulator_presets" << YAML::Value << report.simulator_presets;
@@ -262,25 +174,35 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
     y << YAML::Key << "joint_permutations" << YAML::Value << report.config.joint_permutations;
     y << YAML::Key << "seed" << YAML::Value << report.config.seed;
     y << YAML::Key << "failed" << YAML::Value << m.failed;
-    y << YAML::Key << "e1_median_log10_p_range" << YAML::Value << m.e1_median_log10_p_range;
-    y << YAML::Key << "e1_fraction_over_2_orders" << YAML::Value << m.e1_fraction_over_2_orders;
-    y << YAML::Key << "e1_null_median" << YAML::Value << m.e1_null_median;
     y << YAML::Key << "evaluable_fraction" << YAML::Value << m.evaluable_fraction;
-    y << YAML::Key << "e2_auc" << YAML::Value << m.e2_auc;
+    emit_interval(y, "e2_auc", m.e2_auc);
     y << YAML::Key << "e2_auc_all_designs" << YAML::Value << m.e2_auc_all_designs;
-    y << YAML::Key << "e2_auc_by_stratum" << YAML::Value << YAML::BeginMap;
-    for (const auto& [k, v] : m.e2_auc_by_stratum) y << YAML::Key << k << YAML::Value << v;
-    y << YAML::EndMap;
-    y << YAML::Key << "e3_null_robust_rate" << YAML::Value << m.e3_null_robust_rate;
-    y << YAML::Key << "e4_joint_type1" << YAML::Value << m.e4_joint_type1;
-    y << YAML::Key << "e4_joint_type1_all_designs" << YAML::Value << m.e4_joint_type1_all_designs;
-    y << YAML::Key << "default_analysis_type1" << YAML::Value << m.default_type1;
-    y << YAML::Key << "e5_paired_hit_rate" << YAML::Value << m.e5_paired_hit_rate;
-    y << YAML::Key << "e5_background_hit_rate" << YAML::Value << m.e5_background_hit_rate;
+    emit_interval(y, "e3_null_robust", m.e3_null_robust);
+    emit_interval(y, "e4_type1", m.e4_type1);
+    y << YAML::Key << "e4_type1_all_designs" << YAML::Value << m.e4_type1_all_designs;
+    emit_interval(y, "default_type1", m.default_type1);
+    emit_interval(y, "e5_mean_handling", m.e5.mean_handling);
+    for (std::size_t o = 0; o < kE5Others.size(); ++o)
+      emit_interval(y, (std::string("e5_margin_vs_") + decision_key(kE5Others[o])).c_str(), m.e5.mean_margin[o]);
+    emit_interval(y, "e5_mean_background_alone", m.e5.mean_background_alone);
+    emit_interval(y, "e5_hit_rate", m.e5.hit_rate);
+    y << YAML::Key << "e1" << YAML::Value << YAML::BeginSeq;
+    for (const auto& row : m.e1) {
+      y << YAML::BeginMap << YAML::Key << "level" << YAML::Value << row.level << YAML::Key << "truth" << YAML::Value
+        << (row.real ? "real" : "null");
+      emit_interval(y, "orders", row.orders);
+      emit_interval(y, "disagree", row.disagree);
+      y << YAML::EndMap;
+    }
+    y << YAML::EndSeq;
     y << YAML::Key << "planted_artefact" << YAML::Value << YAML::Flow << YAML::BeginMap
       << YAML::Key << "gradient" << YAML::Value << report.config.planted_gradient
       << YAML::Key << "blotches" << YAML::Value << report.config.planted_blotches
       << YAML::Key << "blotch_amplitude" << YAML::Value << report.config.planted_blotch_amplitude << YAML::EndMap;
+    y << YAML::Key << "e2_pass" << YAML::Value << m.e2_pass();
+    y << YAML::Key << "e3_pass" << YAML::Value << m.e3_pass();
+    y << YAML::Key << "e4_pass" << YAML::Value << m.e4_pass();
+    y << YAML::Key << "e5_pass" << YAML::Value << m.e5_pass();
     y << YAML::Key << "g2_pass" << YAML::Value << m.g2_pass();
     y << YAML::Key << "seconds" << YAML::Value << report.seconds;
     y << YAML::EndMap;
@@ -288,38 +210,52 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
   }
   {
     auto mark = [](bool ok) { return ok ? "PASS" : "FAIL"; };
+    auto ci = [](const Interval& v, int precision = 3) {
+      return fmt(v.estimate, precision) + " [" + fmt(v.lo, precision) + ", " + fmt(v.hi, precision) + "]";
+    };
+    auto ci_pct = [](const Interval& v) {
+      return pct(v.estimate) + " [" + pct(v.lo) + ", " + pct(v.hi) + "]";
+    };
     std::ofstream md(dir / "summary.md");
-    md << "# BlotVerse level-1 validation\n\n";
+    md << "# BlotVerse level-1 validation (protocol v2)\n\n";
     md << report.config.experiments << " simulated experiments (half null) + " << report.config.gradient_experiments
        << " with a planted background artefact (paired with and without it); " << report.config.joint_permutations
        << " joint permutations each; seed " << report.config.seed << "; " << fmt(report.seconds, 0) << " s; "
-       << m.failed << " failed.\n\nBlotVerse " << kVersion << ", spec sha256 `" << report.spec_sha256 << "`, simulator presets v"
-       << report.simulator_presets << ".\n\n";
-    md << "| Experiment | Metric | Value | Target | Result |\n|---|---|---|---|---|\n";
-    md << "| E1 | median log10(p_max/p_min), real effects, moderate artefacts | "
-       << fmt(m.e1_median_log10_p_range, 2) << " (" << pct(m.e1_fraction_over_2_orders)
-       << " span >= 2 orders) | several orders (>= 2) | " << mark(m.e1_median_log10_p_range >= 2.0) << " |\n";
-    md << "| E2 | AUC of R (real vs null), evaluable designs | " << fmt(m.e2_auc) << " | >= 0.85 | "
-       << mark(m.e2_auc >= 0.85) << " |\n";
-    md << "| E2' | AUC of R, all designs (reference) | " << fmt(m.e2_auc_all_designs) << " | - | - |\n";
-    md << "| E3 | nulls labelled Robust | " << pct(m.e3_null_robust_rate) << " | <= 5 % | "
-       << mark(m.e3_null_robust_rate <= 0.05) << " |\n";
-    md << "| E4 | joint-test type I error, evaluable designs | " << fmt(m.e4_joint_type1) << " | <= 0.05 | "
-       << mark(m.e4_joint_type1 <= 0.05) << " |\n";
-    md << "| E4' | joint-test type I error, all designs (reference) | " << fmt(m.e4_joint_type1_all_designs)
-       << " | - | - |\n";
-    md << "| E5 | planted background artefact raises background + band influence most (paired) | "
-       << pct(m.e5_rate()) << " | >= 80 % | " << mark(m.e5_rate() >= 0.8) << " |\n";
-    md << "| E5' | background is the single most influential decision (reference) | "
-       << pct(m.e5_background_hit_rate) << " | - | - |\n";
-    md << "| E6 | rolling-ball branches vs Fiji | separate run | r >= 0.99 | see validation/results/e6_fiji |\n\n";
-    md << "Reference: type I error of the single default analysis = " << fmt(m.default_type1) << ". "
-       << pct(m.evaluable_fraction) << " of experiments had a design the joint test can evaluate.\n\n";
-    md << "**Decision point G2 (E2, E3, E4): " << (m.g2_pass() ? "PASS" : "FAIL") << "**\n\n";
-    md << "E1 by artefact level (real effects, median orders of magnitude):";
-    for (const auto& [k, v] : m.e1_median_by_level) md << " " << k << " " << fmt(v, 2) << ";";
-    md << " moderate nulls (reference) " << fmt(m.e1_null_median, 2) << ".\n\n";
-    md << "AUC by stratum:\n\n| Stratum | AUC |\n|---|---|\n";
+       << m.failed << " failed.\n\nBlotVerse " << kVersion << ", spec sha256 `" << report.spec_sha256
+       << "`, simulator presets v" << report.simulator_presets
+       << ". Criteria: docs/validation_protocol.md. Intervals are 95 % (E5: 98.75 %, Bonferroni).\n\n";
+    md << "| Criterion | Estimate [CI] | n | Rule | Result |\n|---|---|---|---|---|\n";
+    md << "| E2 AUC of R, evaluable designs | " << ci(m.e2_auc) << " | " << m.e2_auc.n
+       << " | lower bound >= 0.85 | " << mark(m.e2_pass()) << " |\n";
+    md << "| E3 evaluable nulls labelled Robust | " << ci_pct(m.e3_null_robust) << " | " << m.e3_null_robust.n
+       << " | upper bound <= 5 % | " << mark(m.e3_pass()) << " |\n";
+    md << "| E4 joint-test type I error, evaluable nulls | " << ci(m.e4_type1) << " | " << m.e4_type1.n
+       << " | estimate <= 0.05 and lower bound <= 0.05 | " << mark(m.e4_pass()) << " |\n";
+    md << "| E5 mean change in background + band influence (H) | " << ci(m.e5.mean_handling) << " | "
+       << m.e5.n << " | lower bound > 0 | " << mark(m.e5.mean_handling.lo > 0) << " |\n";
+    for (std::size_t o = 0; o < kE5Others.size(); ++o)
+      md << "| E5 margin H - change in " << decision_key(kE5Others[o]) << " | " << ci(m.e5.mean_margin[o])
+         << " | " << m.e5.n << " | lower bound > 0 | " << mark(m.e5.mean_margin[o].lo > 0) << " |\n";
+    md << "\n**G2 (E2, E3, E4): " << mark(m.g2_pass()) << ". E5: " << mark(m.e5_pass()) << ".**\n\n";
+
+    md << "References (not decisive):\n\n";
+    md << "* AUC of R, all designs: " << fmt(m.e2_auc_all_designs) << "; evaluable fraction "
+       << pct(m.evaluable_fraction) << ".\n";
+    md << "* Joint-test type I error, all designs: " << fmt(m.e4_type1_all_designs)
+       << "; single default analysis: " << ci(m.default_type1) << ".\n";
+    md << "* E5 per-experiment hit rate: " << ci_pct(m.e5.hit_rate) << "; background alone, mean change: "
+       << ci(m.e5.mean_background_alone) << "; background top decision (protocol v1): "
+       << pct(m.e5_background_top_rate) << ".\n";
+    md << "* E6 (agreement with Fiji): separate run, see validation/results/e6_fiji.\n\n";
+
+    md << "E1 (descriptive): spread of evidence across universes\n\n"
+          "| Level | Truth | D1 median orders of magnitude [CI] | D2 universes disagree on significance [CI] |\n"
+          "|---|---|---|---|\n";
+    for (const auto& row : m.e1)
+      md << "| " << row.level << " | " << (row.real ? "real" : "null") << " | " << ci(row.orders, 2) << " | "
+         << (row.disagree.n ? ci_pct(row.disagree) : std::string("-")) << " |\n";
+
+    md << "\nAUC by stratum (all designs):\n\n| Stratum | AUC |\n|---|---|\n";
     for (const auto& [k, v] : m.e2_auc_by_stratum) md << "| " << k << " | " << fmt(v) << " |\n";
 
     // Verdicts by design, separately for real effects and nulls.
@@ -338,6 +274,11 @@ void write_harness_outputs(const std::filesystem::path& dir, const HarnessReport
       for (std::size_t v = 1; v < 5; ++v)
         md << " | " << pct(static_cast<double>(t[v]) / static_cast<double>(t[0]));
       md << " |\n";
+    }
+    if (m.failed) {
+      md << "\nFailures:\n\n";
+      for (const auto& r : report.records)
+        if (r.failed) md << "* " << r.set << " #" << r.id << " (" << artifact_label(r.level) << "): " << r.error << "\n";
     }
   }
 }
@@ -398,6 +339,7 @@ HarnessReport read_harness_outputs(const std::filesystem::path& dir) {
     r.median_lfc = num(at("median_lfc"));
     r.p_min = num(at("p_min"));
     r.p_max = num(at("p_max"));
+    if (col.count("sig_fraction")) r.significant_fraction = num(at("sig_fraction"));
     r.n_valid = std::stoul(at("n_valid"));
     for (Decision d : kDecisions)
       if (at("most_influential") == decision_key(d)) r.most_influential = d;
