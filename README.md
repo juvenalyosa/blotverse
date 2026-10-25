@@ -149,6 +149,12 @@ Known amounts: `blotverse dilution CONFIG.yaml --out DIR` measures linearity and
 known-fold-change recovery of every branch on a dilution series. It is applied to the
 public LI-COR series of Pillai-Kastoori et al. (2020).
 
+Exposure series: `blotverse exposure CONFIG.yaml --out DIR` takes one membrane imaged at
+several exposures, where lane ratios must not change inside the linear range. It measures
+how far each branch moves those ratios and whether the saturation QC flags every exposure
+whose ratios are compressed. Protocol: [`docs/exposure_protocol.md`](docs/exposure_protocol.md).
+To run it: `validation/exposure/run_all.sh`.
+
 Published experiments (plan level 3): reanalysis of raw images deposited with articles,
 compared with the authors' own quantification, in [`docs/level3.md`](docs/level3.md).
 

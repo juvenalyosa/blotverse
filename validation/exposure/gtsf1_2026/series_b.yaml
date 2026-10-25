@@ -1,0 +1,19 @@
+# GTSF-1 blot (file prefix anti_GTSF1_): one cumulative ChemiDoc series read
+# at 38.25, 75.5, 112.75 and 150 s plus a separate 4.5 s auto-exposure, all at
+# 3x3 binning. Six sample lanes between two ladders; the upper band rises
+# towards the right, so band rows are refined per lane (+/- 8 rows) on the
+# first (shortest, unsaturated) exposure and then held fixed.
+name: GTSF-1 series B (4.5-150 s)
+lane_width: 48
+band_half_height: 7
+refine_rows: 8
+exposures:
+  - {image: anti_GTSF1_5secauto.scn}
+  - {image: anti_GTSF1_40sec.scn}
+  - {image: anti_GTSF1_75sec.scn}
+  - {image: anti_GTSF1_110sec.scn}
+  - {image: anti_GTSF1_150sec.scn}
+lanes: [{x: 205}, {x: 279}, {x: 354}, {x: 431}, {x: 503}, {x: 579}]
+bands:
+  - {name: upper, y: 107}
+  - {name: lower, y: 184}

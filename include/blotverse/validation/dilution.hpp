@@ -6,6 +6,7 @@
 
 #include "blotverse/analysis/spec.hpp"
 #include "blotverse/core/numeric.hpp"
+#include "blotverse/imaging/detect.hpp"
 
 namespace blotverse {
 
@@ -36,6 +37,23 @@ struct DilutionConfig {
 };
 
 DilutionConfig load_dilution_config(const std::filesystem::path& path);
+
+// One band row across manually placed lanes (shared by the dilution and
+// exposure benches): lane centres as given, the band centre refined per lane
+// to the brightest row within y +/- refine_rows. The reference row is unused
+// and set equal to the target row.
+Annotation band_row_annotation(const ImageF& image, const std::vector<double>& lane_x, double lane_width,
+                               int band_half_height, double y, int refine_rows);
+
+// Every lane's target-band signal under one background x band-definition branch.
+struct BranchSignals {
+  std::string background;       // branch id
+  std::string band_definition;  // branch id
+  std::vector<double> signal;   // per lane
+};
+
+// All background x band-definition branches of the spec, in spec order.
+std::vector<BranchSignals> measure_band_row(const ImageF& image, const Annotation& ann, const MultiverseSpec& spec);
 
 struct DilutionFit {
   std::string band;

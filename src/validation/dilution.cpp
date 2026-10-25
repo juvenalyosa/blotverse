@@ -74,78 +74,91 @@ DilutionConfig load_dilution_config(const std::filesystem::path& path) {
   return c;
 }
 
+Annotation band_row_annotation(const ImageF& img, const std::vector<double>& lane_x, double lane_width,
+                               int band_half_height, double y, int refine_rows) {
+  Annotation ann;
+  ann.source = "manual";
+  ann.band_half_height = band_half_height;
+  for (double x : lane_x) ann.lanes.push_back({x, lane_width});
+  for (std::size_t i = 0; i < lane_x.size(); ++i) {
+    // Brightest row within +/- refine_rows of the approximate band row.
+    const Rect lane = lane_rect(ann, i).clipped(img.width(), img.height());
+    const int guess = static_cast<int>(std::lround(y));
+    int best_y = guess;
+    double best = -INFINITY;
+    for (int r = std::max(0, guess - refine_rows); r <= std::min(img.height() - 1, guess + refine_rows); ++r) {
+      double s = 0;
+      for (int x = lane.x0; x < lane.x1; ++x) s += img(x, r);
+      if (s > best) {
+        best = s;
+        best_y = r;
+      }
+    }
+    ann.target_y.push_back(best_y);
+  }
+  ann.reference_y = ann.target_y;
+  return ann;
+}
+
+std::vector<BranchSignals> measure_band_row(const ImageF& img, const Annotation& ann, const MultiverseSpec& spec) {
+  std::vector<BranchSignals> out;
+  for (const auto& bg : spec.decision(Decision::Background).branches) {
+    const ImageF corrected = bg.method == Method::RollingBall
+                                 ? subtract(img, rolling_ball_background(img, bg.radius_factor * ann.band_height()))
+                                 : local_background_bands(img, ann);
+    for (const auto& bd : spec.decision(Decision::Band).branches) {
+      BranchSignals b{bg.id, bd.id, {}};
+      for (std::size_t i = 0; i < ann.lane_count(); ++i)
+        b.signal.push_back(quantify_band(corrected, ann, i, BandKind::Target, band_method(bd.method)));
+      out.push_back(std::move(b));
+    }
+  }
+  return out;
+}
+
 std::vector<DilutionFit> analyze_dilution(const DilutionConfig& config, const MultiverseSpec& spec) {
   RawImage raw = read_image(config.image);
   if (config.invert) invert_image(raw);
   const ImageF img = to_float(raw.pixels);
-  std::vector<double> loads;
-  for (const auto& l : config.lanes) loads.push_back(l.load);
+  std::vector<double> loads, lane_x;
+  for (const auto& l : config.lanes) {
+    loads.push_back(l.load);
+    lane_x.push_back(l.x_center);
+  }
 
   std::vector<DilutionFit> fits;
   for (const auto& band : config.bands) {
-    // One annotation per band: every lane, the band centre refined per lane
-    // (the reference row is unused and set equal to the target row).
-    Annotation ann;
-    ann.source = "manual";
-    ann.band_half_height = config.band_half_height;
-    for (const auto& l : config.lanes) ann.lanes.push_back({l.x_center, config.lane_width});
-    for (std::size_t i = 0; i < config.lanes.size(); ++i) {
-      // Brightest row within +/- refine_rows of the approximate band row.
-      const Rect lane = lane_rect(ann, i).clipped(img.width(), img.height());
-      const int guess = static_cast<int>(std::lround(band.y));
-      int best_y = guess;
-      double best = -INFINITY;
-      for (int y = std::max(0, guess - config.refine_rows);
-           y <= std::min(img.height() - 1, guess + config.refine_rows); ++y) {
-        double s = 0;
-        for (int x = lane.x0; x < lane.x1; ++x) s += img(x, y);
-        if (s > best) {
-          best = s;
-          best_y = y;
-        }
+    const Annotation ann =
+        band_row_annotation(img, lane_x, config.lane_width, config.band_half_height, band.y, config.refine_rows);
+    for (auto& branch : measure_band_row(img, ann, spec)) {
+      DilutionFit fit;
+      fit.band = band.name;
+      fit.background = branch.background;
+      fit.band_definition = branch.band_definition;
+      fit.signal = std::move(branch.signal);
+      const bool has_loads = std::all_of(loads.begin(), loads.end(), [](double l) { return l > 0; });
+      fit.nonlinear.assign(loads.size(), false);
+      if (has_loads && loads.size() >= 3) {
+        loglog_fit(loads, fit.signal, fit.slope, fit.r2);
+        fit.nonlinear = linear_range_flags(loads, fit.signal, spec.qc.linear_range_min_slope,
+                                           spec.qc.linear_range_max_slope);
       }
-      ann.target_y.push_back(best_y);
-    }
-    ann.reference_y = ann.target_y;
-
-    for (const auto& bg : spec.decision(Decision::Background).branches) {
-      ImageF corrected;
-      if (bg.method == Method::RollingBall) {
-        corrected = subtract(img, rolling_ball_background(img, bg.radius_factor * ann.band_height()));
-      } else {
-        corrected = local_background_bands(img, ann);
-      }
-      for (const auto& bd : spec.decision(Decision::Band).branches) {
-        DilutionFit fit;
-        fit.band = band.name;
-        fit.background = bg.id;
-        fit.band_definition = bd.id;
-        for (std::size_t i = 0; i < config.lanes.size(); ++i)
-          fit.signal.push_back(quantify_band(corrected, ann, i, BandKind::Target, band_method(bd.method)));
-        const bool has_loads = std::all_of(loads.begin(), loads.end(), [](double l) { return l > 0; });
-        fit.nonlinear.assign(loads.size(), false);
-        if (has_loads && loads.size() >= 3) {
-          loglog_fit(loads, fit.signal, fit.slope, fit.r2);
-          fit.nonlinear = linear_range_flags(loads, fit.signal, spec.qc.linear_range_min_slope,
-                                             spec.qc.linear_range_max_slope);
-        }
-        double err_all = 0, err_ok = 0;
-        std::size_t n_all = 0;
-        for (std::size_t i = 0; i < loads.size() && has_loads; ++i)
-          for (std::size_t j = i + 1; j < loads.size(); ++j) {
-            if (!(fit.signal[i] > 0 && fit.signal[j] > 0 && loads[i] > 0 && loads[j] > 0)) continue;
-            const double err = std::fabs(std::log2(fit.signal[i] / fit.signal[j]) - std::log2(loads[i] / loads[j]));
-            err_all += err;
-            ++n_all;
-            if (!fit.nonlinear[i] && !fit.nonlinear[j]) {
-              err_ok += err;
-              ++fit.pairs_unflagged;
-            }
+      double err_all = 0, err_ok = 0;
+      std::size_t n_all = 0;
+      for (std::size_t i = 0; i < loads.size() && has_loads; ++i)
+        for (std::size_t j = i + 1; j < loads.size(); ++j) {
+          if (!(fit.signal[i] > 0 && fit.signal[j] > 0 && loads[i] > 0 && loads[j] > 0)) continue;
+          const double err = std::fabs(std::log2(fit.signal[i] / fit.signal[j]) - std::log2(loads[i] / loads[j]));
+          err_all += err;
+          ++n_all;
+          if (!fit.nonlinear[i] && !fit.nonlinear[j]) {
+            err_ok += err;
+            ++fit.pairs_unflagged;
           }
-        if (n_all) fit.fc_mae_all = err_all / static_cast<double>(n_all);
-        if (fit.pairs_unflagged) fit.fc_mae_unflagged = err_ok / static_cast<double>(fit.pairs_unflagged);
-        fits.push_back(std::move(fit));
-      }
+        }
+      if (n_all) fit.fc_mae_all = err_all / static_cast<double>(n_all);
+      if (fit.pairs_unflagged) fit.fc_mae_unflagged = err_ok / static_cast<double>(fit.pairs_unflagged);
+      fits.push_back(std::move(fit));
     }
   }
   return fits;

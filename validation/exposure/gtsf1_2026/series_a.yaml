@@ -1,0 +1,20 @@
+# GTSF-1 blot of 08.03 (file prefix 08.03.anti_gtsf1_): one cumulative ChemiDoc
+# series (signal accumulation, 3x3 binning) read at 1, 50.75, 100.5, 150.25
+# and 200 s (times from the .scn metadata), plus a separate 4.9 s capture at
+# 4x4 binning, which the bench excludes because its pixel grid differs.
+# Five sample lanes (the ladder, left, is not measured); lane centres and band
+# rows were read from column and row profiles of the 1 s image.
+name: GTSF-1 series A (1-200 s, cumulative)
+lane_width: 48
+band_half_height: 7
+exposures:
+  - {image: 08.03.anti_gtsf1_1sec.scn}
+  - {image: 08.03.anti_gtsf1_50sec.scn}
+  - {image: 08.03.anti_gtsf1_100sec.scn}
+  - {image: 08.03.anti_gtsf1_150sec.scn}
+  - {image: 08.03.anti_gtsf1_200sec.scn}
+  - {image: 08.03.anti_gtsf1_5sec.scn}
+lanes: [{x: 381}, {x: 460}, {x: 535}, {x: 607}, {x: 682}]
+bands:
+  - {name: upper, y: 91}
+  - {name: lower, y: 166}

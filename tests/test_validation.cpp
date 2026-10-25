@@ -3,7 +3,11 @@
 #include <array>
 #include <cmath>
 #include <filesystem>
+#include <fstream>
+#include <random>
 
+#include "blotverse/io/tiff.hpp"
+#include "blotverse/validation/exposure.hpp"
 #include "blotverse/validation/harness.hpp"
 
 using namespace blotverse;
@@ -85,4 +89,79 @@ TEST_CASE("bootstrap intervals are reproducible and cover the estimate") {
   const Interval auc = bootstrap_auc(pos, neg, 3);
   CHECK(auc.estimate == doctest::Approx(0.96));
   CHECK(auc.lo <= auc.estimate);
+}
+
+namespace {
+
+// Four lanes whose band amplitudes double from lane to lane, imaged at 1, 2,
+// 4 and 16 "seconds": signal scales with time and clips at `clip`, so lane 4
+// clips only at the longest exposure. With clip below the detector maximum
+// the clipping is invisible to the saturation rule (as after a flat-field
+// correction that rescales saturated pixels).
+ExposureResult synthetic_exposure_series(const fs::path& dir, double clip) {
+  const MultiverseSpec spec = load_spec(BLOTVERSE_SPEC_PATH);
+  fs::remove_all(dir);
+  fs::create_directories(dir);
+  const std::array<double, 4> lane_x{50, 110, 170, 230}, amplitude{1000, 2000, 4000, 8000};
+  const std::array<double, 4> seconds{1, 2, 4, 16};
+  std::mt19937 gen(7);
+  std::ofstream cfg(dir / "series.yaml");
+  cfg << "name: synthetic\nlane_width: 36\nband_half_height: 6\nexposures:\n";
+  for (double t : seconds) {
+    ImageU16 img(280, 120);
+    for (int y = 0; y < img.height(); ++y)
+      for (int x = 0; x < img.width(); ++x) {
+        double v = 500 + 2.0 * x / 10 + static_cast<double>(gen() % 21) - 10;
+        for (std::size_t i = 0; i < lane_x.size(); ++i)
+          if (std::fabs(x - lane_x[i]) < 16) v += t * amplitude[i] * std::exp(-0.5 * std::pow((y - 60) / 3.0, 2));
+        img(x, y) = static_cast<std::uint16_t>(std::clamp(v, 0.0, clip));
+      }
+    const std::string name = "t" + std::to_string(static_cast<int>(t)) + ".tif";
+    write_tiff16(dir / name, img);
+    cfg << "  - {image: " << name << ", seconds: " << t << "}\n";
+  }
+  cfg << "lanes: [{x: 50}, {x: 110}, {x: 170}, {x: 230}]\nbands:\n  - {name: band, y: 60}\n";
+  cfg.close();
+  const ExposureConfig config = load_exposure_config(dir / "series.yaml");
+  ExposureResult result = analyze_exposure(config, spec);
+  write_exposure_outputs(dir / "out", config, spec, result);
+  return result;
+}
+
+}  // namespace
+
+TEST_CASE("exposure bench: ratios are invariant until saturation, which the QC rule flags") {
+  const fs::path dir = fs::temp_directory_path() / "blotverse_tests" / "exposure";
+  const ExposureResult result = synthetic_exposure_series(dir, 65535);
+  REQUIRE(result.bands.size() == 1);
+  const ExposureBand& band = result.bands.front();
+  CHECK(band.reference == 2);  // 4 s: the longest exposure without a saturated lane
+  CHECK(band.points[3][3].saturated_px > 0);
+  CHECK(band.points[3][0].saturated_px == 0);
+  for (const auto& br : band.branches) {
+    if (br.background == "local" || br.band_definition != "rect") continue;
+    CAPTURE(br.background);
+    CHECK(br.clean_n == 15);  // all 6 pairs at 1 and 2 s, the 3 pairs without lane 4 at 16 s
+    CHECK(br.clean_q95_abs < 0.02);
+    CHECK(br.fn == 0);        // every distorted pair is flagged
+    CHECK(br.tp > 0);
+    CHECK(br.flagged_median_abs > 0.2);
+  }
+  CHECK(band.any_flagged[3]);
+  CHECK(band.compressive_default[3]);
+  CHECK(band.qc_misses == 0);
+  CHECK(fs::exists(dir / "out" / "exposure.md"));
+  CHECK(fs::exists(dir / "out" / "exposure_pairs.csv"));
+}
+
+TEST_CASE("exposure bench: clipping below the detector maximum is reported as a QC miss") {
+  const ExposureResult result =
+      synthetic_exposure_series(fs::temp_directory_path() / "blotverse_tests" / "exposure_hidden", 60000);
+  const ExposureBand& band = result.bands.front();
+  CHECK(band.reference == 3);  // nothing reaches the detector maximum, so 16 s becomes the reference
+  CHECK_FALSE(band.any_flagged[3]);
+  // The clipped reference compresses lane 4's ratios relative to every
+  // shorter exposure; the distortion is blamed on it and it carries no flag.
+  CHECK(band.compressive_default[3]);
+  CHECK(band.qc_misses == 1);
 }
