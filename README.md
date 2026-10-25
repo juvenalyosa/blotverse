@@ -1,5 +1,7 @@
 # BlotVerse
 
+[![CI](https://github.com/juvenalyosa/blotverse/actions/workflows/ci.yml/badge.svg)](https://github.com/juvenalyosa/blotverse/actions/workflows/ci.yml)
+
 **Does a western blot conclusion survive every defensible way of quantifying it?**
 
 BlotVerse runs a *multiverse analysis* of western blot densitometry. Instead of
