@@ -1,0 +1,341 @@
+image,tamper,repeat,donor,truth_x0,truth_y0,truth_x1,truth_y1,source_x0,source_y0,source_x1,source_y1,detail,detected,false_findings,false_kinds
+gfp_20s.tif,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+gfp_20s.tif,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+gfp_20s.tif,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+gfp_20s.tif,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+gfp_20s.tif,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+gfp_20s.tif,copy,0,,427,463,474,487,356,177,403,201,"47x24",1,0,
+gfp_20s.tif,copy,1,,235,192,289,211,293,139,347,158,"54x19",1,0,
+gfp_20s.tif,copy,2,,709,668,769,696,395,123,455,151,"60x28",1,0,
+gfp_20s.tif,copy,3,,601,158,658,189,491,170,548,201,"57x31",1,0,
+gfp_20s.tif,copy,4,,142,266,179,287,584,325,621,346,"37x21",1,0,
+gfp_20s.tif,copy_gain,0,,144,513,190,542,390,309,436,338,"gain 0.684 offset -51.0; 46x29",1,0,
+gfp_20s.tif,copy_gain,1,,599,560,657,576,347,117,405,133,"gain 1.012 offset -12.0; 58x16",1,0,
+gfp_20s.tif,copy_gain,2,,850,263,880,294,260,438,290,469,"gain 1.059 offset 60.2; 30x31",1,0,
+gfp_20s.tif,copy_gain,3,,627,351,676,383,332,240,381,272,"gain 0.855 offset 82.0; 49x32",1,0,
+gfp_20s.tif,copy_gain,4,,334,456,386,479,253,423,305,446,"gain 1.076 offset -80.7; 52x23",1,0,
+gfp_20s.tif,copy_flip,0,,147,12,203,39,480,121,536,148,"rotate_180; 56x27",1,0,
+gfp_20s.tif,copy_flip,1,,44,198,77,224,560,134,593,160,"flip_horizontal; 33x26",1,0,
+gfp_20s.tif,copy_flip,2,,455,419,491,446,580,308,616,335,"rotate_180; 36x27",1,0,
+gfp_20s.tif,copy_flip,3,,202,404,227,427,635,314,660,337,"rotate_180; 25x23",1,0,
+gfp_20s.tif,copy_flip,4,,503,484,565,515,244,457,306,488,"flip_vertical; 62x31",1,0,
+gfp_20s.tif,copy_noise,0,,744,458,775,483,329,247,360,272,"added noise sd 8.9; 31x25",0,0,
+gfp_20s.tif,copy_noise,1,,557,512,605,539,406,288,454,315,"added noise sd 8.9; 48x27",0,0,
+gfp_20s.tif,copy_noise,2,,863,145,906,171,665,210,708,236,"added noise sd 8.9; 43x26",0,0,
+gfp_20s.tif,copy_noise,3,,344,377,383,406,264,276,303,305,"added noise sd 8.9; 39x29",0,0,
+gfp_20s.tif,copy_noise,4,,138,496,190,513,605,341,657,358,"added noise sd 8.9; 52x17",0,0,
+gfp_20s.tif,cross_copy,0,flag_5s.tif,710,549,738,572,760,329,788,352,"28x23",1,0,
+gfp_20s.tif,cross_copy,1,anti_GTSF1_75sec.scn,828,177,854,201,295,77,321,101,"26x24",1,0,
+gfp_20s.tif,cross_copy,2,plc_20s.tif,518,675,553,696,259,719,294,740,"35x21",1,0,
+gfp_20s.tif,cross_copy,3,flag_20s.tif,602,216,664,241,257,645,319,670,"62x25",1,0,
+gfp_20s.tif,cross_copy,4,flag_5s.tif,334,257,381,288,1229,790,1276,821,"47x31",1,0,
+gfp_20s.tif,splice,0,anti_GTSF1_5secauto.scn,322,0,373,733,0,0,0,0,"strip 51 px",1,0,
+gfp_20s.tif,splice,1,flag_20s.tif,189,0,252,733,0,0,0,0,"strip 63 px",1,0,
+gfp_20s.tif,splice,2,anti_GTSF1_75sec.scn,76,0,126,733,0,0,0,0,"strip 50 px",1,0,
+gfp_20s.tif,splice,3,anti_GTSF1_5secauto.scn,252,0,303,733,0,0,0,0,"strip 51 px",1,0,
+gfp_20s.tif,splice,4,plc_20s.tif,463,0,520,733,0,0,0,0,"strip 57 px",1,0,
+gfp_20s.tif,erase,0,,477,135,527,163,0,0,0,0,"filled with 2075; 50x28",1,0,
+gfp_20s.tif,erase,1,,419,213,474,235,0,0,0,0,"filled with 1653; 55x22",1,0,
+gfp_20s.tif,erase,2,,444,490,492,519,0,0,0,0,"filled with 2182; 48x29",1,0,
+gfp_20s.tif,erase,3,,351,525,389,541,0,0,0,0,"filled with 1137; 38x16",1,0,
+gfp_20s.tif,erase,4,,420,293,477,316,0,0,0,0,"filled with 1879; 57x23",1,0,
+gfp_295s.tif,none,0,,0,0,0,0,0,0,0,0,"",0,1,seam
+gfp_295s.tif,none,1,,0,0,0,0,0,0,0,0,"",0,1,seam
+gfp_295s.tif,none,2,,0,0,0,0,0,0,0,0,"",0,1,seam
+gfp_295s.tif,none,3,,0,0,0,0,0,0,0,0,"",0,1,seam
+gfp_295s.tif,none,4,,0,0,0,0,0,0,0,0,"",0,1,seam
+gfp_295s.tif,copy,0,,25,258,66,288,314,422,355,452,"41x30",1,1,seam
+gfp_295s.tif,copy,1,,418,614,474,646,448,419,504,451,"56x32",1,1,seam
+gfp_295s.tif,copy,2,,435,299,460,323,465,421,490,445,"25x24",1,1,seam
+gfp_295s.tif,copy,3,,115,460,151,486,370,307,406,333,"36x26",1,1,seam
+gfp_295s.tif,copy,4,,655,164,701,184,699,262,745,282,"46x20",1,1,seam
+gfp_295s.tif,copy_gain,0,,419,320,473,352,446,464,500,496,"gain 0.947 offset -413.0; 54x32",1,1,seam
+gfp_295s.tif,copy_gain,1,,514,541,547,566,383,123,416,148,"gain 1.165 offset -94.8; 33x25",1,1,seam
+gfp_295s.tif,copy_gain,2,,557,91,586,112,666,151,695,172,"gain 1.362 offset 448.9; 29x21",1,1,seam
+gfp_295s.tif,copy_gain,3,,694,261,751,281,426,257,483,277,"gain 0.769 offset 580.3; 57x20",1,1,seam
+gfp_295s.tif,copy_gain,4,,314,366,342,390,374,233,402,257,"gain 1.256 offset -54.9; 28x24",1,1,seam
+gfp_295s.tif,copy_flip,0,,250,489,286,519,469,153,505,183,"flip_horizontal; 36x30",1,1,seam
+gfp_295s.tif,copy_flip,1,,665,294,713,310,367,301,415,317,"rotate_180; 48x16",1,1,seam
+gfp_295s.tif,copy_flip,2,,301,587,362,616,251,212,312,241,"flip_horizontal; 61x29",1,1,seam
+gfp_295s.tif,copy_flip,3,,100,612,164,628,258,284,322,300,"rotate_180; 64x16",1,1,seam
+gfp_295s.tif,copy_flip,4,,172,665,215,696,435,119,478,150,"rotate_180; 43x31",1,1,seam
+gfp_295s.tif,copy_noise,0,,245,414,299,430,265,345,319,361,"added noise sd 64.5; 54x16",0,1,seam
+gfp_295s.tif,copy_noise,1,,594,381,620,398,632,333,658,350,"added noise sd 64.5; 26x17",0,1,seam
+gfp_295s.tif,copy_noise,2,,309,465,363,482,482,171,536,188,"added noise sd 64.5; 54x17",0,1,seam
+gfp_295s.tif,copy_noise,3,,146,640,194,667,601,305,649,332,"added noise sd 64.5; 48x27",0,1,seam
+gfp_295s.tif,copy_noise,4,,616,596,653,624,679,232,716,260,"added noise sd 64.5; 37x28",0,1,seam
+gfp_295s.tif,cross_copy,0,08.03.anti_gtsf1_50sec.scn,56,387,107,411,293,191,344,215,"51x24",1,1,seam
+gfp_295s.tif,cross_copy,1,plc_20s.tif,80,434,104,460,174,768,198,794,"24x26",1,1,seam
+gfp_295s.tif,cross_copy,2,anti_GTSF1_75sec.scn,803,652,861,679,226,142,284,169,"58x27",1,1,seam
+gfp_295s.tif,cross_copy,3,plc_20s.tif,207,476,265,499,905,749,963,772,"58x23",1,1,seam
+gfp_295s.tif,cross_copy,4,08.03.anti_gtsf1_50sec.scn,92,170,125,190,676,168,709,188,"33x20",1,1,seam
+gfp_295s.tif,splice,0,flag_5s.tif,134,0,224,733,0,0,0,0,"strip 90 px",1,1,seam
+gfp_295s.tif,splice,1,anti_GTSF1_75sec.scn,56,0,97,733,0,0,0,0,"strip 41 px",1,1,seam
+gfp_295s.tif,splice,2,anti_GTSF1_75sec.scn,513,0,593,733,0,0,0,0,"strip 80 px",1,1,seam
+gfp_295s.tif,splice,3,anti_GTSF1_5secauto.scn,243,0,302,733,0,0,0,0,"strip 59 px",1,1,seam
+gfp_295s.tif,splice,4,anti_GTSF1_5secauto.scn,583,0,674,733,0,0,0,0,"strip 91 px",1,1,seam
+gfp_295s.tif,erase,0,,568,283,608,312,0,0,0,0,"filled with 16038; 40x29",1,1,seam
+gfp_295s.tif,erase,1,,385,160,437,183,0,0,0,0,"filled with 22403; 52x23",1,1,seam
+gfp_295s.tif,erase,2,,374,321,433,348,0,0,0,0,"filled with 23239; 59x27",1,1,seam
+gfp_295s.tif,erase,3,,440,130,485,157,0,0,0,0,"filled with 21895; 45x27",1,1,seam
+gfp_295s.tif,erase,4,,409,209,471,226,0,0,0,0,"filled with 19093; 62x17",1,1,seam
+flag_20s.tif,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+flag_20s.tif,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+flag_20s.tif,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+flag_20s.tif,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+flag_20s.tif,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+flag_20s.tif,copy,0,,357,649,407,665,217,612,267,628,"50x16",1,0,
+flag_20s.tif,copy,1,,650,653,696,672,1166,797,1212,816,"46x19",1,0,
+flag_20s.tif,copy,2,,335,782,365,804,1152,604,1182,626,"30x22",1,0,
+flag_20s.tif,copy,3,,280,253,331,280,214,633,265,660,"51x27",1,0,
+flag_20s.tif,copy,4,,568,813,612,830,1216,215,1260,232,"44x17",1,0,
+flag_20s.tif,copy_gain,0,,1350,527,1393,544,659,335,702,352,"gain 0.820 offset -22.9; 43x17",1,0,
+flag_20s.tif,copy_gain,1,,258,540,308,567,1209,782,1259,809,"gain 0.608 offset 31.5; 50x27",1,0,
+flag_20s.tif,copy_gain,2,,1318,884,1355,903,335,775,372,794,"gain 1.004 offset -50.9; 37x19",1,0,
+flag_20s.tif,copy_gain,3,,1071,211,1105,230,1206,269,1240,288,"gain 0.644 offset 37.7; 34x19",1,0,
+flag_20s.tif,copy_gain,4,,769,834,829,850,225,619,285,635,"gain 1.276 offset 65.6; 60x16",1,0,
+flag_20s.tif,copy_flip,0,,620,344,661,374,745,793,786,823,"flip_horizontal; 41x30",1,0,
+flag_20s.tif,copy_flip,1,,1137,306,1176,335,774,334,813,363,"flip_vertical; 39x29",1,0,
+flag_20s.tif,copy_flip,2,,1337,798,1368,824,1231,566,1262,592,"flip_vertical; 31x26",1,0,
+flag_20s.tif,copy_flip,3,,1259,557,1319,574,215,460,275,477,"flip_horizontal; 60x17",1,0,
+flag_20s.tif,copy_flip,4,,932,546,988,565,208,635,264,654,"flip_horizontal; 56x19",1,0,
+flag_20s.tif,copy_noise,0,,377,868,404,898,1171,630,1198,660,"added noise sd 11.5; 27x30",0,0,
+flag_20s.tif,copy_noise,1,,1314,243,1367,261,501,767,554,785,"added noise sd 11.5; 53x18",0,0,
+flag_20s.tif,copy_noise,2,,217,990,270,1015,1225,509,1278,534,"added noise sd 11.5; 53x25",0,0,
+flag_20s.tif,copy_noise,3,,407,100,471,127,703,393,767,420,"added noise sd 11.5; 64x27",0,0,
+flag_20s.tif,copy_noise,4,,604,223,667,253,964,242,1027,272,"added noise sd 11.5; 63x30",0,0,
+flag_20s.tif,cross_copy,0,anti_GTSF1_5secauto.scn,812,735,855,761,432,178,475,204,"43x26",1,0,
+flag_20s.tif,cross_copy,1,gfp_20s.tif,1141,499,1178,518,433,272,470,291,"37x19",1,0,
+flag_20s.tif,cross_copy,2,gfp_295s.tif,967,785,996,808,291,164,320,187,"29x23",1,1,seam
+flag_20s.tif,cross_copy,3,gfp_20s.tif,565,413,621,437,318,423,374,447,"56x24",1,0,
+flag_20s.tif,cross_copy,4,gfp_20s.tif,1125,751,1178,774,575,451,628,474,"53x23",1,0,
+flag_20s.tif,erase,0,,196,534,253,560,0,0,0,0,"filled with 8767; 57x26",1,0,
+flag_20s.tif,erase,1,,1147,654,1187,684,0,0,0,0,"filled with 18243; 40x30",1,0,
+flag_20s.tif,erase,2,,403,248,458,271,0,0,0,0,"filled with 22355; 55x23",1,0,
+flag_20s.tif,erase,3,,1203,806,1243,831,0,0,0,0,"filled with 15912; 40x25",1,0,
+flag_20s.tif,erase,4,,813,247,860,278,0,0,0,0,"filled with 14923; 47x31",1,0,
+flag_5s.tif,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+flag_5s.tif,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+flag_5s.tif,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+flag_5s.tif,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+flag_5s.tif,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+flag_5s.tif,copy,0,,881,528,942,557,710,386,771,415,"61x29",1,0,
+flag_5s.tif,copy,1,,129,686,171,704,1358,75,1400,93,"42x18",1,0,
+flag_5s.tif,copy,2,,792,490,855,507,664,614,727,631,"63x17",1,0,
+flag_5s.tif,copy,3,,1127,77,1173,108,1165,518,1211,549,"46x31",1,0,
+flag_5s.tif,copy,4,,254,795,279,818,809,797,834,820,"25x23",1,0,
+flag_5s.tif,copy_gain,0,,392,141,438,167,1252,655,1298,681,"gain 0.908 offset 16.9; 46x26",1,0,
+flag_5s.tif,copy_gain,1,,992,888,1021,919,555,697,584,728,"gain 0.702 offset 7.5; 29x31",1,0,
+flag_5s.tif,copy_gain,2,,847,499,911,521,262,649,326,671,"gain 0.829 offset 49.4; 64x22",1,0,
+flag_5s.tif,copy_gain,3,,845,466,900,487,1218,675,1273,696,"gain 1.006 offset -51.6; 55x21",1,0,
+flag_5s.tif,copy_gain,4,,990,230,1015,256,735,249,760,275,"gain 1.218 offset -47.8; 25x26",1,0,
+flag_5s.tif,copy_flip,0,,1235,676,1263,706,597,768,625,798,"flip_horizontal; 28x30",1,0,
+flag_5s.tif,copy_flip,1,,152,826,199,849,1245,704,1292,727,"flip_vertical; 47x23",1,0,
+flag_5s.tif,copy_flip,2,,93,579,121,611,204,705,232,737,"flip_vertical; 28x32",1,0,
+flag_5s.tif,copy_flip,3,,566,487,626,515,618,281,678,309,"flip_horizontal; 60x28",1,0,
+flag_5s.tif,copy_flip,4,,1259,479,1294,511,232,780,267,812,"rotate_180; 35x32",1,0,
+flag_5s.tif,copy_noise,0,,1371,66,1398,85,1193,575,1220,594,"added noise sd 5.2; 27x19",0,0,
+flag_5s.tif,copy_noise,1,,763,318,815,334,373,238,425,254,"added noise sd 5.2; 52x16",0,0,
+flag_5s.tif,copy_noise,2,,1312,261,1375,293,1147,597,1210,629,"added noise sd 5.2; 63x32",0,0,
+flag_5s.tif,copy_noise,3,,521,617,566,634,1235,143,1280,160,"added noise sd 5.2; 45x17",0,0,
+flag_5s.tif,copy_noise,4,,86,612,148,640,373,592,435,620,"added noise sd 5.2; 62x28",0,0,
+flag_5s.tif,cross_copy,0,gfp_295s.tif,1049,208,1090,235,372,187,413,214,"41x27",1,1,seam
+flag_5s.tif,cross_copy,1,gfp_295s.tif,957,852,1012,868,397,280,452,296,"55x16",1,1,seam
+flag_5s.tif,cross_copy,2,gfp_295s.tif,1262,923,1291,946,435,321,464,344,"29x23",1,1,seam
+flag_5s.tif,cross_copy,3,anti_GTSF1_75sec.scn,1125,752,1153,778,740,289,768,315,"28x26",1,0,
+flag_5s.tif,cross_copy,4,gfp_295s.tif,499,238,533,269,492,137,526,168,"34x31",1,1,seam
+flag_5s.tif,erase,0,,408,252,442,274,0,0,0,0,"filled with 9283; 34x22",0,0,
+flag_5s.tif,erase,1,,211,588,273,614,0,0,0,0,"filled with 6047; 62x26",0,0,
+flag_5s.tif,erase,2,,492,764,528,790,0,0,0,0,"filled with 5715; 36x26",0,0,
+flag_5s.tif,erase,3,,710,480,752,501,0,0,0,0,"filled with 4930; 42x21",0,0,
+flag_5s.tif,erase,4,,1219,161,1265,182,0,0,0,0,"filled with 7346; 46x21",0,0,
+plc_20s.tif,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+plc_20s.tif,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+plc_20s.tif,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+plc_20s.tif,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+plc_20s.tif,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+plc_20s.tif,copy,0,,802,782,866,809,521,267,585,294,"64x27",1,0,
+plc_20s.tif,copy,1,,450,441,481,462,947,740,978,761,"31x21",1,0,
+plc_20s.tif,copy,2,,598,223,624,240,1259,566,1285,583,"26x17",1,0,
+plc_20s.tif,copy,3,,789,706,820,723,785,766,816,783,"31x17",1,0,
+plc_20s.tif,copy,4,,501,406,552,432,575,383,626,409,"51x26",1,0,
+plc_20s.tif,copy_gain,0,,881,364,909,390,185,496,213,522,"gain 1.247 offset -141.4; 28x26",1,0,
+plc_20s.tif,copy_gain,1,,652,629,677,656,1267,560,1292,587,"gain 1.125 offset -35.1; 25x27",1,0,
+plc_20s.tif,copy_gain,2,,223,859,266,888,234,503,277,532,"gain 0.615 offset -60.3; 43x29",1,1,flat
+plc_20s.tif,copy_gain,3,,1208,703,1241,735,269,672,302,704,"gain 1.362 offset 98.3; 33x32",1,0,
+plc_20s.tif,copy_gain,4,,1168,221,1197,242,484,152,513,173,"gain 1.449 offset 103.8; 29x21",1,0,
+plc_20s.tif,copy_flip,0,,196,149,255,166,155,409,214,426,"rotate_180; 59x17",1,0,
+plc_20s.tif,copy_flip,1,,466,639,519,657,269,465,322,483,"flip_vertical; 53x18",1,0,
+plc_20s.tif,copy_flip,2,,1241,149,1292,181,523,121,574,153,"rotate_180; 51x32",1,0,
+plc_20s.tif,copy_flip,3,,750,702,778,724,171,365,199,387,"rotate_180; 28x22",1,0,
+plc_20s.tif,copy_flip,4,,159,368,192,390,154,289,187,311,"flip_vertical; 33x22",1,0,
+plc_20s.tif,copy_noise,0,,1148,94,1202,112,229,521,283,539,"added noise sd 16.8; 54x18",0,0,
+plc_20s.tif,copy_noise,1,,338,638,392,654,1160,234,1214,250,"added noise sd 16.8; 54x16",0,0,
+plc_20s.tif,copy_noise,2,,20,874,51,904,186,175,217,205,"added noise sd 16.8; 31x30",0,0,
+plc_20s.tif,copy_noise,3,,1197,280,1239,309,243,384,285,413,"added noise sd 16.8; 42x29",0,0,
+plc_20s.tif,copy_noise,4,,216,808,263,828,248,210,295,230,"added noise sd 16.8; 47x20",0,0,
+plc_20s.tif,cross_copy,0,anti_GTSF1_75sec.scn,408,16,445,33,88,461,125,478,"37x17",1,0,
+plc_20s.tif,cross_copy,1,gfp_295s.tif,1099,510,1155,529,554,315,610,334,"56x19",1,1,seam
+plc_20s.tif,cross_copy,2,anti_GTSF1_75sec.scn,387,163,416,183,447,83,476,103,"29x20",1,0,
+plc_20s.tif,cross_copy,3,08.03.anti_gtsf1_50sec.scn,72,77,122,109,295,316,345,348,"50x32",1,0,
+plc_20s.tif,cross_copy,4,anti_GTSF1_75sec.scn,802,399,831,420,679,431,708,452,"29x21",1,0,
+plc_20s.tif,erase,0,,525,748,571,765,0,0,0,0,"filled with 54524; 46x17",1,0,
+plc_20s.tif,erase,1,,257,371,314,391,0,0,0,0,"filled with 42424; 57x20",1,0,
+plc_20s.tif,erase,2,,1259,588,1310,612,0,0,0,0,"filled with 13420; 51x24",1,0,
+plc_20s.tif,erase,3,,249,376,310,396,0,0,0,0,"filled with 42253; 61x20",1,0,
+plc_20s.tif,erase,4,,524,416,566,432,0,0,0,0,"filled with 18911; 42x16",1,0,
+plc_5s.tif,none,0,,0,0,0,0,0,0,0,0,"",0,1,seam
+plc_5s.tif,none,1,,0,0,0,0,0,0,0,0,"",0,1,seam
+plc_5s.tif,none,2,,0,0,0,0,0,0,0,0,"",0,1,seam
+plc_5s.tif,none,3,,0,0,0,0,0,0,0,0,"",0,1,seam
+plc_5s.tif,none,4,,0,0,0,0,0,0,0,0,"",0,1,seam
+plc_5s.tif,copy,0,,869,801,904,823,1168,137,1203,159,"35x22",1,1,seam
+plc_5s.tif,copy,1,,73,292,123,318,290,700,340,726,"50x26",1,1,seam
+plc_5s.tif,copy,2,,310,406,343,425,1206,12,1239,31,"33x19",1,1,seam
+plc_5s.tif,copy,3,,905,757,951,776,233,424,279,443,"46x19",1,1,seam
+plc_5s.tif,copy,4,,693,923,718,947,264,744,289,768,"25x24",1,1,seam
+plc_5s.tif,copy_gain,0,,575,711,628,727,565,250,618,266,"gain 0.913 offset 12.1; 53x16",1,1,seam
+plc_5s.tif,copy_gain,1,,952,433,982,453,1277,665,1307,685,"gain 0.607 offset -61.9; 30x20",1,1,seam
+plc_5s.tif,copy_gain,2,,517,580,552,606,233,404,268,430,"gain 0.736 offset -52.1; 35x26",1,1,seam
+plc_5s.tif,copy_gain,3,,236,543,299,559,1240,423,1303,439,"gain 0.926 offset 11.0; 63x16",1,1,seam
+plc_5s.tif,copy_gain,4,,1090,435,1148,453,850,331,908,349,"gain 1.071 offset -27.8; 58x18",1,1,seam
+plc_5s.tif,copy_flip,0,,160,84,201,113,355,737,396,766,"rotate_180; 41x29",1,1,seam
+plc_5s.tif,copy_flip,1,,1010,968,1041,994,611,744,642,770,"rotate_180; 31x26",1,1,seam
+plc_5s.tif,copy_flip,2,,494,496,535,520,580,930,621,954,"rotate_180; 41x24",1,1,seam
+plc_5s.tif,copy_flip,3,,963,135,990,152,275,300,302,317,"flip_horizontal; 27x17",1,1,seam
+plc_5s.tif,copy_flip,4,,749,918,775,941,1265,615,1291,638,"rotate_180; 26x23",1,1,seam
+plc_5s.tif,copy_noise,0,,1047,949,1081,978,185,540,219,569,"added noise sd 6.8; 34x29",0,1,seam
+plc_5s.tif,copy_noise,1,,751,784,808,816,678,741,735,773,"added noise sd 6.8; 57x32",0,1,seam
+plc_5s.tif,copy_noise,2,,578,805,620,827,527,737,569,759,"added noise sd 6.8; 42x22",0,1,seam
+plc_5s.tif,copy_noise,3,,1087,315,1128,331,416,261,457,277,"added noise sd 6.8; 41x16",0,1,seam
+plc_5s.tif,copy_noise,4,,74,590,103,617,830,736,859,763,"added noise sd 6.8; 29x27",0,1,seam
+plc_5s.tif,cross_copy,0,gfp_295s.tif,1129,477,1163,505,370,201,404,229,"34x28",1,2,seam
+plc_5s.tif,cross_copy,1,gfp_295s.tif,748,989,787,1006,272,337,311,354,"39x17",1,2,seam
+plc_5s.tif,cross_copy,2,anti_GTSF1_75sec.scn,1102,556,1134,586,130,145,162,175,"32x30",1,1,seam
+plc_5s.tif,cross_copy,3,gfp_295s.tif,456,18,514,47,441,493,499,522,"58x29",1,2,seam
+plc_5s.tif,cross_copy,4,gfp_295s.tif,548,697,573,724,336,324,361,351,"25x27",1,2,seam
+plc_5s.tif,erase,0,,1206,8,1257,39,0,0,0,0,"filled with 3964; 51x31",0,1,seam
+plc_5s.tif,erase,1,,1255,352,1299,384,0,0,0,0,"filled with 3757; 44x32",0,1,seam
+plc_5s.tif,erase,2,,1235,423,1276,454,0,0,0,0,"filled with 5509; 41x31",0,1,seam
+plc_5s.tif,erase,3,,310,402,343,432,0,0,0,0,"filled with 4299; 33x30",0,1,seam
+plc_5s.tif,erase,4,,1202,127,1238,157,0,0,0,0,"filled with 10121; 36x30",0,1,seam
+08.03.anti_gtsf1_50sec.scn,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+08.03.anti_gtsf1_50sec.scn,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+08.03.anti_gtsf1_50sec.scn,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+08.03.anti_gtsf1_50sec.scn,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+08.03.anti_gtsf1_50sec.scn,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+08.03.anti_gtsf1_50sec.scn,copy,0,,864,627,906,654,578,136,620,163,"42x27",1,0,
+08.03.anti_gtsf1_50sec.scn,copy,1,,131,175,189,192,593,63,651,80,"58x17",1,0,
+08.03.anti_gtsf1_50sec.scn,copy,2,,129,206,164,231,524,164,559,189,"35x25",1,0,
+08.03.anti_gtsf1_50sec.scn,copy,3,,337,356,393,384,527,127,583,155,"56x28",1,0,
+08.03.anti_gtsf1_50sec.scn,copy,4,,638,190,689,221,293,152,344,183,"51x31",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_gain,0,,455,421,514,437,333,127,392,143,"gain 1.044 offset 95.5; 59x16",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_gain,1,,418,475,467,505,512,113,561,143,"gain 1.089 offset -78.3; 49x30",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_gain,2,,453,581,510,610,575,229,632,258,"gain 0.833 offset -16.1; 57x29",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_gain,3,,709,317,767,337,462,162,520,182,"gain 1.019 offset -48.5; 58x20",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_gain,4,,800,413,864,439,173,352,237,378,"gain 0.880 offset 13.4; 64x26",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_flip,0,,201,299,250,329,282,310,331,340,"flip_vertical; 49x30",1,1,copy
+08.03.anti_gtsf1_50sec.scn,copy_flip,1,,667,24,720,55,325,143,378,174,"flip_vertical; 53x31",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_flip,2,,458,475,517,503,488,58,547,86,"rotate_180; 59x28",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_flip,3,,377,620,418,647,277,372,318,399,"flip_vertical; 41x27",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_flip,4,,604,623,664,648,687,73,747,98,"flip_horizontal; 60x25",1,0,
+08.03.anti_gtsf1_50sec.scn,copy_noise,0,,473,650,527,676,346,165,400,191,"added noise sd 11.0; 54x26",0,0,
+08.03.anti_gtsf1_50sec.scn,copy_noise,1,,356,67,391,85,477,89,512,107,"added noise sd 11.0; 35x18",0,0,
+08.03.anti_gtsf1_50sec.scn,copy_noise,2,,411,513,472,539,671,73,732,99,"added noise sd 11.0; 61x26",0,0,
+08.03.anti_gtsf1_50sec.scn,copy_noise,3,,217,671,259,689,394,134,436,152,"added noise sd 11.0; 42x18",0,0,
+08.03.anti_gtsf1_50sec.scn,copy_noise,4,,467,472,531,497,505,216,569,241,"added noise sd 11.0; 64x25",0,0,
+08.03.anti_gtsf1_50sec.scn,cross_copy,0,gfp_20s.tif,114,310,152,328,385,237,423,255,"38x18",1,0,
+08.03.anti_gtsf1_50sec.scn,cross_copy,1,gfp_295s.tif,75,151,133,175,414,208,472,232,"58x24",1,1,seam
+08.03.anti_gtsf1_50sec.scn,cross_copy,2,gfp_295s.tif,772,230,831,255,311,312,370,337,"59x25",1,1,seam
+08.03.anti_gtsf1_50sec.scn,cross_copy,3,gfp_20s.tif,790,605,847,628,474,430,531,453,"57x23",1,0,
+08.03.anti_gtsf1_50sec.scn,cross_copy,4,plc_20s.tif,112,552,147,582,643,743,678,773,"35x30",1,0,
+08.03.anti_gtsf1_50sec.scn,splice,0,plc_20s.tif,724,0,811,733,0,0,0,0,"strip 87 px",1,0,
+08.03.anti_gtsf1_50sec.scn,splice,1,flag_5s.tif,763,0,859,733,0,0,0,0,"strip 96 px",1,0,
+08.03.anti_gtsf1_50sec.scn,splice,2,flag_5s.tif,449,0,568,733,0,0,0,0,"strip 119 px",1,0,
+08.03.anti_gtsf1_50sec.scn,splice,3,flag_20s.tif,549,0,615,733,0,0,0,0,"strip 66 px",1,0,
+08.03.anti_gtsf1_50sec.scn,splice,4,plc_20s.tif,181,0,301,733,0,0,0,0,"strip 120 px",1,0,
+08.03.anti_gtsf1_50sec.scn,erase,0,,448,214,482,240,0,0,0,0,"filled with 3174; 34x26",1,0,
+08.03.anti_gtsf1_50sec.scn,erase,1,,505,158,563,188,0,0,0,0,"filled with 3455; 58x30",1,0,
+08.03.anti_gtsf1_50sec.scn,erase,2,,528,102,575,132,0,0,0,0,"filled with 4633; 47x30",1,0,
+08.03.anti_gtsf1_50sec.scn,erase,3,,431,167,471,196,0,0,0,0,"filled with 3466; 40x29",1,0,
+08.03.anti_gtsf1_50sec.scn,erase,4,,512,204,552,235,0,0,0,0,"filled with 2922; 40x31",1,0,
+anti_GTSF1_75sec.scn,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_75sec.scn,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_75sec.scn,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_75sec.scn,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_75sec.scn,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_75sec.scn,copy,0,,369,46,397,63,706,228,734,245,"28x17",1,0,
+anti_GTSF1_75sec.scn,copy,1,,511,692,556,720,468,102,513,130,"45x28",1,0,
+anti_GTSF1_75sec.scn,copy,2,,779,537,807,559,316,103,344,125,"28x22",0,0,
+anti_GTSF1_75sec.scn,copy,3,,278,239,342,269,242,103,306,133,"64x30",1,0,
+anti_GTSF1_75sec.scn,copy,4,,435,287,487,307,60,82,112,102,"52x20",1,0,
+anti_GTSF1_75sec.scn,copy_gain,0,,399,107,455,138,577,92,633,123,"gain 1.162 offset 155.5; 56x31",1,0,
+anti_GTSF1_75sec.scn,copy_gain,1,,757,573,819,598,719,74,781,99,"gain 1.078 offset -110.3; 62x25",1,0,
+anti_GTSF1_75sec.scn,copy_gain,2,,597,11,634,41,145,308,182,338,"gain 1.408 offset -209.1; 37x30",1,0,
+anti_GTSF1_75sec.scn,copy_gain,3,,751,610,792,634,239,78,280,102,"gain 1.093 offset -8.1; 41x24",1,0,
+anti_GTSF1_75sec.scn,copy_gain,4,,323,92,385,109,168,188,230,205,"gain 0.789 offset 14.6; 62x17",1,0,
+anti_GTSF1_75sec.scn,copy_flip,0,,627,334,656,364,246,221,275,251,"flip_horizontal; 29x30",1,0,
+anti_GTSF1_75sec.scn,copy_flip,1,,276,330,317,354,745,308,786,332,"rotate_180; 41x24",1,0,
+anti_GTSF1_75sec.scn,copy_flip,2,,676,25,729,49,619,442,672,466,"flip_horizontal; 53x24",1,0,
+anti_GTSF1_75sec.scn,copy_flip,3,,379,174,428,201,620,326,669,353,"flip_vertical; 49x27",1,0,
+anti_GTSF1_75sec.scn,copy_flip,4,,843,108,888,137,603,103,648,132,"rotate_180; 45x29",1,0,
+anti_GTSF1_75sec.scn,copy_noise,0,,113,15,153,31,284,218,324,234,"added noise sd 22.5; 40x16",0,0,
+anti_GTSF1_75sec.scn,copy_noise,1,,482,268,532,296,296,104,346,132,"added noise sd 22.5; 50x28",0,0,
+anti_GTSF1_75sec.scn,copy_noise,2,,183,255,222,287,112,468,151,500,"added noise sd 22.5; 39x32",0,0,
+anti_GTSF1_75sec.scn,copy_noise,3,,830,680,881,712,146,88,197,120,"added noise sd 22.5; 51x32",0,0,
+anti_GTSF1_75sec.scn,copy_noise,4,,604,409,647,440,417,178,460,209,"added noise sd 22.5; 43x31",0,0,
+anti_GTSF1_75sec.scn,cross_copy,0,gfp_295s.tif,854,87,907,106,701,196,754,215,"53x19",1,1,seam
+anti_GTSF1_75sec.scn,cross_copy,1,plc_20s.tif,800,189,846,221,1193,99,1239,131,"46x32",1,0,
+anti_GTSF1_75sec.scn,cross_copy,2,flag_20s.tif,793,611,847,634,1127,666,1181,689,"54x23",1,0,
+anti_GTSF1_75sec.scn,cross_copy,3,flag_20s.tif,870,669,900,701,262,608,292,640,"30x32",1,0,
+anti_GTSF1_75sec.scn,cross_copy,4,plc_20s.tif,138,138,175,164,589,724,626,750,"37x26",1,0,
+anti_GTSF1_75sec.scn,splice,0,flag_20s.tif,185,0,234,733,0,0,0,0,"strip 49 px",1,0,
+anti_GTSF1_75sec.scn,splice,1,gfp_20s.tif,37,0,80,733,0,0,0,0,"strip 43 px",1,0,
+anti_GTSF1_75sec.scn,splice,2,plc_5s.tif,375,0,493,733,0,0,0,0,"strip 118 px",1,0,
+anti_GTSF1_75sec.scn,splice,3,gfp_295s.tif,382,0,426,733,0,0,0,0,"strip 44 px",1,0,
+anti_GTSF1_75sec.scn,splice,4,gfp_295s.tif,194,0,283,733,0,0,0,0,"strip 89 px",1,0,
+anti_GTSF1_75sec.scn,erase,0,,743,220,794,238,0,0,0,0,"filled with 6122; 51x18",1,0,
+anti_GTSF1_75sec.scn,erase,1,,309,102,363,133,0,0,0,0,"filled with 12347; 54x31",1,0,
+anti_GTSF1_75sec.scn,erase,2,,287,111,327,133,0,0,0,0,"filled with 13566; 40x22",1,0,
+anti_GTSF1_75sec.scn,erase,3,,628,117,674,138,0,0,0,0,"filled with 8383; 46x21",1,0,
+anti_GTSF1_75sec.scn,erase,4,,160,83,204,99,0,0,0,0,"filled with 8946; 44x16",1,0,
+anti_GTSF1_5secauto.scn,none,0,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_5secauto.scn,none,1,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_5secauto.scn,none,2,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_5secauto.scn,none,3,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_5secauto.scn,none,4,,0,0,0,0,0,0,0,0,"",0,0,
+anti_GTSF1_5secauto.scn,copy,0,,469,82,529,107,296,90,356,115,"60x25",1,0,
+anti_GTSF1_5secauto.scn,copy,1,,145,635,199,658,96,433,150,456,"54x23",1,0,
+anti_GTSF1_5secauto.scn,copy,2,,160,54,204,71,282,77,326,94,"44x17",1,0,
+anti_GTSF1_5secauto.scn,copy,3,,546,287,608,315,93,445,155,473,"62x28",1,0,
+anti_GTSF1_5secauto.scn,copy,4,,416,53,441,74,117,186,142,207,"25x21",1,0,
+anti_GTSF1_5secauto.scn,copy_gain,0,,453,402,497,428,253,150,297,176,"gain 1.273 offset 10.6; 44x26",1,0,
+anti_GTSF1_5secauto.scn,copy_gain,1,,346,376,402,392,117,162,173,178,"gain 0.960 offset -9.0; 56x16",1,0,
+anti_GTSF1_5secauto.scn,copy_gain,2,,289,65,341,92,243,178,295,205,"gain 1.339 offset -8.4; 52x27",1,0,
+anti_GTSF1_5secauto.scn,copy_gain,3,,280,192,312,213,290,151,322,172,"gain 0.642 offset 1.0; 32x21",1,0,
+anti_GTSF1_5secauto.scn,copy_gain,4,,204,394,235,418,479,74,510,98,"gain 1.089 offset -11.8; 31x24",1,0,
+anti_GTSF1_5secauto.scn,copy_flip,0,,359,654,392,671,637,356,670,373,"rotate_180; 33x17",1,0,
+anti_GTSF1_5secauto.scn,copy_flip,1,,317,404,358,420,265,232,306,248,"flip_horizontal; 41x16",1,0,
+anti_GTSF1_5secauto.scn,copy_flip,2,,523,339,561,364,468,185,506,210,"flip_vertical; 38x25",1,0,
+anti_GTSF1_5secauto.scn,copy_flip,3,,73,450,107,474,759,117,793,141,"flip_vertical; 34x24",1,0,
+anti_GTSF1_5secauto.scn,copy_flip,4,,374,123,429,147,335,191,390,215,"rotate_180; 55x24",1,0,
+anti_GTSF1_5secauto.scn,copy_noise,0,,204,296,250,324,257,143,303,171,"added noise sd 2.1; 46x28",0,0,
+anti_GTSF1_5secauto.scn,copy_noise,1,,526,572,571,602,652,175,697,205,"added noise sd 2.1; 45x30",0,0,
+anti_GTSF1_5secauto.scn,copy_noise,2,,652,614,699,634,633,285,680,305,"added noise sd 2.1; 47x20",0,0,
+anti_GTSF1_5secauto.scn,copy_noise,3,,801,431,863,452,121,299,183,320,"added noise sd 2.1; 62x21",0,0,
+anti_GTSF1_5secauto.scn,copy_noise,4,,494,225,537,250,234,219,277,244,"added noise sd 2.1; 43x25",0,0,
+anti_GTSF1_5secauto.scn,cross_copy,0,plc_5s.tif,603,610,652,632,1267,183,1316,205,"49x22",1,1,seam
+anti_GTSF1_5secauto.scn,cross_copy,1,gfp_20s.tif,570,69,623,88,318,121,371,140,"53x19",1,0,
+anti_GTSF1_5secauto.scn,cross_copy,2,flag_5s.tif,290,609,333,626,262,625,305,642,"43x17",1,0,
+anti_GTSF1_5secauto.scn,cross_copy,3,gfp_295s.tif,328,252,373,280,372,253,417,281,"45x28",1,1,seam
+anti_GTSF1_5secauto.scn,cross_copy,4,flag_20s.tif,135,584,159,613,986,240,1010,269,"24x29",1,0,
+anti_GTSF1_5secauto.scn,splice,0,plc_20s.tif,46,0,144,733,0,0,0,0,"strip 98 px",1,0,
+anti_GTSF1_5secauto.scn,splice,1,flag_5s.tif,627,0,725,733,0,0,0,0,"strip 98 px",1,0,
+anti_GTSF1_5secauto.scn,splice,2,plc_5s.tif,703,0,745,733,0,0,0,0,"strip 42 px",1,0,
+anti_GTSF1_5secauto.scn,splice,3,flag_20s.tif,364,0,424,733,0,0,0,0,"strip 60 px",1,0,
+anti_GTSF1_5secauto.scn,splice,4,flag_20s.tif,285,0,375,733,0,0,0,0,"strip 90 px",1,0,
+anti_GTSF1_5secauto.scn,erase,0,,111,162,162,183,0,0,0,0,"filled with 1057; 51x21",0,0,
+anti_GTSF1_5secauto.scn,erase,1,,646,393,695,413,0,0,0,0,"filled with 852; 49x20",0,0,
+anti_GTSF1_5secauto.scn,erase,2,,612,97,648,113,0,0,0,0,"filled with 2107; 36x16",0,0,
+anti_GTSF1_5secauto.scn,erase,3,,350,102,399,132,0,0,0,0,"filled with 1058; 49x30",0,0,
+anti_GTSF1_5secauto.scn,erase,4,,570,87,613,106,0,0,0,0,"filled with 1552; 43x19",0,0,

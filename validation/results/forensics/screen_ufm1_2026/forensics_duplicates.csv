@@ -1,0 +1,5 @@
+region,kind,target_image,source_image,orientation,target_x0,target_y0,target_x1,target_y1,source_x0,source_y0,source_x1,source_y1,patches,area_px,mean_ncc,error_over_noise,sharpness,identical_fraction,gain,offset
+1,same_scene,WB_UFM1_lower_exposure_replicate_2_1.tif,WB_UFM1_replicate_2_1.tif,identity,0,0,916,733,0,0,916,733,637995,666955,0.7701,0.0000,0.7243,0.0050,0.1394,545.22
+2,same_scene,WB_UFM1_lower_exposure_replicate_3_1.tif,WB_UFM1_replicate_3_1.tif,identity,0,0,916,733,0,0,916,733,632956,665135,0.7775,0.0000,0.7270,0.0030,0.1406,553.09
+3,same_scene,WB_UFM1.tif,WB_UFM1_lower_exposure.tif,identity,0,0,687,550,0,0,687,550,336998,371441,0.7895,0.0000,0.7071,0.0032,18.5041,-11086.93
+4,same_scene,WB_UFM1_lower_exposure_replicate_2.tif,WB_UFM1_replicate_2.tif,identity,0,0,687,550,0,0,687,550,322077,362964,0.7677,0.0000,0.6848,0.0015,0.0184,647.84

@@ -1,0 +1,1 @@
+region,kind,target_image,source_image,orientation,target_x0,target_y0,target_x1,target_y1,source_x0,source_y0,source_x1,source_y1,patches,area_px,mean_ncc,error_over_noise,sharpness,identical_fraction,gain,offset

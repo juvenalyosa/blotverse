@@ -1,0 +1,24 @@
+# Image-integrity screening: injection bench
+
+16 real raw images; 610 trials. Settings: patch 12, min correlation 0.5, copy error <= 0.1 x noise, min patches 16, seam z >= 10, seam length >= 128, flat ratio 0.25.
+
+| Manipulation | Trials | Detected | Rate (Wilson 95 %) | Trials with a false finding | Rate (Wilson 95 %) | False findings |
+|---|---|---|---|---|---|---|
+| none | 80 | - | - | 10 | 0.125 (0.069-0.215) | 25 |
+| copy | 80 | 80 | 1.00 (0.95-1.00) | 12 | 0.150 (0.088-0.244) | 26 |
+| copy_gain | 80 | 80 | 1.00 (0.95-1.00) | 10 | 0.125 (0.069-0.215) | 24 |
+| copy_flip | 80 | 80 | 1.00 (0.95-1.00) | 10 | 0.125 (0.069-0.215) | 25 |
+| copy_noise | 80 | 0 | 0.00 (0.00-0.05) | 10 | 0.125 (0.069-0.215) | 25 |
+| cross_copy | 80 | 80 | 1.00 (0.95-1.00) | 40 | 0.500 (0.393-0.607) | 83 |
+| splice | 50 | 50 | 1.00 (0.93-1.00) | 13 | 0.260 (0.159-0.396) | 30 |
+| erase | 80 | 50 | 0.62 (0.52-0.72) | 11 | 0.138 (0.079-0.230) | 23 |
+
+All trials: 116 / 610 with at least one false finding (0.190, Wilson 95 % 0.161-0.223).
+
+* `copy`: a band region (24-64 x 16-32 px) pasted elsewhere in the same image. `copy_gain`: the same with brightness/contrast changed (gain 0.6-1.5, offset +-5 noise). `copy_flip`: flipped or rotated 180 degrees. `copy_noise`: with Gaussian noise of 0.5 x the image noise added (outside the stated scope of the copy test; reported to show the limit).
+* `cross_copy`: a band region of an image from another study pasted into this one; both images are screened together.
+* `splice`: a full-height strip (40-120 px) replaced by the same columns of an image from another study.
+* `erase`: a band region (32-64 x 16-32 px) filled with the median of its border.
+* A detection needs a finding of the right kind on the injected region (copies: at least 25 % of both the pasted and the source region; seams: within 2 px of a strip edge; flat: 25 % of the erased area). Flat regions inside a spliced strip are related findings, not false. Any other finding is false.
+
+Runtime 1281 s.

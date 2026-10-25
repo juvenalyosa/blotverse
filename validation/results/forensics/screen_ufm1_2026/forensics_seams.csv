@@ -1,0 +1,6 @@
+image,direction,position,start,end,step,step_over_noise,z,share
+WB_UFM1.tif,row,225,274,412,-655.50,-8.57,34.0,0.85
+WB_UFM1.tif,row,301,274,549,-1416.38,-18.51,87.4,1.12
+WB_UFM1.tif,row,304,274,480,1811.50,23.67,96.0,1.02
+WB_UFM1_lower_exposure.tif,row,412,274,412,810.50,20.89,240.8,0.97
+WB_UFM1_lower_exposure.tif,row,413,480,618,1980.00,51.05,430.8,0.88
