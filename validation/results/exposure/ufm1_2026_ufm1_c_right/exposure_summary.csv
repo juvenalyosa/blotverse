@@ -1,0 +1,7 @@
+band,exposure,image,seconds,excluded,reference,misaligned,qc_flagged,near_saturation_flagged,compressive_default,qc_miss_v11,attributable,sublinear,superlinear,miss_spec,miss_candidate
+upper,1,WB_UFM1_lower_exposure_replicate_2.tif,-1,0,0,0,0,0,0,0,0,0,0,0,0
+upper,2,WB_UFM1_replicate_2.tif,-1,0,1,0,0,0,0,0,0,0,0,0,0
+doublet,1,WB_UFM1_lower_exposure_replicate_2.tif,-1,0,0,0,0,0,0,0,0,0,0,0,0
+doublet,2,WB_UFM1_replicate_2.tif,-1,0,1,0,0,0,0,0,0,0,0,0,0
+low,1,WB_UFM1_lower_exposure_replicate_2.tif,-1,0,1,0,0,0,0,0,0,0,0,0,0
+low,2,WB_UFM1_replicate_2.tif,-1,0,0,0,1,1,1,0,1,1,0,0,0

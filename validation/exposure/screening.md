@@ -28,3 +28,29 @@ The candidates are those listed in `docs/exposure_protocol.md`, screened in that
 **Yield:** 2 of 16 studies, giving 4 series and 3 membranes. The usual reason for exclusion
 is that only 8-bit or colour exports were deposited, not the 16-bit acquisition. This
 matches what the level-3 search found.
+
+## Protocol v1.2 confirmatory candidates
+
+Fixed in commit a654b58, before any download.
+
+| # | Study | Files | Result | Criterion / reason |
+|---|---|---|---|---|
+| 1 | S44318-026-00772-6 | dY-α-tubulin long/short exp "raw" | excluded | 4: 16-bit data stored in the green channel of an RGB file (red and blue are 0). The reader rejects pseudo-colour. Candidate for future reader support. |
+| 2 | S44319-025-00593-4 | anti-FLAG high/low exposure | excluded | 4: 8-bit RGBA |
+| 3 | S44319-025-00590-7 | ASYM26 long/short | excluded | 4: 8-bit RGB |
+| 4 | S44318-025-00548-4 | pellet WB high/low "raw" | excluded | 4: 8-bit signed RGB |
+| 5 | S44319-026-00773-W | GNPTAB-Myc short/long | excluded | 4: 8-bit data in a 16-bit RGB container (256 levels) |
+| 6 | S44319-025-00455-Z | HA higher/lower | excluded | 4: CMYK figure files |
+| 7 | S44321-026-00433-5 | WT-APEX high/low | excluded | 4: 8-bit (and probably microscopy) |
+| 8 | S44318-026-00753-9 | WB_UFM1 normal / lower exposure, 6 pairs | **included: 4 pairs** | 16-bit ChemiDoc exports. Pairs WB_UFM1, replicate_2 (687x550), replicate_2_1 and replicate_3_1 (916x733) are aligned (shift 0, 0). Pairs WB_UFM1_1 (shift −1, 2, weak correlation) and replicate_3 (no match) are excluded under criterion 3. The tilted replicate_2 membrane is split into two configs of 6 lanes. `ufm1_2026/*.yaml` |
+| 9 | S44318-026-00783-3 | SCH / Untreated 0–150 s | excluded | 4: 8-bit RGBA (and probably a time course, not exposures) |
+| 10 | S44318-026-00814-Z | `admi_*.scn` | excluded | 1/2: the two 916x733 files are different blots (different dates), and each one's same-day partner is a 1x1-binned 12 MB file on a different grid |
+| 11 | S44319-025-00558-7 | "longer exposure" files | excluded | 4: 8-bit RGBA |
+| 12 | S44318-025-00577-Z | SN HA long / Bound HA short | excluded | 4: 8-bit RGBA (also different samples) |
+| 13 | S44319-025-00561-Y | auto- / over-exposed | excluded | 4: 8-bit |
+| 14 | S44319-026-00828-Y | high-sensitivity westerns | excluded | 4: 8-bit RGBA |
+| 15 | S44319-026-00727-2 | Chemi 15 s / 5 min | excluded | 4: 8-bit |
+| 16 | S44318-026-00889-8 | twist 10 s / V5 180 s | excluded | 4: 8-bit (also different antibodies) |
+
+**Yield:** 1 of 16 studies, giving 4 membranes and 5 series. Across both screens, 3 of 32
+studies were eligible.

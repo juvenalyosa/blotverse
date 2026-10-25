@@ -5,9 +5,43 @@ several exposures must keep the ratio between two lanes of one band as long as t
 is linear.
 
 * Protocol: [`exposure_protocol.md`](exposure_protocol.md) (v1.0 pre-specified, v1.1
-  amended before pooling).
+  amended before pooling, v1.2 fixed before a new confirmatory set).
 * Screening: [`validation/exposure/screening.md`](../validation/exposure/screening.md).
 * Reproduce: `validation/exposure/run_all.sh`. Results go to `validation/results/exposure/`.
+
+## Summary
+
+| Protocol | Set | Series (membranes) | Exposures with a saturation flag | P1 misses (spec rule) | Criterion |
+|---|---|---|---|---|---|
+| v1.1 (pair rule) | confirmatory 1 | 4 (3) | 3 | 3 | not met |
+| v1.2 (lane rule) | development = all v1.1 series | 6 (5) | 11 | 0 | not evidence (rule built on these) |
+| **v1.2 (lane rule)** | **confirmatory 2** | **5 (4)** | **5** | **0** | **met** |
+
+**v1.2 confirmatory set:** UFM1 blots, EMBO J 2026 (doi 10.1038/s44318-026-00753-9). Four
+12-lane membranes, each at a normal and a lower exposure. 1 of the 16 pre-listed studies was
+eligible; every other one deposited only 8-bit, RGB, CMYK or differently binned files (see
+the screening log).
+
+* **P1 (judged):** 0 misses in 40 usable exposure x band combinations. The saturation rule
+  flagged the 5 exposures with saturated windows (the low continuous band). In 4 of the 5,
+  the lane-level analysis shows the sub-linear lanes the saturation produces.
+* **Candidate near-saturation rule:** 0 misses. It flagged no additional exposure, so this
+  set does not test it. Promoting it to the spec stays undecided.
+* **The v1.1 pair rule** would have counted 1 miss (UFM1 replicate 3, band r246, normal
+  exposure). No lane moves beyond ±0.2, so it is not compression of any lane.
+* **P2:** 147/148 compressive pairs carry a flag (Wilson 95 % 0.96–1.00).
+* **S1:** confirms the development ranking on independent data. Rolling ball + rectangle
+  preserves ratios best (`rb2/rect` q95 0.067, `rb4/rect` 0.060 log2). The spec default,
+  `rb2/profile`, comes next (q95 0.125). Saturation damages the profile branches most
+  (flagged median 0.37 vs 0.18 log2 for rect).
+
+**Caveat on size.** One study, 4 membranes, 5 saturated exposures. "Zero misses" is a
+small-sample result: it is compatible with a true miss rate of up to about 45 % of
+saturated-or-compressed exposures (rule of three on 5 flagged exposures). It is also
+compatible with a lower rate per unflagged exposure (0 of 35). More series would tighten
+this. Most journal deposits do not contain 16-bit acquisitions, which limits the bench.
+
+The sections below report the v1.1 analysis that motivated v1.2.
 
 ## Data
 

@@ -1,0 +1,17 @@
+# Replicate 2 pair at 687x550, lanes 7-12 (tilted membrane).
+# Lower exposure listed first (exposure times are not in the files; the
+# file names give the order). Lane centres from BlotVerse's comb fit on the
+# lower exposure, band rows from row profiles of the lower exposure; every
+# band row seen in >= 2 lanes, the low continuous band included.
+name: UFM1 replicate 2 (687x550), lanes 7-12
+lane_width: 24
+band_half_height: 4
+refine_rows: 8
+exposures:
+  - {image: WB_UFM1_lower_exposure_replicate_2.tif}
+  - {image: WB_UFM1_replicate_2.tif}
+lanes: [{x: 352}, {x: 385}, {x: 419}, {x: 453}, {x: 487}, {x: 521}]
+bands:
+  - {name: upper, y: 265, half_height: 6}
+  - {name: doublet, y: 301, half_height: 6}
+  - {name: low, y: 413, half_height: 6}

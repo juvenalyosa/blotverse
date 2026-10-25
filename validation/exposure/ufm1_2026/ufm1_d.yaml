@@ -1,0 +1,19 @@
+# Replicate 2 pair at 916x733 (3x3 binning), two halves of 6 lanes, aligned (shift 0, 0).
+# Lower exposure listed first (exposure times are not in the files; the
+# file names give the order). Lane centres from BlotVerse's comb fit on the
+# lower exposure, band rows from row profiles of the lower exposure; every
+# band row seen in >= 2 lanes, the low continuous band included.
+name: UFM1 replicate 2 (916x733)
+lane_width: 28
+band_half_height: 5
+refine_rows: 6
+exposures:
+  - {image: WB_UFM1_lower_exposure_replicate_2_1.tif}
+  - {image: WB_UFM1_replicate_2_1.tif}
+lanes: [{x: 152}, {x: 190}, {x: 228}, {x: 267}, {x: 316}, {x: 345}, {x: 406}, {x: 444}, {x: 480}, {x: 517}, {x: 554}, {x: 591}]
+bands:
+  - {name: r154, y: 154}
+  - {name: r182, y: 182}
+  - {name: doublet, y: 209, half_height: 7}
+  - {name: r251, y: 251}
+  - {name: low, y: 328, half_height: 6}
