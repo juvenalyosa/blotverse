@@ -42,6 +42,11 @@ about 3/40 = 7.5 %. However, only 5 combinations actually reached saturation. Th
 bound is about 3/5 = 60 %. More 16-bit exposure series would tighten this. Most journal
 deposits do not contain them, which limits the bench.
 
+**Spec v1.3.0.** The default band definition is now `rect`
+([default_band_decision.md](default_band_decision.md)). Rerun under v1.3.0, P1 stays at 0
+misses in both sets, and P2 is 94/97 (development) and 94/94 (confirmatory). The files in
+`validation/results/exposure/` were produced under v1.2.0.
+
 The sections below report the v1.1 analysis that motivated v1.2.
 
 ## Data

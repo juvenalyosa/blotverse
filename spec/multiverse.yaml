@@ -22,9 +22,16 @@
 #          loss of signal at low loads; the check is now applied to blots whose
 #          lanes declare a load. No effect on level-1 results (simulated lanes
 #          declare no loads; verified by rerunning seed 1).
+#   1.3.0  Default band definition changed from profile to rect after the
+#          real-data benches (docs/default_band_decision.md): rect is closer to
+#          known truth or to the authors' values in every one of them (dilution
+#          series, AURORA A reanalysis, both exposure-bench sets). In simulation
+#          the two defaults are equivalent on the decision metrics (paired seed-5
+#          run, E2 AUC 0.923 for both); profile has a smaller default-universe
+#          error under severe simulated artefacts. Branches are unchanged.
 
 name: blotverse-v1
-version: "1.2.0"
+version: "1.3.0"
 alpha: 0.05
 
 decisions:
@@ -114,7 +121,7 @@ decisions:
 # Fixed in advance; R is defined relative to this universe.
 default_universe:
   background: rb2
-  band: profile
+  band: rect
   loading: hk
   normalization: fixed
   scale: log

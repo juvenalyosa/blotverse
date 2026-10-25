@@ -141,7 +141,7 @@ before looking at validation results. `blotverse spec` prints a summary.
 | Effect scale | linear ratio; log ratio |
 | Statistical test | Welch t; mixed model with random gel; permutation |
 
-Default universe: `rb2 / profile / hk / fixed / log / welch`.
+Default universe: `rb2 / rect / hk / fixed / log / welch` (spec v1.3.0; see [`docs/default_band_decision.md`](docs/default_band_decision.md)).
 
 ## Validation
 

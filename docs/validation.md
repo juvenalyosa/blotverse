@@ -15,6 +15,24 @@ Each run takes about 4 minutes on a 10-core laptop and covers:
 * The full tool on every experiment: automatic detection, QC, the multiverse and the
   joint test.
 
+## Spec v1.3.0 check (seed 5)
+
+Spec v1.3.0 changes the default band definition from `profile` to `rect`
+([default_band_decision.md](default_band_decision.md)). The same protocol, run with seed 5
+(not used before; 6000 + 600 experiments, spec sha256 `b13c69ec…`), still meets every
+criterion:
+
+| Criterion | Estimate [95 % CI] | Result |
+|---|---|---|
+| E2 AUC of R, evaluable designs | 0.923 [0.914, 0.933] | PASS |
+| E3 evaluable nulls labelled Robust | 1.9 % [1.4 %, 2.8 %] | PASS |
+| E4 joint-test type I error | 0.032 [0.025, 0.043] | PASS |
+| E5 H | 0.206 [0.172, 0.237]; all four margins > 0 | PASS |
+
+* A paired run with the old default (same seed) gives E2 = 0.923 [0.913, 0.932].
+* Results: `validation/results/level1_spec1.3_seed5/`.
+* The seed-3 run below remains the record of the pre-specified confirmatory test.
+
 ## Current results: protocol v2 (confirmatory)
 
 Criteria, intervals and decision rules were fixed in

@@ -24,7 +24,7 @@ TEST_CASE("repository spec: 432 universes with total protein, 216 without") {
   CHECK(plan_universes(spec, {false, false}).universes.size() == 162);
   const auto plan = plan_universes(spec, {true, true});
   REQUIRE(plan.default_index);
-  CHECK(spec.describe(plan.universes[*plan.default_index]) == "rb2/profile/hk/fixed/log/welch");
+  CHECK(spec.describe(plan.universes[*plan.default_index]) == "rb2/rect/hk/fixed/log/welch");
   for (const auto& d : spec.decisions)
     for (const auto& b : d.branches) CHECK_FALSE(b.references.empty());
 }
