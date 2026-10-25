@@ -1,6 +1,7 @@
 #include "blotverse/pipeline.hpp"
 
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <map>
 #include <sstream>
@@ -47,7 +48,12 @@ BandMethod band_method(Method m) {
 
 }  // namespace
 
-PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& spec, unsigned threads) {
+PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& spec, unsigned threads,
+                           const AnalysisProgress& progress) {
+  auto report = [&](const char* stage, std::size_t done, std::size_t total) {
+    if (progress) progress(stage, total ? static_cast<double>(done) / static_cast<double>(total) : 1.0);
+  };
+  std::atomic<std::size_t> blots_done{0}, quant_done{0};
   PreparedExperiment prep;
   auto& data = prep.data;
   data.groups = experiment.groups();
@@ -76,6 +82,7 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
         }
         pb.qc = check_blot(blot.id, blot.image, blot.total_protein ? &*blot.total_protein : nullptr,
                            pb.annotation, spec.qc.saturation_min_pixels);
+        report("Quality control", ++blots_done, nb);
       },
       threads);
 
@@ -158,6 +165,7 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
             if (c.total) q.total[i] = quantify_lane_total(*c.total, ann, lane, method);
           }
         }
+        report("Quantification", ++quant_done, nb * bg_branches.size());
       },
       threads);
 
@@ -194,7 +202,11 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
 AnalysisResult analyze(const Experiment& experiment, const MultiverseSpec& spec,
                        const AnalysisOptions& options) {
   const auto start = std::chrono::steady_clock::now();
-  PreparedExperiment prep = prepare(experiment, spec, options.threads);
+  auto report = [&](const char* stage, double fraction) {
+    if (options.progress) options.progress(stage, fraction);
+  };
+  report("Quality control", 0.0);
+  PreparedExperiment prep = prepare(experiment, spec, options.threads, options.progress);
 
   AnalysisResult result;
   result.blots = std::move(prep.blots);
@@ -202,14 +214,22 @@ AnalysisResult analyze(const Experiment& experiment, const MultiverseSpec& spec,
   result.warnings = std::move(prep.warnings);
 
   // --- [4b] Every universe; [5] aggregation and joint inference --------------
-  result.multiverse = run_multiverse(spec, result.data, options.threads);
+  report("Universes", 0.0);
+  result.multiverse = run_multiverse(spec, result.data, options.threads, [&](std::size_t done, std::size_t total) {
+    report("Universes", static_cast<double>(done) / static_cast<double>(total));
+  });
   result.joint_permutations = options.joint_permutations.value_or(spec.inference.joint_permutations);
-  auto joint = joint_test(spec, result.data, result.multiverse, result.joint_permutations, options.threads);
+  report("Joint test", 0.0);
+  auto joint = joint_test(spec, result.data, result.multiverse, result.joint_permutations, options.threads,
+                          [&](std::size_t done, std::size_t total) {
+                            report("Joint test", static_cast<double>(done) / static_cast<double>(total));
+                          });
   for (std::size_t c = 0; c < result.multiverse.contrasts.size(); ++c)
     result.summaries.push_back(summarize_contrast(spec, result.multiverse, c, std::move(joint[c])));
 
   result.seconds =
       std::chrono::duration<double>(std::chrono::steady_clock::now() - start).count();
+  report("Done", 1.0);
   return result;
 }
 

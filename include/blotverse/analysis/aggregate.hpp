@@ -71,7 +71,7 @@ std::size_t dominant_significant_count(const std::vector<UniverseOutcome>& outco
 // Runs the label-permutation joint test for every contrast.
 std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseData& data,
                                   const MultiverseResult& result, std::size_t permutations,
-                                  unsigned threads);
+                                  unsigned threads, const ItemProgress& progress = {});
 
 ContrastSummary summarize_contrast(const MultiverseSpec& spec, const MultiverseResult& result,
                                    std::size_t contrast_index, JointTest joint);

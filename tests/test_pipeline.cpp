@@ -13,6 +13,13 @@ namespace fs = std::filesystem;
 
 namespace {
 
+AnalysisOptions options(unsigned threads, std::size_t permutations) {
+  AnalysisOptions o;
+  o.threads = threads;
+  o.joint_permutations = permutations;
+  return o;
+}
+
 const MultiverseSpec& repo_spec() {
   static const MultiverseSpec spec = load_spec(BLOTVERSE_SPEC_PATH);
   return spec;
@@ -82,7 +89,7 @@ TEST_CASE("saturated lanes are excluded from every universe") {
   p.true_lfc = {0.0, 1.0};
   p.peak_per_unit = 40000;  // treatment bands (x2) exceed the detector ceiling
   p.seed = 5;
-  const auto r = analyze(to_experiment(simulate(p)), repo_spec(), AnalysisOptions{0, 20});
+  const auto r = analyze(to_experiment(simulate(p)), repo_spec(), options(0, 20));
   CHECK(r.data.observations.size() < 12);
   bool flagged = false;
   for (const auto& w : r.warnings) flagged = flagged || w.find("saturated") != std::string::npos;
@@ -97,7 +104,7 @@ TEST_CASE("reports and the reproducibility file round-trip") {
   fs::remove_all(dir);
   write_simulation(dir / "sim", simulate(p));
   const Experiment ex = load_experiment(dir / "sim" / "experiment.yaml");
-  const auto result = analyze(ex, repo_spec(), AnalysisOptions{0, 50});
+  const auto result = analyze(ex, repo_spec(), options(0, 50));
 
   const std::string html = render_html_report(repo_spec(), ex, result);
   CHECK(html.find("Specification curve") != std::string::npos);
@@ -110,7 +117,7 @@ TEST_CASE("reports and the reproducibility file round-trip") {
   CHECK(record.joint_permutations == 50);
   const Experiment again = experiment_from_repro(record);
   CHECK(again.blots[0].annotation.has_value());
-  const auto rerun = analyze(again, parse_spec(record.spec_text), AnalysisOptions{3, 50});
+  const auto rerun = analyze(again, parse_spec(record.spec_text), options(3, 50));
   CHECK(compare_with_repro(record, rerun).empty());
 
   // Tampering with an image breaks the fingerprint check.
@@ -132,7 +139,7 @@ TEST_CASE("3 gels x 1 replicate: design rules apply and the verdict is Not evalu
   p.reps_per_gel = 1;
   p.true_lfc = {0.0, 1.0};
   p.seed = 77;
-  const auto r = analyze(to_experiment(simulate(p)), repo_spec(), AnalysisOptions{0, 100});
+  const auto r = analyze(to_experiment(simulate(p)), repo_spec(), options(0, 100));
   CHECK_FALSE(r.data.facts.permutation_can_reach_alpha);
   CHECK_FALSE(r.data.facts.every_blot_has_two_lanes_per_group);
   CHECK(r.multiverse.plan.universes.size() == 96);
@@ -163,7 +170,7 @@ TEST_CASE("dilution lanes outside the proportional range are flagged") {
   Experiment ex = to_experiment(simulate(p));
   const std::vector<double> loads{1, 2, 4, 8, 16, 32};
   for (std::size_t i = 0; i < ex.blots[0].lanes.size(); ++i) ex.blots[0].lanes[i].load = loads[i];
-  const auto r = analyze(ex, repo_spec(), AnalysisOptions{0, 10});
+  const auto r = analyze(ex, repo_spec(), options(0, 10));
   std::size_t flagged = 0;
   for (const auto& w : r.warnings)
     if (w.find("outside the proportional range") != std::string::npos) ++flagged;

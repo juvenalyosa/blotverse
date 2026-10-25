@@ -58,6 +58,35 @@ Outputs in `demo/report/`: `report.html`, `summary.csv`, `universes.csv`
 (every universe), `lanes.csv` (band windows and raw signals per branch) and
 `repro.yaml`.
 
+## Desktop application
+
+A Qt Quick application covers the whole workflow:
+
+* open an experiment, or simulate one with known truth;
+* check and correct the detected lanes and bands by dragging them;
+* run the multiverse while live progress is shown;
+* read the verdict, the specification curve and each decision's influence, then export
+  the HTML report and the reproducibility file.
+
+| | |
+|---|---|
+| ![Start](docs/images/gui-1-start.png) | ![Setup](docs/images/gui-2-setup.png) |
+| ![Running](docs/images/gui-3-running.png) | ![Results](docs/images/gui-4-results.png) |
+
+Build it with Qt >= 6.5 (`brew install qt`, or the Qt online installer):
+
+```bash
+cmake -S . -B build -DBLOTVERSE_BUILD_GUI=ON -DCMAKE_PREFIX_PATH=$(brew --prefix qt)
+cmake --build build -j
+open build/gui/BlotVerse.app        # macOS; build/gui/BlotVerse elsewhere
+```
+
+The application uses the same library, spec and files as the command line. Lane
+corrections are saved to `<experiment>.annotated.yaml` next to the original, and exports
+include `repro.yaml`. It never ranks universes or offers a "best" one. The interface is
+in English; translations can be added through Qt Linguist, since every string goes
+through `qsTr`.
+
 ## Analysing your own blots
 
 Describe the experiment in YAML. Images must be raw greyscale acquisitions: Bio-Rad Image Lab

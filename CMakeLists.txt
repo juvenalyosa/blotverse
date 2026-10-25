@@ -16,6 +16,7 @@ endif()
 
 option(BLOTVERSE_BUILD_TESTS "Build unit and integration tests" ON)
 option(BLOTVERSE_BUILD_APPS "Build the command line interface" ON)
+option(BLOTVERSE_BUILD_GUI "Build the Qt Quick desktop application (needs Qt >= 6.5)" OFF)
 
 include(cmake/Dependencies.cmake)
 include(cmake/Warnings.cmake)
@@ -73,4 +74,8 @@ endif()
 if(BLOTVERSE_BUILD_TESTS)
   enable_testing()
   add_subdirectory(tests)
+endif()
+
+if(BLOTVERSE_BUILD_GUI)
+  add_subdirectory(gui)
 endif()

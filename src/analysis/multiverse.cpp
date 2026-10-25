@@ -1,5 +1,6 @@
 #include "blotverse/analysis/multiverse.hpp"
 
+#include <atomic>
 #include <cmath>
 #include <stdexcept>
 
@@ -146,25 +147,30 @@ std::vector<Contrast> make_contrasts(const std::vector<std::string>& groups) {
 
 std::vector<std::vector<UniverseOutcome>> evaluate_universes(
     const MultiverseSpec& spec, const MultiverseData& data, const std::vector<Universe>& universes,
-    const std::vector<Contrast>& contrasts, const std::vector<int>& labels, unsigned threads) {
+    const std::vector<Contrast>& contrasts, const std::vector<int>& labels, unsigned threads,
+    const ItemProgress& progress) {
   if (labels.size() != data.observations.size())
     throw std::invalid_argument("evaluate_universes: one label per observation required");
   std::vector<std::vector<UniverseOutcome>> out(contrasts.size(),
                                                 std::vector<UniverseOutcome>(universes.size()));
+  std::atomic<std::size_t> done{0};
   parallel_for(
       universes.size(),
-      [&](std::size_t i) { evaluate_one(spec, data, universes[i], i, contrasts, labels, out); },
+      [&](std::size_t i) {
+        evaluate_one(spec, data, universes[i], i, contrasts, labels, out);
+        if (progress) progress(++done, universes.size());
+      },
       threads);
   return out;
 }
 
 MultiverseResult run_multiverse(const MultiverseSpec& spec, const MultiverseData& data,
-                                unsigned threads) {
+                                unsigned threads, const ItemProgress& progress) {
   MultiverseResult result;
   result.plan = plan_universes(spec, data.facts);
   result.contrasts = make_contrasts(data.groups);
   result.outcomes = evaluate_universes(spec, data, result.plan.universes, result.contrasts,
-                                       data.labels(), threads);
+                                       data.labels(), threads, progress);
   return result;
 }
 

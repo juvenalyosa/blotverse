@@ -28,3 +28,16 @@ jobs:
         run: ctest --test-dir build --output-on-failure
       - name: Validation smoke run
         run: build/apps/blotverse validate --out build/val --experiments 40 --gradient-experiments 10 --permutations 50 || test $? -eq 3
+
+  gui:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v5
+      - name: Install dependencies
+        run: brew install libtiff eigen qt
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DBLOTVERSE_BUILD_GUI=ON -DCMAKE_PREFIX_PATH=$(brew --prefix qt)
+      - name: Build
+        run: cmake --build build -j 4
+      - name: Test (headless)
+        run: ctest --test-dir build --output-on-failure -R gui_controller

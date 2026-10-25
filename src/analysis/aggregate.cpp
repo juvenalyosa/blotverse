@@ -3,6 +3,7 @@
 #include <Eigen/Dense>
 
 #include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <map>
 #include <set>
@@ -97,7 +98,7 @@ std::size_t dominant_significant_count(const std::vector<UniverseOutcome>& outco
 
 std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseData& data,
                                   const MultiverseResult& result, std::size_t permutations,
-                                  unsigned threads) {
+                                  unsigned threads, const ItemProgress& progress) {
   const std::size_t nc = result.contrasts.size();
   std::vector<JointTest> tests(nc);
   for (std::size_t c = 0; c < nc; ++c) {
@@ -155,6 +156,7 @@ std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseDa
     for (auto& t : tests) t.null_counts.assign(label_sets.size(), 0);
   }
   const std::size_t n_perm = exact ? label_sets.size() : permutations;
+  std::atomic<std::size_t> done{0};
 
   parallel_for(
       n_perm,
@@ -176,6 +178,7 @@ std::vector<JointTest> joint_test(const MultiverseSpec& spec, const MultiverseDa
             evaluate_universes(spec, data, result.plan.universes, result.contrasts, labels, 1);
         for (std::size_t c = 0; c < nc; ++c)
           tests[c].null_counts[k] = dominant_significant_count(outcomes[c], spec.alpha);
+        if (progress) progress(++done, n_perm);
       },
       threads);
 

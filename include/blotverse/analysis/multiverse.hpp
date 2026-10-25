@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <optional>
 #include <string>
 #include <vector>
@@ -68,12 +69,16 @@ UniversePlan plan_universes(const MultiverseSpec& spec, const ExperimentFacts& f
 
 std::vector<Contrast> make_contrasts(const std::vector<std::string>& groups);
 
+// Called as work items finish (from worker threads): done out of total.
+using ItemProgress = std::function<void(std::size_t done, std::size_t total)>;
+
 // Evaluates every universe for every contrast with the given group labels
 // (the observed labels, or a permutation of them for the joint test).
 // Result is indexed [contrast][universe].
 std::vector<std::vector<UniverseOutcome>> evaluate_universes(
     const MultiverseSpec& spec, const MultiverseData& data, const std::vector<Universe>& universes,
-    const std::vector<Contrast>& contrasts, const std::vector<int>& labels, unsigned threads);
+    const std::vector<Contrast>& contrasts, const std::vector<int>& labels, unsigned threads,
+    const ItemProgress& progress = {});
 
 struct MultiverseResult {
   UniversePlan plan;
@@ -82,6 +87,6 @@ struct MultiverseResult {
 };
 
 MultiverseResult run_multiverse(const MultiverseSpec& spec, const MultiverseData& data,
-                                unsigned threads);
+                                unsigned threads, const ItemProgress& progress = {});
 
 }  // namespace blotverse

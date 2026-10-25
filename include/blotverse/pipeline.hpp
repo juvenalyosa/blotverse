@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <functional>
 #include <optional>
 #include <string>
 #include <vector>
@@ -14,9 +15,15 @@
 
 namespace blotverse {
 
+// Progress of an analysis: a stage name and the fraction of that stage done.
+// Called from worker threads; stages are reported in order:
+// "Quality control", "Quantification", "Universes", "Joint test", "Done".
+using AnalysisProgress = std::function<void(const std::string& stage, double fraction)>;
+
 struct AnalysisOptions {
   unsigned threads = 0;                            // 0 = all cores
   std::optional<std::size_t> joint_permutations;   // overrides the spec
+  AnalysisProgress progress;                       // optional
 };
 
 struct PreparedBlot {
@@ -46,6 +53,7 @@ struct PreparedExperiment {
   MultiverseData data;
   std::vector<std::string> warnings;
 };
-PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& spec, unsigned threads);
+PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& spec, unsigned threads,
+                           const AnalysisProgress& progress = {});
 
 }  // namespace blotverse
