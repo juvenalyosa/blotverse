@@ -79,9 +79,14 @@ void write_lanes_csv(const std::filesystem::path& path, const MultiverseSpec& sp
     const auto& o = data.observations[i];
     const auto& blot = experiment.blots[static_cast<std::size_t>(o.blot)];
     const auto& ann = result.blots[static_cast<std::size_t>(o.blot)].annotation;
+    const auto& ref_ann = result.blots[static_cast<std::size_t>(o.blot)].reference_annotation;
     for (BandKind kind : {BandKind::Target, BandKind::Reference}) {
-      const Rect w = band_window(ann, static_cast<std::size_t>(o.lane), kind);
-      out << csv_escape(blot.id) << ',' << csv_escape(blot.image_file) << ',' << o.lane + 1 << ','
+      // A loading control imaged separately has its own windows and file.
+      const bool separate = kind == BandKind::Reference && ref_ann.has_value();
+      const Rect w = separate ? band_window(*ref_ann, static_cast<std::size_t>(o.lane), BandKind::Target)
+                              : band_window(ann, static_cast<std::size_t>(o.lane), kind);
+      out << csv_escape(blot.id) << ',' << csv_escape(separate ? blot.reference_image_file : blot.image_file)
+          << ',' << o.lane + 1 << ','
           << csv_escape(data.groups[static_cast<std::size_t>(o.group)]) << ','
           << (kind == BandKind::Target ? "target" : "reference") << ',' << w.x0 << ',' << w.y0 << ',' << w.x1
           << ',' << w.y1 << ',' << ann.band_height();

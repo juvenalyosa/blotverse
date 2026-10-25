@@ -1,0 +1,11 @@
+name: AURORA A 3G DICER_R3
+image: 3G_WB_DICER_R3.tif
+lane_width: 61
+band_half_height: 28
+refine_rows: 3
+lanes:
+  - {x: 668.3}
+  - {x: 758.3}
+  - {x: 830.2}
+bands:
+  - {name: band, y: 902}

@@ -1,0 +1,3 @@
+contrast,verdict,robustness_R,joint_p,default_lfc,default_p,median_lfc,lfc_q05,lfc_q95,opposite_fraction,significant_fraction,agreement,n_valid,n_universes,n_excluded,most_influential,eta2_background,eta2_band,eta2_loading,eta2_normalization,eta2_scale,eta2_test
+mut1 vs WT,Not evaluable,0,1,-4.266246067,0.3110424316,-2.526656552,-4.266246067,-1.044367642,0,0,1,48,48,384,band,0.08955988967,0.6007258215,0,0,0.2502756056,0
+mut2 vs WT,Not evaluable,0,1,-5.352565911,0.3397909563,-3.171067065,-5.358155325,-1.158018513,0,0,1,48,48,384,scale,0.06136803123,0.4276239546,0,0,0.4681255763,0

@@ -26,12 +26,19 @@ struct Blot {
   std::string id;
   RawImage image;
   std::optional<RawImage> total_protein;
+  // Loading control imaged separately (stripped and re-probed membrane, cut
+  // strip, other exposure): its own image and lane/band annotation, whose
+  // target rows are the reference band. Without it, the reference band is
+  // read from `image`.
+  std::optional<RawImage> reference_image;
+  std::optional<Annotation> reference_annotation;
   std::vector<LaneSpec> lanes;
   BandHints hints;
   std::optional<Annotation> annotation;  // manual correction overrides detection
   bool invert = false;                   // dark bands on a light background
   std::string image_file;                // as written in the experiment file
   std::string total_protein_file;
+  std::string reference_image_file;
 };
 
 struct Experiment {

@@ -176,3 +176,32 @@ TEST_CASE("dilution lanes outside the proportional range are flagged") {
     if (w.find("outside the proportional range") != std::string::npos) ++flagged;
   CHECK(flagged == loads.size());
 }
+
+TEST_CASE("a loading control in a separate image gives the same results as in the same image") {
+  SimParams p = sim_preset(ArtifactLevel::Clean);
+  p.n_gels = 2;
+  p.reps_per_gel = 2;
+  p.seed = 61;
+  Experiment same = to_experiment(simulate(p));
+  // Pin the detected annotations so both runs measure exactly the same windows.
+  const auto prepared = prepare(same, repo_spec(), 1);
+  for (std::size_t b = 0; b < same.blots.size(); ++b) same.blots[b].annotation = prepared.blots[b].annotation;
+
+  Experiment split = same;
+  for (auto& b : split.blots) {
+    b.reference_image = b.image;  // the "other" image is a copy of the same one
+    b.reference_image_file = b.image_file + ".reference";
+    Annotation ref = *b.annotation;
+    ref.target_y = ref.reference_y;  // its band of interest is the loading control
+    b.reference_annotation = ref;
+  }
+  const auto a = analyze(same, repo_spec(), options(1, 50));
+  const auto c = analyze(split, repo_spec(), options(1, 50));
+  REQUIRE(a.multiverse.outcomes[0].size() == c.multiverse.outcomes[0].size());
+  for (std::size_t i = 0; i < a.multiverse.outcomes[0].size(); ++i) {
+    CHECK(a.multiverse.outcomes[0][i].valid == c.multiverse.outcomes[0][i].valid);
+    if (a.multiverse.outcomes[0][i].valid)
+      CHECK(a.multiverse.outcomes[0][i].lfc == doctest::Approx(c.multiverse.outcomes[0][i].lfc).epsilon(1e-9));
+  }
+  CHECK(a.summaries[0].robustness == c.summaries[0].robustness);
+}

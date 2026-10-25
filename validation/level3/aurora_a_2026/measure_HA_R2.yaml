@@ -1,0 +1,11 @@
+name: AURORA A 3G HA_R2
+image: 3G_WB_HA_R2.tif
+lane_width: 64
+band_half_height: 37
+refine_rows: 3
+lanes:
+  - {x: 680.7}
+  - {x: 753.5}
+  - {x: 850.8}
+bands:
+  - {name: band, y: 1213}

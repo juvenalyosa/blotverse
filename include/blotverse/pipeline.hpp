@@ -28,6 +28,7 @@ struct AnalysisOptions {
 
 struct PreparedBlot {
   Annotation annotation;
+  std::optional<Annotation> reference_annotation;  // when the loading control has its own image
   BlotQc qc;
 };
 

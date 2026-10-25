@@ -106,6 +106,8 @@ blots:
     total_protein: gel1_stain.tif   # optional, registered to gel1.tif
     bands: {target_y: 95, reference_y: 205}   # approximate rows (optional hints)
     lanes_x: [56, 344]              # centres of first and last sample lane (optional)
+    # reference_image: gel1_actin.tif # loading control imaged separately (optional),
+    # reference_annotation: {...}     #   with its own lanes and band rows
     lanes:                          # left to right
       - {group: ctrl, sample: c1}
       - {group: treat, sample: t1}
@@ -146,6 +148,9 @@ Default universe: `rb2 / profile / hk / fixed / log / welch`.
 Known amounts: `blotverse dilution CONFIG.yaml --out DIR` measures linearity and
 known-fold-change recovery of every branch on a dilution series. It is applied to the
 public LI-COR series of Pillai-Kastoori et al. (2020).
+
+Published experiments (plan level 3): reanalysis of raw images deposited with articles,
+compared with the authors' own quantification, in [`docs/level3.md`](docs/level3.md).
 
 Real data: public raw 16-bit acquisitions, the simulator realism check (`blotverse
 imagestats`) and lane detection against authors' Image Lab annotations are in

@@ -1,0 +1,46 @@
+# AURORA A - DICER, Fig. 3G (EMBO Rep 2026, doi:10.1038/s44319-026-00850-0).
+# HA-IP lanes only (WT, mut1, mut2); target DICER, loading control HA imaged
+# separately. Replicate 3 is excluded: the deposited HA_R3 image holds four
+# strips and the files do not identify the one for replicate 3.
+# Lane/band positions: validation/level3/refine_lanes.py on visually located bands.
+name: AURORA A Fig. 3G (DICER / HA, HA-IP)
+control_group: WT
+blots:
+  - id: R1
+    image: 3G_WB_DICER_R1.tif
+    reference_image: 3G_WB_HA_R1.tif
+    lanes:
+      - {group: WT, sample: R1-WT}
+      - {group: mut1, sample: R1-mut1}
+      - {group: mut2, sample: R1-mut2}
+    annotation:
+      lanes: [{x: 751.6, width: 60}, {x: 827.5, width: 60}, {x: 911.4, width: 60}]
+      target_y: [1147, 1147, 1147]
+      reference_y: [1147, 1147, 1147]
+      band_half_height: 25
+      source: manual
+    reference_annotation:
+      lanes: [{x: 774.1, width: 64}, {x: 858.8, width: 64}, {x: 944.5, width: 64}]
+      target_y: [1179, 1179, 1179]
+      reference_y: [1179, 1179, 1179]
+      band_half_height: 40
+      source: manual
+  - id: R2
+    image: 3G_WB_DICER_R2.tif
+    reference_image: 3G_WB_HA_R2.tif
+    lanes:
+      - {group: WT, sample: R2-WT}
+      - {group: mut1, sample: R2-mut1}
+      - {group: mut2, sample: R2-mut2}
+    annotation:
+      lanes: [{x: 669.6, width: 56}, {x: 746.2, width: 56}, {x: 817.7, width: 56}]
+      target_y: [1080, 1080, 1080]
+      reference_y: [1080, 1080, 1080]
+      band_half_height: 15
+      source: manual
+    reference_annotation:
+      lanes: [{x: 680.7, width: 64}, {x: 753.5, width: 64}, {x: 850.8, width: 64}]
+      target_y: [1213, 1213, 1213]
+      reference_y: [1213, 1213, 1213]
+      band_half_height: 37
+      source: manual

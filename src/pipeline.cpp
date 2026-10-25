@@ -19,18 +19,23 @@ namespace {
 struct Corrected {
   ImageF target;
   std::optional<ImageF> total;
+  std::optional<ImageF> reference;  // separate loading-control image
 };
 
 Corrected correct_background(const Blot& blot, const ImageF& target, const std::optional<ImageF>& total,
-                             const Annotation& ann, const Branch& branch) {
+                             const std::optional<ImageF>& reference, const Annotation& ann,
+                             const std::optional<Annotation>& ref_ann, const Branch& branch) {
   Corrected c;
   if (branch.method == Method::RollingBall) {
     const double radius = branch.radius_factor * ann.band_height();
     c.target = subtract(target, rolling_ball_background(target, radius));
     if (total) c.total = subtract(*total, rolling_ball_background(*total, radius));
+    if (reference && ref_ann)
+      c.reference = subtract(*reference, rolling_ball_background(*reference, branch.radius_factor * ref_ann->band_height()));
   } else if (branch.method == Method::LocalBackground) {
     c.target = local_background_bands(target, ann);
     if (total) c.total = local_background_lanes(*total, ann);
+    if (reference && ref_ann) c.reference = local_background_bands(*reference, *ref_ann);
   } else {
     throw std::logic_error("unknown background method for blot " + blot.id);
   }
@@ -64,7 +69,7 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
   // --- [2]-[3] Images, lanes/bands and quality control, per blot ---------------
   const std::size_t nb = experiment.blots.size();
   std::vector<ImageF> target_f(nb);
-  std::vector<std::optional<ImageF>> total_f(nb);
+  std::vector<std::optional<ImageF>> total_f(nb), reference_f(nb);
   prep.blots.resize(nb);
   parallel_for(
       nb,
@@ -80,8 +85,29 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
         } catch (const std::exception& e) {
           throw std::runtime_error("blot '" + blot.id + "': " + e.what());
         }
+        if (blot.reference_image) {
+          // The loading control lives in its own image: the target annotation
+          // carries one band per lane.
+          reference_f[b] = to_float(blot.reference_image->pixels);
+          pb.reference_annotation = blot.reference_annotation;
+          pb.annotation.reference_y = pb.annotation.target_y;
+        }
         pb.qc = check_blot(blot.id, blot.image, blot.total_protein ? &*blot.total_protein : nullptr,
                            pb.annotation, spec.qc.saturation_min_pixels);
+        if (blot.reference_image && pb.reference_annotation) {
+          for (const auto& w : blot.reference_image->meta.warnings) pb.qc.warnings.push_back("reference image: " + w);
+          for (std::size_t i = 0; i < pb.reference_annotation->lane_count(); ++i) {
+            const std::size_t n = count_saturated(blot.reference_image->pixels,
+                                                  band_window(*pb.reference_annotation, i, BandKind::Target),
+                                                  blot.reference_image->meta.detector_max);
+            if (n >= spec.qc.saturation_min_pixels) {
+              pb.qc.lanes[i].excluded = true;
+              ++pb.qc.saturated_bands;
+              pb.qc.lanes[i].flags.push_back("reference band saturated in the reference image (" +
+                                             std::to_string(n) + " px at detector maximum)");
+            }
+          }
+        }
         report("Quality control", ++blots_done, nb);
       },
       threads);
@@ -92,6 +118,9 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
     const int w = target_f[b].width(), h = target_f[b].height();
     auto check = check_local_background(ann, w, h);
     if (check.valid && total_f[b]) check = check_local_background_lanes(ann, w, h);
+    if (check.valid && reference_f[b] && prep.blots[b].reference_annotation)
+      check = check_local_background(*prep.blots[b].reference_annotation, reference_f[b]->width(),
+                                     reference_f[b]->height());
     if (!check.valid) {
       data.facts.local_background_valid = false;
       prep.warnings.push_back("blot '" + experiment.blots[b].id +
@@ -152,16 +181,18 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
         const std::size_t b = task / bg_branches.size();
         const std::size_t k = task % bg_branches.size();
         const auto& ann = prep.blots[b].annotation;
+        const auto& ref_ann = prep.blots[b].reference_annotation;
         const Corrected c = correct_background(experiment.blots[b], target_f[b],
                                                data.facts.has_total_protein ? total_f[b] : std::nullopt,
-                                               ann, bg_branches[k]);
+                                               reference_f[b], ann, ref_ann, bg_branches[k]);
         for (std::size_t m = 0; m < band_branches.size(); ++m) {
           const BandMethod method = band_method(band_branches[m].method);
           auto& q = data.quant[k][m];
           for (std::size_t i : obs_of_blot[b]) {
             const auto lane = static_cast<std::size_t>(data.observations[i].lane);
             q.target[i] = quantify_band(c.target, ann, lane, BandKind::Target, method);
-            q.reference[i] = quantify_band(c.target, ann, lane, BandKind::Reference, method);
+            q.reference[i] = c.reference ? quantify_band(*c.reference, *ref_ann, lane, BandKind::Target, method)
+                                         : quantify_band(c.target, ann, lane, BandKind::Reference, method);
             if (c.total) q.total[i] = quantify_lane_total(*c.total, ann, lane, method);
           }
         }

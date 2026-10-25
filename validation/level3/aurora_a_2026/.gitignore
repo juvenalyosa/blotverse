@@ -1,0 +1,4 @@
+*.tif
+*.pdf
+*.xlsx
+out/

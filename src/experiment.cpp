@@ -96,6 +96,13 @@ Experiment parse_experiment(const std::string& yaml_text, const std::filesystem:
       b.total_protein = read_image(base_dir / b.total_protein_file);
       if (b.invert) invert_image(*b.total_protein);
     }
+    if (node["reference_image"]) {
+      b.reference_image_file = node["reference_image"].as<std::string>();
+      b.reference_image = read_image(base_dir / b.reference_image_file);
+      if (b.invert) invert_image(*b.reference_image);
+      if (!node["reference_annotation"])
+        throw ExperimentError("blot '" + b.id + "': reference_image needs a reference_annotation");
+    }
     for (const auto& l : node["lanes"]) {
       LaneSpec lane;
       lane.group = l["group"].as<std::string>();
@@ -120,6 +127,13 @@ Experiment parse_experiment(const std::string& yaml_text, const std::filesystem:
       if (b.annotation->lane_count() != b.lanes.size())
         throw ExperimentError("blot '" + b.id + "': annotation lane count differs from 'lanes'");
       b.annotation->validate(b.image.pixels.width(), b.image.pixels.height());
+    }
+    if (node["reference_annotation"]) {
+      if (!b.reference_image) throw ExperimentError("blot '" + b.id + "': reference_annotation needs a reference_image");
+      b.reference_annotation = annotation_from_yaml(node["reference_annotation"]);
+      if (b.reference_annotation->lane_count() != b.lanes.size())
+        throw ExperimentError("blot '" + b.id + "': reference annotation lane count differs from 'lanes'");
+      b.reference_annotation->validate(b.reference_image->pixels.width(), b.reference_image->pixels.height());
     }
     ex.blots.push_back(std::move(b));
   }
@@ -154,6 +168,8 @@ void save_experiment(const std::filesystem::path& path, const Experiment& experi
     if (b.invert) out << YAML::Key << "invert" << YAML::Value << true;
     if (!b.total_protein_file.empty())
       out << YAML::Key << "total_protein" << YAML::Value << b.total_protein_file;
+    if (!b.reference_image_file.empty())
+      out << YAML::Key << "reference_image" << YAML::Value << b.reference_image_file;
     if (b.hints.target_y || b.hints.reference_y) {
       out << YAML::Key << "bands" << YAML::Value << YAML::BeginMap;
       if (b.hints.target_y) out << YAML::Key << "target_y" << YAML::Value << *b.hints.target_y;
@@ -174,6 +190,8 @@ void save_experiment(const std::filesystem::path& path, const Experiment& experi
     }
     out << YAML::EndSeq;
     if (b.annotation) out << YAML::Key << "annotation" << YAML::Value << annotation_to_yaml(*b.annotation);
+    if (b.reference_annotation)
+      out << YAML::Key << "reference_annotation" << YAML::Value << annotation_to_yaml(*b.reference_annotation);
     out << YAML::EndMap;
   }
   out << YAML::EndSeq << YAML::EndMap;

@@ -49,12 +49,17 @@ void write_repro_file(const std::filesystem::path& path, const MultiverseSpec& s
   for (const auto& b : experiment.blots) {
     out << YAML::Key << b.image_file << YAML::Value << b.image.meta.sha256;
     if (b.total_protein) out << YAML::Key << b.total_protein_file << YAML::Value << b.total_protein->meta.sha256;
+    if (b.reference_image) out << YAML::Key << b.reference_image_file << YAML::Value << b.reference_image->meta.sha256;
   }
   out << YAML::EndMap;
 
   out << YAML::Key << "annotations" << YAML::Value << YAML::BeginMap;
-  for (std::size_t b = 0; b < experiment.blots.size(); ++b)
+  for (std::size_t b = 0; b < experiment.blots.size(); ++b) {
     out << YAML::Key << experiment.blots[b].id << YAML::Value << annotation_to_yaml(result.blots[b].annotation);
+    if (result.blots[b].reference_annotation)
+      out << YAML::Key << experiment.blots[b].id + ":reference" << YAML::Value
+          << annotation_to_yaml(*result.blots[b].reference_annotation);
+  }
   out << YAML::EndMap;
 
   out << YAML::Key << "results" << YAML::Value << YAML::BeginSeq;
@@ -110,7 +115,10 @@ Experiment experiment_from_repro(const ReproRecord& record) {
     };
     check(b.image_file, b.image);
     if (b.total_protein) check(b.total_protein_file, *b.total_protein);
+    if (b.reference_image) check(b.reference_image_file, *b.reference_image);
     if (const auto it = record.annotations.find(b.id); it != record.annotations.end()) b.annotation = it->second;
+    if (const auto it = record.annotations.find(b.id + ":reference"); it != record.annotations.end())
+      b.reference_annotation = it->second;
   }
   return ex;
 }

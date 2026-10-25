@@ -35,6 +35,7 @@ BlotQc check_blot(const std::string& blot_id, const RawImage& image, const RawIm
   for (std::size_t i = 0; i < ann.lane_count(); ++i) {
     auto& lane = qc.lanes[i];
     for (BandKind kind : {BandKind::Target, BandKind::Reference}) {
+      if (kind == BandKind::Reference && ann.single_band()) continue;
       const std::size_t n = count_saturated(image.pixels, band_window(ann, i, kind), image.meta.detector_max);
       if (n >= min_saturated_pixels) {
         lane.excluded = true;

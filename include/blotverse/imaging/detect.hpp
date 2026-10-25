@@ -29,6 +29,9 @@ struct Annotation {
   // Band height used to scale rolling-ball radii.
   int band_height() const noexcept { return 2 * band_half_height + 1; }
   void validate(int image_width, int image_height) const;
+  // True when every lane's reference row equals its target row (one band per
+  // lane: the loading control is read from another image).
+  bool single_band() const noexcept { return target_y == reference_y; }
 };
 
 // What the user roughly knows about the layout (all optional): band rows from

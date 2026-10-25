@@ -64,10 +64,13 @@ DilutionConfig load_dilution_config(const std::filesystem::path& path) {
   c.lane_width = root["lane_width"].as<double>();
   c.band_half_height = root["band_half_height"].as<int>();
   if (root["refine_rows"]) c.refine_rows = root["refine_rows"].as<int>();
-  for (const auto& l : root["lanes"]) c.lanes.push_back({l["x"].as<double>(), l["load"].as<double>()});
+  // Loads are optional: without them the tool only measures every lane under
+  // every branch (used for comparisons with published quantifications).
+  for (const auto& l : root["lanes"])
+    c.lanes.push_back({l["x"].as<double>(), l["load"] ? l["load"].as<double>() : 0.0});
   for (const auto& b : root["bands"]) c.bands.push_back({b["name"].as<std::string>(), b["y"].as<double>()});
-  if (c.lanes.size() < 3 || c.bands.empty())
-    throw std::runtime_error("dilution config needs >= 3 lanes and >= 1 band");
+  if (c.lanes.empty() || c.bands.empty())
+    throw std::runtime_error("measurement config needs lanes and at least one band");
   return c;
 }
 
@@ -119,12 +122,16 @@ std::vector<DilutionFit> analyze_dilution(const DilutionConfig& config, const Mu
         fit.band_definition = bd.id;
         for (std::size_t i = 0; i < config.lanes.size(); ++i)
           fit.signal.push_back(quantify_band(corrected, ann, i, BandKind::Target, band_method(bd.method)));
-        loglog_fit(loads, fit.signal, fit.slope, fit.r2);
-        fit.nonlinear = linear_range_flags(loads, fit.signal, spec.qc.linear_range_min_slope,
-                                           spec.qc.linear_range_max_slope);
+        const bool has_loads = std::all_of(loads.begin(), loads.end(), [](double l) { return l > 0; });
+        fit.nonlinear.assign(loads.size(), false);
+        if (has_loads && loads.size() >= 3) {
+          loglog_fit(loads, fit.signal, fit.slope, fit.r2);
+          fit.nonlinear = linear_range_flags(loads, fit.signal, spec.qc.linear_range_min_slope,
+                                             spec.qc.linear_range_max_slope);
+        }
         double err_all = 0, err_ok = 0;
         std::size_t n_all = 0;
-        for (std::size_t i = 0; i < loads.size(); ++i)
+        for (std::size_t i = 0; i < loads.size() && has_loads; ++i)
           for (std::size_t j = i + 1; j < loads.size(); ++j) {
             if (!(fit.signal[i] > 0 && fit.signal[j] > 0 && loads[i] > 0 && loads[j] > 0)) continue;
             const double err = std::fabs(std::log2(fit.signal[i] / fit.signal[j]) - std::log2(loads[i] / loads[j]));

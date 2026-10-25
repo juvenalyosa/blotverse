@@ -82,6 +82,14 @@ LocalBackgroundCheck check_local_background(const Annotation& ann, int width, in
   for (std::size_t i = 0; i < ann.lane_count(); ++i) {
     const Rect t = band_window(ann, i, BandKind::Target);
     const Rect r = band_window(ann, i, BandKind::Reference);
+    if (ann.single_band()) {
+      for (const Rect& s : {strip_above(t, h), strip_below(t, h)})
+        if (!s.inside(width, height))
+          return {false, "local background strip leaves the image in lane " + std::to_string(i + 1)};
+      if (i > 0 && lane_rect(ann, i - 1).x1 > lane_rect(ann, i).x0)
+        return {false, "lanes " + std::to_string(i) + " and " + std::to_string(i + 1) + " overlap"};
+      continue;
+    }
     if (t.intersects(r))
       return {false, "target and reference bands overlap in lane " + std::to_string(i + 1)};
     for (const auto& [window, other] : {std::pair{t, r}, std::pair{r, t}}) {
