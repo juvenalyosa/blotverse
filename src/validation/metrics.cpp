@@ -79,8 +79,10 @@ Interval wilson_interval(std::size_t k, std::size_t n, double confidence) {
   const double centre = (p + z * z / (2.0 * dn)) / denom;
   const double half = z * std::sqrt(p * (1.0 - p) / dn + z * z / (4.0 * dn * dn)) / denom;
   out.estimate = p;
-  out.lo = std::max(0.0, centre - half);
-  out.hi = std::min(1.0, centre + half);
+  // The bounds are exactly 0 when k = 0 and exactly 1 when k = n; computing
+  // them leaves rounding residue (e.g. 4e-19) that differs across libms.
+  out.lo = k == 0 ? 0.0 : std::max(0.0, centre - half);
+  out.hi = k == n ? 1.0 : std::min(1.0, centre + half);
   return out;
 }
 
