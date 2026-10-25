@@ -224,6 +224,7 @@ MultiverseSpec parse_spec(const std::string& yaml_text) {
   if (const YAML::Node qc = root["qc"]) {
     spec.qc.saturation_min_pixels = get_or<std::size_t>(qc, "saturation_min_pixels", 1);
     spec.qc.linear_range_min_slope = get_or<double>(qc, "linear_range_min_slope", 0.8);
+    spec.qc.linear_range_max_slope = get_or<double>(qc, "linear_range_max_slope", 1.25);
   }
   if (const YAML::Node v = root["verdict"]) {
     spec.verdict.robust_min_r = get_or<double>(v, "robust_min_r", 0.9);

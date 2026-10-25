@@ -1,0 +1,21 @@
+# Pillai-Kastoori et al. 2020, image 0000453_03, 800 nm channel (LI-COR, float16).
+# Lane loads from the authors' Image Studio shape labels (0000453_03_shape.txt);
+# lane centres and band rows were located on the image (column / row profiles).
+name: Pillai-Kastoori 2020 linear range, 800 nm
+image: 0000453_03_800.TIF
+lane_width: 34
+band_half_height: 5
+refine_rows: 3
+lanes:
+  - {x: 78.4, load: 40}
+  - {x: 164.2, load: 30}
+  - {x: 215.6, load: 20}
+  - {x: 267.1, load: 10}
+  - {x: 315.3, load: 5}
+  - {x: 363.8, load: 2.5}
+  - {x: 409.0, load: 1.25}
+bands:
+  - {name: cPARP, y: 169}
+  - {name: beta-actin, y: 228}
+  - {name: GAPDH, y: 243}
+  - {name: COXIV, y: 309}

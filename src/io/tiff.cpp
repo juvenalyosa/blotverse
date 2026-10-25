@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <array>
 #include <cctype>
+#include <cmath>
 #include <cstring>
 #include <fstream>
 #include <memory>
@@ -54,6 +55,47 @@ std::string compression_name(std::uint16_t c, bool& lossless) {
     case COMPRESSION_OJPEG: lossless = false; return "jpeg";
     default: lossless = false; return "unknown(" + std::to_string(c) + ")";
   }
+}
+
+// IEEE 754 half precision to double.
+double half_to_float(std::uint16_t h) {
+  const int sign = (h >> 15) & 1, exponent = (h >> 10) & 0x1F, mantissa = h & 0x3FF;
+  double v;
+  if (exponent == 0) v = std::ldexp(mantissa, -24);                       // subnormal
+  else if (exponent == 31) v = mantissa ? std::nan("") : INFINITY;        // inf / NaN
+  else v = std::ldexp(mantissa + 1024, exponent - 25);
+  return sign ? -v : v;
+}
+
+// Whole image (first IFD) as row-major bytes, from strips or tiles.
+std::vector<std::uint8_t> read_pixel_bytes(TIFF* tif, std::uint32_t width, std::uint32_t height,
+                                           std::size_t bytes_per_pixel, const std::filesystem::path& path) {
+  std::vector<std::uint8_t> out(static_cast<std::size_t>(width) * height * bytes_per_pixel);
+  const std::size_t row_bytes = static_cast<std::size_t>(width) * bytes_per_pixel;
+  if (!TIFFIsTiled(tif)) {
+    std::vector<std::uint8_t> line(static_cast<std::size_t>(TIFFScanlineSize(tif)));
+    for (std::uint32_t y = 0; y < height; ++y) {
+      if (TIFFReadScanline(tif, line.data(), y, 0) < 0)
+        throw std::runtime_error("failed to read TIFF row " + std::to_string(y) + ": " + path.string());
+      std::memcpy(out.data() + y * row_bytes, line.data(), row_bytes);
+    }
+    return out;
+  }
+  std::uint32_t tw = 0, th = 0;
+  TIFFGetField(tif, TIFFTAG_TILEWIDTH, &tw);
+  TIFFGetField(tif, TIFFTAG_TILELENGTH, &th);
+  std::vector<std::uint8_t> tile(static_cast<std::size_t>(TIFFTileSize(tif)));
+  for (std::uint32_t ty = 0; ty < height; ty += th)
+    for (std::uint32_t tx = 0; tx < width; tx += tw) {
+      if (TIFFReadTile(tif, tile.data(), tx, ty, 0, 0) < 0)
+        throw std::runtime_error("failed to read TIFF tile: " + path.string());
+      const std::uint32_t cols = std::min(tw, width - tx), rows = std::min(th, height - ty);
+      for (std::uint32_t r = 0; r < rows; ++r)
+        std::memcpy(out.data() + (ty + r) * row_bytes + tx * bytes_per_pixel,
+                    tile.data() + static_cast<std::size_t>(r) * tw * bytes_per_pixel,
+                    static_cast<std::size_t>(cols) * bytes_per_pixel);
+    }
+  return out;
 }
 
 }  // namespace
@@ -129,36 +171,65 @@ RawImage read_tiff(const std::filesystem::path& path) {
     throw ImageRejected("only greyscale images are supported in v1: " + path.string());
   if (samples > 1 && planar != PLANARCONFIG_CONTIG)
     throw ImageRejected("planar colour TIFFs are not supported: " + path.string());
-  if (sample_format != SAMPLEFORMAT_UINT)
-    throw ImageRejected("only unsigned integer pixels are supported: " + path.string());
-  if (bits != 8 && bits != 16)
+  const bool is_float = sample_format == SAMPLEFORMAT_IEEEFP;
+  if (sample_format != SAMPLEFORMAT_UINT && !is_float)
+    throw ImageRejected("only unsigned integer or floating-point pixels are supported: " + path.string());
+  if (is_float ? (bits != 16 && bits != 32) : (bits != 8 && bits != 16))
     throw ImageRejected("unsupported bit depth " + std::to_string(bits) + ": " + path.string());
+  if (is_float && samples != 1)
+    throw ImageRejected("floating-point colour images are not supported: " + path.string());
   if (width == 0 || height == 0) throw ImageRejected("empty image: " + path.string());
 
   raw.meta.bits_per_sample = bits;
-  raw.meta.detector_max = bits == 16 ? 65535u : 255u;
+  raw.meta.detector_max = bits == 8 ? 255u : 65535u;
   if (bits == 8)
     raw.meta.warnings.push_back(
         "8-bit image: limited dynamic range; saturation and quantisation error are likely");
 
-  raw.pixels = ImageU16(static_cast<int>(width), static_cast<int>(height));
-  std::vector<std::uint8_t> line(static_cast<std::size_t>(TIFFScanlineSize(tif.get())));
-  auto sample = [&](std::uint32_t index) -> std::uint16_t {
-    if (bits == 8) return line[index];
-    std::uint16_t word;
-    std::memcpy(&word, line.data() + 2 * index, sizeof word);  // libtiff returns host order
-    return word;
-  };
-  bool grey_rgb = true;  // colour files whose R, G and B are identical
-  for (std::uint32_t y = 0; y < height; ++y) {
-    if (TIFFReadScanline(tif.get(), line.data(), y, 0) < 0)
-      throw std::runtime_error("failed to read TIFF row " + std::to_string(y) + ": " +
-                               path.string());
-    for (std::uint32_t x = 0; x < width; ++x) {
-      const std::uint16_t v = sample(x * samples);
-      if (samples > 1 && (sample(x * samples + 1) != v || sample(x * samples + 2) != v)) grey_rgb = false;
-      raw.pixels(static_cast<int>(x), static_cast<int>(y)) = v;
+  const std::size_t bytes_per_sample = bits / 8;
+  const std::vector<std::uint8_t> buffer =
+      read_pixel_bytes(tif.get(), width, height, bytes_per_sample * samples, path);
+  auto sample = [&](std::size_t index) -> double {  // index in samples, libtiff returns host order
+    const std::uint8_t* at = buffer.data() + index * bytes_per_sample;
+    if (!is_float) {
+      if (bits == 8) return *at;
+      std::uint16_t w;
+      std::memcpy(&w, at, sizeof w);
+      return w;
     }
+    if (bits == 16) {
+      std::uint16_t h;
+      std::memcpy(&h, at, sizeof h);
+      return half_to_float(h);
+    }
+    float f;
+    std::memcpy(&f, at, sizeof f);
+    return f;
+  };
+
+  raw.pixels = ImageU16(static_cast<int>(width), static_cast<int>(height));
+  const std::size_t n = static_cast<std::size_t>(width) * height;
+  double scale = 1.0;
+  if (is_float) {
+    // Floating-point acquisitions (LI-COR Image Studio) are rescaled so their
+    // maximum maps to 65535; ratios between bands are unchanged.
+    double mx = 0.0;
+    for (std::size_t i = 0; i < n; ++i) {
+      const double v = sample(i);
+      if (std::isfinite(v)) mx = std::max(mx, v);
+    }
+    scale = mx > 0 ? 65535.0 / mx : 1.0;
+    raw.meta.float_scale = scale;
+    raw.meta.detector_max = 65536u;  // no pixel value can mark saturation
+    raw.meta.warnings.push_back("floating-point image rescaled to 16-bit (x" + std::to_string(scale) +
+                                "); detector saturation cannot be checked from pixel values");
+  }
+  bool grey_rgb = true;  // colour files whose R, G and B are identical
+  for (std::size_t i = 0; i < n; ++i) {
+    const double v = sample(i * samples);
+    if (samples > 1 && (sample(i * samples + 1) != v || sample(i * samples + 2) != v)) grey_rgb = false;
+    const double scaled = std::isfinite(v) ? std::clamp(std::round(v * scale), 0.0, 65535.0) : 0.0;
+    raw.pixels.data()[i] = static_cast<std::uint16_t>(scaled);
   }
   if (samples > 1) {
     if (!grey_rgb)
@@ -211,7 +282,8 @@ void analyse_pixel_depth(RawImage& raw) {
 }
 
 void invert_image(RawImage& raw) {
-  for (auto& v : raw.pixels.data()) v = static_cast<std::uint16_t>(raw.meta.detector_max - v);
+  const auto top = static_cast<std::uint16_t>(std::min<std::uint32_t>(raw.meta.detector_max, 65535u));
+  for (auto& v : raw.pixels.data()) v = static_cast<std::uint16_t>(top - v);
   raw.meta.appears_inverted = !raw.meta.appears_inverted;
   raw.meta.warnings.push_back("image inverted on load (invert: true)");
 }

@@ -150,11 +150,16 @@ TEST_CASE("saturated bands are flagged and their lanes excluded") {
   CHECK(count_saturated(px, Rect{0, 0, 130, 140}, 65535) == 1);
 }
 
-TEST_CASE("linear range flags the flattening part of a dilution series") {
+TEST_CASE("linear range: proportional run, flagged on both sides") {
   const std::vector<double> load{1, 2, 4, 8, 16, 32};
   const std::vector<double> signal{10, 20, 40, 78, 100, 110};
-  const auto flags = linear_range_flags(load, signal, 0.8);
+  const auto flags = linear_range_flags(load, signal, 0.8, 1.25);
   CHECK(flags == std::vector<bool>{false, false, false, false, true, true});
+  // Loss of signal at low loads (slope > 1.25) is flagged too.
+  const std::vector<double> lost{0.2, 2, 4, 8, 16, 20};
+  CHECK(linear_range_flags(load, lost, 0.8, 1.25) == std::vector<bool>{true, false, false, false, false, true});
+  // Input order does not matter.
+  CHECK(linear_range_flags({4, 1, 2}, {40, 10, 20}, 0.8, 1.25) == std::vector<bool>{false, false, false});
 }
 
 TEST_CASE("lane fit ignores a ladder lane and honours lane hints") {

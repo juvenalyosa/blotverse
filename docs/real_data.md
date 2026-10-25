@@ -90,3 +90,57 @@ This check produced three changes to the detection:
 
 Both real cases are now covered by regression tests on simulated equivalents (ladder lane,
 doublet).
+
+## 4. Known truth on a real image: Pillai-Kastoori et al. (2020) dilution series
+
+**Source.** Pillai-Kastoori L. et al. (2020), *A systematic approach to quantitative
+Western blot analysis*, Anal Biochem 593:113608. Data: Mendeley Data
+doi:10.17632/vwcy56z5jh.1, CC BY 4.0.
+
+**The image.** A raw LI-COR Odyssey CLx acquisition (16-bit floating point, now read
+natively) of one lysate loaded at 40, 30, 20, 10, 5, 2.5 and 1.25 µg. The lane loads come
+from the authors' Image Studio annotations. Four bands on the 800 nm channel are labelled
+in the authors' annotation as cPARP, β-actin, GAPDH and COXIV; the channel assignment of
+the labels was not verified.
+
+**Reproduce.**
+
+```bash
+validation/real_data/pillai_kastoori_2020/fetch.sh
+build/apps/blotverse dilution validation/real_data/pillai_kastoori_2020/dilution_800.yaml --out OUT
+```
+
+`blotverse dilution` quantifies every band under every background x band-definition
+branch of the spec (12 combinations). For each combination it reports:
+
+* the log-log slope of signal against load;
+* the lanes the linear-range QC rule flags;
+* the error of the estimated log2 fold change between lanes, whose true value is known
+  from the loads.
+
+Results are in `validation/results/dilution_pillai_kastoori_2020/`.
+
+| Band | Proportional range found (all 12 branches unless noted) | Known-FC error inside it (log2) | Known-FC error over all pairs (log2) |
+|---|---|---|---|
+| β-actin | 5–20 µg | **0.09–0.13** | 1.88–2.21 |
+| COXIV | 2 loads only; *which* 2 depends on the branch (5–10 or 20–30 µg) | 0.06–0.10 | 1.09–1.46 |
+| GAPDH | none (profile-peak branch: 2 loads) | – | 1.11–1.52 |
+| cPARP | none | – | 1.73–2.39 |
+
+Findings:
+
+* **Inside the proportional range, BlotVerse recovers known fold changes accurately on a
+  real blot:** within 0.13 log2 for β-actin in every branch.
+* **Outside it, no analysis branch can rescue the data.** Errors of 1–2.4 log2 come from
+  overload at 30–40 µg (the 40 µg lane is visibly distorted) and from loss of signal at
+  2.5–1.25 µg.
+* **Branch choice moves even the apparent linear range** (COXIV) and changes the
+  all-pairs error by up to 0.6 log2 (cPARP).
+* **Effect on the QC rule.** The original rule only caught the flattening at high loads.
+  Spec v1.2 makes it two-sided: slopes outside [0.8, 1.25] mark a lane. The rule is now
+  also applied in the pipeline to any blot whose lanes declare a `load`, as plan section 5
+  requires. Level-1 results are unchanged: seed-1 records are byte-identical under v1.2.
+
+**Limits.** This is one membrane with one replicate per load. It tests linearity and
+fold-change recovery, but not replicate statistics or the robustness score. Those still
+need the level-2 design (3 gels per condition).

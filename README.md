@@ -114,6 +114,10 @@ Default universe: `rb2 / profile / hk / fixed / log / welch`.
 
 ## Validation
 
+Known amounts: `blotverse dilution CONFIG.yaml --out DIR` measures linearity and
+known-fold-change recovery of every branch on a dilution series. It is applied to the
+public LI-COR series of Pillai-Kastoori et al. (2020).
+
 Real data: public raw 16-bit acquisitions, the simulator realism check (`blotverse
 imagestats`) and lane detection against authors' Image Lab annotations are in
 [`docs/real_data.md`](docs/real_data.md).

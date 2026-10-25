@@ -150,3 +150,22 @@ TEST_CASE("joint test enumerates every relabelling when they fit the budget") {
   const auto mc = analyze_sim(ArtifactLevel::Clean, 1.0, 21, true, 100);
   CHECK_FALSE(mc.summaries[0].joint.exact);
 }
+
+TEST_CASE("dilution lanes outside the proportional range are flagged") {
+  // Every lane really holds the same amount, but the experiment declares a
+  // 2-fold dilution series: the signal is flat, no step is proportional, and
+  // every declared lane must be flagged.
+  SimParams p = sim_preset(ArtifactLevel::Clean);
+  p.n_gels = 1;
+  p.reps_per_gel = 3;
+  p.true_lfc = {0.0, 0.0};
+  p.seed = 8;
+  Experiment ex = to_experiment(simulate(p));
+  const std::vector<double> loads{1, 2, 4, 8, 16, 32};
+  for (std::size_t i = 0; i < ex.blots[0].lanes.size(); ++i) ex.blots[0].lanes[i].load = loads[i];
+  const auto r = analyze(ex, repo_spec(), AnalysisOptions{0, 10});
+  std::size_t flagged = 0;
+  for (const auto& w : r.warnings)
+    if (w.find("outside the proportional range") != std::string::npos) ++flagged;
+  CHECK(flagged == loads.size());
+}

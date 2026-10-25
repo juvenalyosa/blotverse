@@ -21,7 +21,9 @@ Criteria, intervals and decision rules were fixed in
 [validation_protocol.md](validation_protocol.md) and committed before the confirmatory run
 (commit `9c0eff8`). Setup:
 
-* spec v1.1.0 (sha256 `d332a710…d210`);
+* spec v1.1.0 (sha256 `d332a710…d210`). Spec v1.2.0, whose only change is the two-sided
+  linear-range QC for blots that declare loads, leaves these results byte-identical
+  (verified on seed 1);
 * simulator presets v2, calibrated to real images ([real_data.md](real_data.md));
 * comb-fit lane detection.
 

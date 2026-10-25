@@ -51,6 +51,7 @@ add_library(blotverse
   src/report/tables.cpp
   src/validation/harness.cpp
   src/validation/metrics.cpp
+  src/validation/dilution.cpp
 )
 add_library(blotverse::blotverse ALIAS blotverse)
 

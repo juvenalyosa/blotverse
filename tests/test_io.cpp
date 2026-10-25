@@ -1,6 +1,7 @@
 #include <doctest/doctest.h>
 #include <tiffio.h>
 
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 
@@ -134,4 +135,49 @@ TEST_CASE("upscaled 8-bit data and inverted images are flagged") {
   invert_image(raw);
   CHECK(raw.pixels(0, 0) == 65535 - 257 * 249);
   CHECK_FALSE(raw.meta.appears_inverted);
+}
+
+namespace {
+// IEEE half encoding of a non-negative integer < 2048 (exactly representable).
+std::uint16_t half_of_int(int v) {
+  if (v == 0) return 0;
+  int e = 0;
+  while ((v >> e) > 1) ++e;  // v in [2^e, 2^(e+1))
+  const int mantissa = ((v << 10) >> e) & 0x3FF;
+  return static_cast<std::uint16_t>(((e + 15) << 10) | mantissa);
+}
+}  // namespace
+
+TEST_CASE("tiled float16 TIFF (LI-COR) is read and rescaled") {
+  const int w = 40, h = 24, tile = 16;
+  const fs::path p = temp_dir() / "licor_like.tif";
+  {
+    TIFF* t = TIFFOpen(p.string().c_str(), "w");
+    REQUIRE(t != nullptr);
+    TIFFSetField(t, TIFFTAG_IMAGEWIDTH, w);
+    TIFFSetField(t, TIFFTAG_IMAGELENGTH, h);
+    TIFFSetField(t, TIFFTAG_BITSPERSAMPLE, 16);
+    TIFFSetField(t, TIFFTAG_SAMPLESPERPIXEL, 1);
+    TIFFSetField(t, TIFFTAG_SAMPLEFORMAT, SAMPLEFORMAT_IEEEFP);
+    TIFFSetField(t, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+    TIFFSetField(t, TIFFTAG_TILEWIDTH, tile);
+    TIFFSetField(t, TIFFTAG_TILELENGTH, tile);
+    std::vector<std::uint16_t> buf(static_cast<std::size_t>(tile * tile));
+    for (int ty = 0; ty < h; ty += tile)
+      for (int tx = 0; tx < w; tx += tile) {
+        for (int r = 0; r < tile; ++r)
+          for (int c = 0; c < tile; ++c) {
+            const int x = tx + c, y = ty + r;
+            buf[static_cast<std::size_t>(r * tile + c)] = half_of_int(x < w && y < h ? x + 10 * y : 0);
+          }
+        TIFFWriteTile(t, buf.data(), static_cast<std::uint32_t>(tx), static_cast<std::uint32_t>(ty), 0, 0);
+      }
+    TIFFClose(t);
+  }
+  const RawImage raw = read_tiff(p);
+  const double max_value = (w - 1) + 10.0 * (h - 1);  // 269
+  CHECK(raw.meta.float_scale == doctest::Approx(65535.0 / max_value));
+  CHECK(raw.pixels(w - 1, h - 1) == 65535);
+  CHECK(raw.pixels(7, 3) == static_cast<std::uint16_t>(std::lround((7 + 30) * 65535.0 / max_value)));
+  CHECK(raw.meta.detector_max == 65536u);  // saturation cannot be read from float pixels
 }

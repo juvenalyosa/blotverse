@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <chrono>
 #include <map>
+#include <sstream>
 #include <stdexcept>
 
 #include "blotverse/analysis/stats.hpp"
@@ -159,6 +160,34 @@ PreparedExperiment prepare(const Experiment& experiment, const MultiverseSpec& s
         }
       },
       threads);
+
+  // Dilution series on a blot (lanes that declare a load): flag the lanes
+  // outside the proportional range, measured with the default branches.
+  const auto& def = spec.default_universe;
+  const auto& q_default = data.quant[def[static_cast<std::size_t>(Decision::Background)]]
+                                    [def[static_cast<std::size_t>(Decision::Band)]];
+  for (std::size_t b = 0; b < nb; ++b) {
+    std::vector<double> loads, signals;
+    std::vector<std::size_t> lanes;
+    for (std::size_t i : obs_of_blot[b]) {
+      const auto lane = static_cast<std::size_t>(data.observations[i].lane);
+      if (const auto& load = experiment.blots[b].lanes[lane].load) {
+        loads.push_back(*load);
+        signals.push_back(q_default.target[i]);
+        lanes.push_back(lane);
+      }
+    }
+    if (loads.size() < 3) continue;
+    const auto flags = linear_range_flags(loads, signals, spec.qc.linear_range_min_slope,
+                                          spec.qc.linear_range_max_slope);
+    for (std::size_t k = 0; k < flags.size(); ++k)
+      if (flags[k]) {
+        std::ostringstream msg;
+        msg << "blot '" << experiment.blots[b].id << "' lane " << lanes[k] + 1 << " (load " << loads[k]
+            << "): outside the proportional range of the dilution series";
+        prep.warnings.push_back(msg.str());
+      }
+  }
   return prep;
 }
 

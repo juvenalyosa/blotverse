@@ -17,9 +17,14 @@
 #          optimal-alignment normalisation are excluded when a blot has a single
 #          lane of some group (type I error 0.15-0.17 in simulation); (c) the
 #          verdict is "Not evaluable" when the joint test cannot reach alpha.
+#   1.2.0  Linear-range QC made two-sided (linear_range_max_slope) after the
+#          known-amount dilution series of Pillai-Kastoori et al. (2020) showed
+#          loss of signal at low loads; the check is now applied to blots whose
+#          lanes declare a load. No effect on level-1 results (simulated lanes
+#          declare no loads; verified by rerunning seed 1).
 
 name: blotverse-v1
-version: "1.1.0"
+version: "1.2.0"
 alpha: 0.05
 
 decisions:
@@ -140,7 +145,8 @@ exclusions:
 
 qc:
   saturation_min_pixels: 1      # a single pixel at the detector maximum flags the band
-  linear_range_min_slope: 0.8   # dilution series: log-log slope below this is non-linear
+  linear_range_min_slope: 0.8   # dilution series: log-log slope below this = saturation
+  linear_range_max_slope: 1.25  # ... above this = signal lost at low loads (v1.2)
 
 # Provisional thresholds, to be calibrated at level 1 before freezing.
 verdict:

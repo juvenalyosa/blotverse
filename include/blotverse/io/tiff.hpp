@@ -19,13 +19,14 @@ class ImageRejected : public std::runtime_error {
 struct ImageMeta {
   std::string path;
   int bits_per_sample = 16;
-  std::uint32_t detector_max = 65535;  // value that marks a saturated pixel
+  std::uint32_t detector_max = 65535;  // value that marks a saturated pixel (65536: unknown)
   std::string compression = "none";
   bool lossless = true;
   int effective_bits = 16;             // 8 when a 16-bit file holds upscaled 8-bit data
   std::size_t grey_levels = 0;         // distinct pixel values in the image
   bool appears_inverted = false;       // bright background (dark bands)
   double exposure_s = -1.0;            // from the acquisition metadata, if known
+  double float_scale = 0.0;            // > 0 when floating-point pixels were rescaled
   std::string sha256;                  // fingerprint of the decoded pixel data
   std::vector<std::string> warnings;
 };

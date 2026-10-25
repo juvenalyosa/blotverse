@@ -65,7 +65,8 @@ struct ExclusionRule {
 
 struct QcSpec {
   std::size_t saturation_min_pixels = 1;
-  double linear_range_min_slope = 0.8;
+  double linear_range_min_slope = 0.8;   // below: saturation
+  double linear_range_max_slope = 1.25;  // above: signal lost at low loads
 };
 
 struct VerdictSpec {

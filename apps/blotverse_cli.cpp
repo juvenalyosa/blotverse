@@ -26,6 +26,7 @@
 #include "blotverse/pipeline.hpp"
 #include "blotverse/report/report.hpp"
 #include "blotverse/sim/simulator.hpp"
+#include "blotverse/validation/dilution.hpp"
 #include "blotverse/validation/harness.hpp"
 #include "blotverse/version.hpp"
 
@@ -48,6 +49,8 @@ Usage:
   blotverse spec      [--spec FILE]                 summarise the multiverse specification
   blotverse lanes     IMAGE --lanes N --target-y Y --reference-y Y [--lanes-x FIRST,LAST]
                                                     automatic lane/band detection on one image (TSV)
+  blotverse dilution  CONFIG.yaml --out DIR [--spec FILE]
+                                                    known-amount dilution series: linearity per branch
   blotverse imagestats FILE... | --simulate LEVEL [--count N]
                                                     image statistics for the realism check
   blotverse --version
@@ -291,6 +294,17 @@ int cmd_lanes(const Args& a) {
   return 0;
 }
 
+int cmd_dilution(const Args& a) {
+  if (a.positional.size() != 1) throw std::runtime_error("dilution needs CONFIG.yaml");
+  const DilutionConfig config = load_dilution_config(a.positional[0]);
+  const auto fits = analyze_dilution(config, spec_from(a));
+  const fs::path out = a.require("out");
+  write_dilution_outputs(out, config, fits);
+  std::ifstream md(out / "dilution.md");
+  std::cout << md.rdbuf();
+  return 0;
+}
+
 int cmd_spec(const Args& a) {
   const MultiverseSpec spec = spec_from(a);
   std::cout << spec.name << " v" << spec.version << "  (sha256 " << sha256_hex(spec.source_text).substr(0, 16)
@@ -333,6 +347,7 @@ int main(int argc, char** argv) {
     if (cmd == "spec") return cmd_spec(args);
     if (cmd == "imagestats") return cmd_imagestats(args);
     if (cmd == "lanes") return cmd_lanes(args);
+    if (cmd == "dilution") return cmd_dilution(args);
     std::cerr << "unknown command '" << cmd << "'\n\n" << kUsage;
     return 1;
   } catch (const std::exception& e) {

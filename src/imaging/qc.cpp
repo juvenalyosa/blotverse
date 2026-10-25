@@ -56,27 +56,40 @@ BlotQc check_blot(const std::string& blot_id, const RawImage& image, const RawIm
   return qc;
 }
 
-std::vector<bool> linear_range_flags(const std::vector<double>& load,
-                                     const std::vector<double>& signal, double min_slope) {
+std::vector<bool> linear_range_flags(const std::vector<double>& load, const std::vector<double>& signal,
+                                     double min_slope, double max_slope) {
   if (load.size() != signal.size()) throw std::invalid_argument("linear_range_flags: size mismatch");
   std::vector<std::size_t> order(load.size());
   std::iota(order.begin(), order.end(), 0);
   std::sort(order.begin(), order.end(), [&](auto a, auto b) { return load[a] < load[b]; });
-  std::vector<bool> flags(load.size(), false);
-  bool saturating = false;
-  for (std::size_t k = 1; k < order.size(); ++k) {
-    const auto prev = order[k - 1];
-    const auto cur = order[k];
-    if (load[prev] <= 0 || load[cur] <= load[prev]) continue;
-    if (signal[prev] <= 0 || signal[cur] <= 0) {
-      flags[cur] = true;
-      continue;
-    }
-    const double slope = std::log(signal[cur] / signal[prev]) / std::log(load[cur] / load[prev]);
-    // Once the response flattens, every higher load is outside the linear range.
-    if (slope < min_slope) saturating = true;
-    if (saturating) flags[cur] = true;
+
+  // slope[k]: log-log slope between sorted points k and k+1 (NaN if undefined).
+  std::vector<double> slope;
+  for (std::size_t k = 0; k + 1 < order.size(); ++k) {
+    const double l0 = load[order[k]], l1 = load[order[k + 1]];
+    const double s0 = signal[order[k]], s1 = signal[order[k + 1]];
+    slope.push_back(l0 > 0 && l1 > l0 && s0 > 0 && s1 > 0 ? std::log(s1 / s0) / std::log(l1 / l0)
+                                                           : std::nan(""));
   }
+  auto proportional = [&](double v) { return v >= min_slope && v <= max_slope; };
+
+  std::size_t best_start = 0, best_len = 0;  // in segments
+  double best_dev = INFINITY;
+  for (std::size_t i = 0; i < slope.size(); ++i) {
+    double dev = 0.0;
+    for (std::size_t j = i; j < slope.size() && proportional(slope[j]); ++j) {
+      dev += std::fabs(slope[j] - 1.0);
+      const std::size_t len = j - i + 1;
+      if (len > best_len || (len == best_len && dev < best_dev)) {
+        best_start = i;
+        best_len = len;
+        best_dev = dev;
+      }
+    }
+  }
+  std::vector<bool> flags(load.size(), true);
+  if (best_len > 0)
+    for (std::size_t k = best_start; k <= best_start + best_len; ++k) flags[order[k]] = false;
   return flags;
 }
 
