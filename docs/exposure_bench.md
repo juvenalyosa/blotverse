@@ -35,11 +35,12 @@ the screening log).
   `rb2/profile`, comes next (q95 0.125). Saturation damages the profile branches most
   (flagged median 0.37 vs 0.18 log2 for rect).
 
-**Caveat on size.** One study, 4 membranes, 5 saturated exposures. "Zero misses" is a
-small-sample result: it is compatible with a true miss rate of up to about 45 % of
-saturated-or-compressed exposures (rule of three on 5 flagged exposures). It is also
-compatible with a lower rate per unflagged exposure (0 of 35). More series would tighten
-this. Most journal deposits do not contain 16-bit acquisitions, which limits the bench.
+**Caveat on size.** One study, 4 membranes, 0 misses in 40 exposure x band
+combinations. By the rule of three, the 95 % upper bound on the miss rate per combination is
+about 3/40 = 7.5 %. However, only 5 combinations actually reached saturation. The claim
+"compression is always flagged" therefore rests on 5 cases, and on those alone the upper
+bound is about 3/5 = 60 %. More 16-bit exposure series would tighten this. Most journal
+deposits do not contain them, which limits the bench.
 
 The sections below report the v1.1 analysis that motivated v1.2.
 
