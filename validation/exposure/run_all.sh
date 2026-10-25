@@ -17,7 +17,17 @@ for case_dir in "$here"/*/; do
     echo "ran $name"
   done
 done
-# Development series (they shaped the protocol) and confirmatory series are
-# reported separately; see docs/exposure_protocol.md.
-python3 "$here/summarize.py" "$out" gtsf1_2026 > "$out/summary_development.md"
-python3 "$here/summarize.py" "$out" set1ip_2026 plcg_ip_2025 | tee "$out/summary_confirmatory.md"
+# Protocol v1.2: the six v1.1 series are the development set; every other
+# case is confirmatory. See docs/exposure_protocol.md.
+dev=(gtsf1_2026 set1ip_2026 plcg_ip_2025)
+python3 "$here/summarize.py" "$out" "${dev[@]}" > "$out/summary_development.md"
+conf=()
+for case_dir in "$here"/*/; do
+  case=$(basename "$case_dir")
+  [[ " ${dev[*]} " == *" $case "* ]] || conf+=("$case")
+done
+if ((${#conf[@]})); then
+  python3 "$here/summarize.py" "$out" "${conf[@]}" | tee "$out/summary_confirmatory.md"
+else
+  echo "no confirmatory series yet" | tee "$out/summary_confirmatory.md"
+fi

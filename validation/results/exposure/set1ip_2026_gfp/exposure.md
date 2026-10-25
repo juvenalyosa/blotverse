@@ -15,8 +15,8 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | lane 7 | lane 8 | lane 9 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -13.3 | 0.1 | ok |
-| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -17.9 | 0.0 | ok |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -13.3 | 0.1 | no flag, low-signal distortion |
+| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -17.9 | 0.0 | near-saturation only |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -39,8 +39,8 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | lane 7 | lane 8 | lane 9 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -0.4 | 0.0 | ok |
-| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -0.5 | 0.0 | ok |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -0.4 | 0.0 | no flag |
+| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -0.5 | 0.0 | no flag |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -63,7 +63,7 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | lane 7 | lane 8 | lane 9 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -2.3 | 0.0 | ok |
+| 1 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -2.3 | 0.0 | no flag |
 | 2 | 0 | 0 | 98 | 0 | 0 | 0 | 0 | 0 | 0 | -4.3 | 0.0 | flagged |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
@@ -87,8 +87,8 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | lane 7 | lane 8 | lane 9 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1.6 | 0.0 | ok |
-| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2.1 | 0.0 | ok |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 1.6 | 0.0 | no flag |
+| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 2.1 | 0.0 | near-saturation only |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -111,8 +111,8 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | lane 7 | lane 8 | lane 9 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0.1 | 0.2 | ok |
-| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -0.9 | 0.0 | **MISS: distorted, not flagged** |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0.1 | 0.2 | no flag, low-signal distortion |
+| 2 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | 0 | -0.9 | 0.0 | no flag |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|

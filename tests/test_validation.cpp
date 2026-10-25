@@ -98,7 +98,9 @@ namespace {
 // clips only at the longest exposure. With clip below the detector maximum
 // the clipping is invisible to the saturation rule (as after a flat-field
 // correction that rescales saturated pixels).
-ExposureResult synthetic_exposure_series(const fs::path& dir, double clip) {
+// short_lane_factor scales lane 1 at the shortest exposure only (a lane
+// under-measured at low signal).
+ExposureResult synthetic_exposure_series(const fs::path& dir, double clip, double short_lane_factor = 1.0) {
   const MultiverseSpec spec = load_spec(BLOTVERSE_SPEC_PATH);
   fs::remove_all(dir);
   fs::create_directories(dir);
@@ -113,7 +115,9 @@ ExposureResult synthetic_exposure_series(const fs::path& dir, double clip) {
       for (int x = 0; x < img.width(); ++x) {
         double v = 500 + 2.0 * x / 10 + static_cast<double>(gen() % 21) - 10;
         for (std::size_t i = 0; i < lane_x.size(); ++i)
-          if (std::fabs(x - lane_x[i]) < 16) v += t * amplitude[i] * std::exp(-0.5 * std::pow((y - 60) / 3.0, 2));
+          if (std::fabs(x - lane_x[i]) < 16)
+            v += (i == 0 && t == seconds[0] ? short_lane_factor : 1.0) * t * amplitude[i] *
+                 std::exp(-0.5 * std::pow((y - 60) / 3.0, 2));
         img(x, y) = static_cast<std::uint16_t>(std::clamp(v, 0.0, clip));
       }
     const std::string name = "t" + std::to_string(static_cast<int>(t)) + ".tif";
@@ -150,6 +154,8 @@ TEST_CASE("exposure bench: ratios are invariant until saturation, which the QC r
   CHECK(band.any_flagged[3]);
   CHECK(band.compressive_default[3]);
   CHECK(band.qc_misses == 0);
+  CHECK(band.sublinear[3]);  // v1.2: lane 4 is the sub-linear lane at 16 s
+  CHECK(band.misses_spec == 0);
   CHECK(fs::exists(dir / "out" / "exposure.md"));
   CHECK(fs::exists(dir / "out" / "exposure_pairs.csv"));
 }
@@ -164,4 +170,21 @@ TEST_CASE("exposure bench: clipping below the detector maximum is reported as a 
   // shorter exposure; the distortion is blamed on it and it carries no flag.
   CHECK(band.compressive_default[3]);
   CHECK(band.qc_misses == 1);
+  // v1.2: lane 4 is sub-linear at 16 s and bright; the spec rule misses it,
+  // the candidate near-saturation rule (60000 >= 0.75 x 65535) catches it.
+  CHECK(band.sublinear[3]);
+  CHECK(band.misses_spec == 1);
+  CHECK(band.misses_candidate == 0);
+}
+
+TEST_CASE("exposure bench: a lane under-measured at the short exposure is low-signal distortion, not a QC miss") {
+  const ExposureResult result =
+      synthetic_exposure_series(fs::temp_directory_path() / "blotverse_tests" / "exposure_lowsignal", 65535, 0.7);
+  const ExposureBand& band = result.bands.front();
+  REQUIRE(band.reference == 2);
+  CHECK(band.attributable[0]);
+  CHECK(band.superlinear[0]);         // blamed on the 1 s exposure
+  CHECK(band.lane_scale[0][0] > 0.4);  // log2(1 / 0.7) = 0.51
+  CHECK_FALSE(band.sublinear[2]);
+  CHECK(band.misses_spec == 0);
 }

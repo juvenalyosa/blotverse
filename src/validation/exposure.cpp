@@ -33,10 +33,18 @@ void image_level(const ImageF& img, double& med, double& noise) {
 }
 
 ExposurePoint measure_point(const RawImage& raw, const ImageF& img, const Annotation& ann, std::size_t lane,
-                            double med, double noise) {
+                            double med, double noise, double near_fraction) {
   ExposurePoint p;
   const Rect w = band_window(ann, lane, BandKind::Target).clipped(img.width(), img.height());
   p.saturated_px = count_saturated(raw.pixels, w, raw.meta.detector_max);
+  const double top = std::min<double>(raw.meta.detector_max, 65535.0), near = near_fraction * top;
+  double peak = 0;
+  for (int y = w.y0; y < w.y1; ++y)
+    for (int x = w.x0; x < w.x1; ++x) {
+      if (raw.pixels(x, y) >= near) ++p.near_saturated_px;
+      peak = std::max<double>(peak, raw.pixels(x, y));
+    }
+  if (!w.empty()) p.peak_fraction = peak / top;
   // Mean row profile over the lane window's columns.
   auto row_mean = [&](int y) {
     if (y < 0 || y >= img.height() || w.width() <= 0) return kNaN;
@@ -90,6 +98,8 @@ ExposureConfig load_exposure_config(const std::filesystem::path& path) {
   if (root["snr_floor"]) c.snr_floor = root["snr_floor"].as<double>();
   if (root["distortion_log2"]) c.distortion_log2 = root["distortion_log2"].as<double>();
   if (root["max_drift_px"]) c.max_drift_px = root["max_drift_px"].as<double>();
+  if (root["near_saturation_fraction"]) c.near_saturation_fraction = root["near_saturation_fraction"].as<double>();
+  if (root["bright_fraction"]) c.bright_fraction = root["bright_fraction"].as<double>();
   for (const auto& e : root["exposures"])
     c.exposures.push_back({path.parent_path() / e["image"].as<std::string>(),
                            e["seconds"] ? e["seconds"].as<double>() : -1.0});
@@ -141,7 +151,8 @@ ExposureResult analyze_exposure(const ExposureConfig& config, const MultiverseSp
     out.points.assign(ne, std::vector<ExposurePoint>(nl));
     for (std::size_t e = 0; e < ne; ++e)
       if (!result.excluded[e])
-        for (std::size_t i = 0; i < nl; ++i) out.points[e][i] = measure_point(raws[e], imgs[e], ann, i, med[e], noise[e]);
+        for (std::size_t i = 0; i < nl; ++i) out.points[e][i] =
+            measure_point(raws[e], imgs[e], ann, i, med[e], noise[e], config.near_saturation_fraction);
 
     // Reference: the longest exposure (by time when known, else the last
     // listed) whose band windows hold no pixel at the detector maximum.
@@ -254,6 +265,54 @@ ExposureResult analyze_exposure(const ExposureConfig& config, const MultiverseSp
           if (!p.dim && p.compressive) out.compressive_default[p.blamed] = true;
     for (std::size_t e = 0; e < ne; ++e)
       if (out.compressive_default[e] && !out.any_flagged[e]) ++out.qc_misses;
+
+    // Protocol v1.2: lane-level attribution in the default branch.
+    out.any_near_saturated.assign(ne, false);
+    for (std::size_t e = 0; e < ne; ++e)
+      for (const auto& p : out.points[e]) out.any_near_saturated[e] = out.any_near_saturated[e] || p.near_saturated_px > 0;
+    out.lane_scale.assign(ne, std::vector<double>(nl, kNaN));
+    out.attributable.assign(ne, false);
+    out.sublinear.assign(ne, false);
+    out.superlinear.assign(ne, false);
+    if (out.reference >= 0) {
+      const auto ref = static_cast<std::size_t>(out.reference);
+      const ExposureBranch* def = nullptr;
+      for (const auto& br : out.branches)
+        if (br.background + "/" + br.band_definition == result.default_branch) def = &br;
+      for (std::size_t e = 0; e < ne && def; ++e) {
+        if (e == ref || result.excluded[e] || out.misaligned[e]) continue;
+        const double te = result.seconds[e], tr = result.seconds[ref];
+        const bool e_longer = (te >= 0 && tr >= 0) ? te > tr : e > ref;
+        const std::size_t longer = e_longer ? e : ref, shorter = e_longer ? ref : e;
+        std::vector<double> scale(nl, kNaN), measured;
+        for (std::size_t i = 0; i < nl; ++i) {
+          const double sl = def->signal[longer][i], ss = def->signal[shorter][i];
+          if (out.points[e][i].snr >= config.snr_floor && out.points[ref][i].snr >= config.snr_floor && sl > 0 &&
+              ss > 0) {
+            scale[i] = std::log2(sl / ss);
+            measured.push_back(scale[i]);
+          }
+        }
+        if (measured.size() < 3) continue;
+        out.attributable[e] = true;
+        const double m = median(measured);
+        for (std::size_t i = 0; i < nl; ++i) {
+          if (!std::isfinite(scale[i])) continue;
+          const double d = scale[i] - m;
+          out.lane_scale[e][i] = d;
+          if (std::fabs(d) <= config.distortion_log2) continue;
+          if (d < 0 && out.points[longer][i].peak_fraction >= config.bright_fraction) out.sublinear[longer] = true;
+          // With saturated lanes at the longer exposure the median lane is
+          // itself compressed, so unsaturated lanes only look super-linear.
+          else if (!out.any_flagged[longer]) out.superlinear[shorter] = true;
+        }
+      }
+    }
+    for (std::size_t e = 0; e < ne; ++e) {
+      if (!out.sublinear[e] || out.any_flagged[e]) continue;
+      ++out.misses_spec;
+      if (!out.any_near_saturated[e]) ++out.misses_candidate;
+    }
     result.bands.push_back(std::move(out));
   }
   return result;
@@ -265,7 +324,9 @@ void write_exposure_outputs(const std::filesystem::path& dir, const ExposureConf
   const std::size_t ne = config.exposures.size(), nl = config.lane_x.size();
   {
     std::ofstream csv(dir / "exposure_lanes.csv");
-    csv << std::setprecision(10) << "band,exposure,image,seconds,lane,saturated_px,snr,drift_px";
+    csv << std::setprecision(10)
+        << "band,exposure,image,seconds,lane,saturated_px,near_saturated_px,peak_fraction,snr,drift_px,"
+           "lane_scale_default";
     if (!result.bands.empty())
       for (const auto& br : result.bands.front().branches) csv << ',' << br.background << '_' << br.band_definition;
     csv << '\n';
@@ -275,7 +336,8 @@ void write_exposure_outputs(const std::filesystem::path& dir, const ExposureConf
         for (std::size_t i = 0; i < nl; ++i) {
           const auto& p = band.points[e][i];
           csv << band.name << ',' << e + 1 << ',' << config.exposures[e].image.filename().string() << ','
-              << result.seconds[e] << ',' << i + 1 << ',' << p.saturated_px << ',' << p.snr << ',' << p.drift_px;
+              << result.seconds[e] << ',' << i + 1 << ',' << p.saturated_px << ',' << p.near_saturated_px << ','
+              << p.peak_fraction << ',' << p.snr << ',' << p.drift_px << ',' << band.lane_scale[e][i];
           for (const auto& br : band.branches) csv << ',' << br.signal[e][i];
           csv << '\n';
         }
@@ -296,7 +358,8 @@ void write_exposure_outputs(const std::filesystem::path& dir, const ExposureConf
   {
     std::ofstream csv(dir / "exposure_summary.csv");
     csv << std::setprecision(10)
-        << "band,exposure,image,seconds,excluded,reference,misaligned,qc_flagged,compressive_default,qc_miss\n";
+        << "band,exposure,image,seconds,excluded,reference,misaligned,qc_flagged,near_saturation_flagged,"
+           "compressive_default,qc_miss_v11,attributable,sublinear,superlinear,miss_spec,miss_candidate\n";
     for (const auto& band : result.bands)
       for (std::size_t e = 0; e < ne; ++e) {
         const bool excluded = result.excluded[e];
@@ -304,8 +367,12 @@ void write_exposure_outputs(const std::filesystem::path& dir, const ExposureConf
             << result.seconds[e] << ',' << (excluded ? 1 : 0) << ','
             << (static_cast<long>(e) == band.reference ? 1 : 0) << ',' << (!excluded && band.misaligned[e] ? 1 : 0)
             << ',' << (!excluded && band.any_flagged[e] ? 1 : 0) << ','
+            << (!excluded && band.any_near_saturated[e] ? 1 : 0) << ','
             << (!excluded && band.compressive_default[e] ? 1 : 0) << ','
-            << (!excluded && band.compressive_default[e] && !band.any_flagged[e] ? 1 : 0) << '\n';
+            << (!excluded && band.compressive_default[e] && !band.any_flagged[e] ? 1 : 0) << ','
+            << (band.attributable[e] ? 1 : 0) << ',' << (band.sublinear[e] ? 1 : 0) << ','
+            << (band.superlinear[e] ? 1 : 0) << ',' << (band.sublinear[e] && !band.any_flagged[e] ? 1 : 0) << ','
+            << (band.sublinear[e] && !band.any_flagged[e] && !band.any_near_saturated[e] ? 1 : 0) << '\n';
       }
   }
 
@@ -340,9 +407,12 @@ void write_exposure_outputs(const std::filesystem::path& dir, const ExposureConf
         min_snr = std::min(min_snr, p.snr);
         if (std::isfinite(p.drift_px) && p.snr >= config.snr_floor) max_drift = std::max(max_drift, std::fabs(p.drift_px));
       }
-      const char* g3 = band.any_flagged[e]           ? (band.compressive_default[e] ? "flagged, distorted" : "flagged")
-                       : band.compressive_default[e]   ? "**MISS: distorted, not flagged**"
-                                                       : "ok";
+      // Protocol v1.2: lane-level attribution (sub-linear lane blamed on this exposure).
+      std::string g3 = band.any_flagged[e]           ? "flagged"
+                       : band.any_near_saturated[e]  ? "near-saturation only"
+                                                     : "no flag";
+      if (band.sublinear[e]) g3 += band.any_flagged[e] ? ", sub-linear lane" : ", **sub-linear lane: MISS**";
+      if (band.superlinear[e]) g3 += ", low-signal distortion";
       md << std::setprecision(1) << ' ' << min_snr << " | " << max_drift << " | " << g3 << " |\n";
     }
     if (band.reference < 0) {

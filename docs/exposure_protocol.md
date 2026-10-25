@@ -1,7 +1,12 @@
 # Exposure-invariance bench: protocol (pre-specified, amended)
 
-Status: version 1.0 was **fixed before the confirmatory series were screened** (commit
-b56a6d2). Version 1.1 amends it after screening; see [Amendments](#amendments). This file, the
+Status:
+
+* **v1.0** was fixed before its confirmatory series were screened (commit b56a6d2).
+* **v1.1** amended it after screening; see [Amendments](#amendments).
+* **v1.2** ([below](#v12-2026-10-25-new-primary-rule-and-new-confirmatory-set)) replaces
+  the primary rule. It was designed on all six v1.1 series and is fixed before a new
+  confirmatory set is screened. Where v1.2 differs from the text above, v1.2 governs. This file, the
 `blotverse exposure` command and `validation/exposure/summarize.py` were committed before
 any confirmatory series was measured. Two of them had already been downloaded and checked
 for format only:
@@ -163,3 +168,90 @@ harder to pass, not easier.
 
 The SNR floor, the 0.2 log2 threshold and the 2 px drift limit were **not** changed after
 seeing confirmatory data.
+
+### v1.2 (2026-10-25): new primary rule and new confirmatory set
+
+**Why.** Under v1.1, P1 was not met: 4 misses, none with a saturated pixel. The pair-level
+"compressive" signature cannot tell which lane of a pair moved. A faint lane that is
+under-measured at the short exposure looks like a bright lane compressed at the long one.
+
+**Rule designed on the data.** These rules were designed by looking at the four v1.1 misses
+and the six v1.1 series. All six are therefore the **v1.2 development set**, and the v1.2
+criterion is judged only on new series.
+
+**1. Lane-level attribution (replaces the pair rule for P1).**
+* **Comparison.** For each band, each usable non-reference exposure is compared with the
+  reference. Take the lanes above the SNR floor at both exposures with positive signal,
+  under the spec's default branch.
+* **Lane scale.** Lane i's scale is d_i = log2(S_i at the longer / S_i at the shorter
+  exposure) minus the median of the same quantity over those lanes. The median absorbs
+  exposure time and substrate decay, so separate captures are handled too.
+* **Attribution needs ≥ 3 such lanes.** With fewer, the comparison is not attributable and
+  enters only the pair-level endpoints.
+* **Classification:**
+  * **Sub-linear (bright):** d_i < −0.2 *and* the lane's window reaches ≥ 50 % of the
+    detector maximum at the longer exposure. This is detector-like compression, blamed on
+    the longer exposure.
+  * **Low-signal distortion (S4):** any other |d_i| > 0.2 (super-linear, or sub-linear in a
+    dimmer lane), blamed on the shorter exposure. Comparisons whose longer exposure carries
+    a saturation flag are left out of S4: their median lane is itself compressed.
+* **Why 50 %.** It is physical, not fitted: CCD and CMOS response stays linear well past
+  half of full scale. But it was set after seeing two faint lanes (SNR ≈ 11, peak < 30 %)
+  come out sub-linear.
+* **P1 miss:** an exposure blamed for a sub-linear bright lane that has no lane flagged by
+  the spec's saturation rule. **Criterion: zero misses** in the v1.2 confirmatory set (G3
+  clause, unchanged).
+
+**2. Candidate near-saturation rule (reported, not judged).**
+* A lane is near saturation when its band window holds a pixel ≥ 75 % of the detector
+  maximum.
+* P1 is also reported with this flag added to the saturation rule.
+* τ = 0.75 was chosen after seeing PLC r404 lane 3 reach 79 % of full scale. It is a
+  hypothesis for the new series and is **not** part of the spec. Promoting it to the spec,
+  as a warning or an exclusion, is a separate decision to be taken after the data.
+
+**Unchanged:** spec v1.2.0, SNR floor 10, the 0.2 log2 threshold, 2 px drift, annotation
+rules, P2 and S1–S3. The v1.1 pair-rule P1 is also reported for comparison.
+
+**The four v1.1 misses under v1.2 (development):**
+
+| v1.1 miss | v1.2 |
+|---|---|
+| GTSF-1 B `lower`, 150 s | 4.5 s auto capture blamed for low-signal distortion: lane 2 d = +0.48 (SNR 24); lane 6 d = −1.03 with peak 25 % of full scale (SNR 11). Not a miss. |
+| PLC `r404`, 20 s | no lane beyond ±0.2 (lane 3 d = −0.16, peak 79 %); the candidate rule flags the exposure. Not a miss. |
+| PLC `r444`, 20 s | no lane beyond ±0.2 (largest d = +0.20). Not a miss. |
+| GFP `doublet`, 295 s | 20 s exposure blamed for low-signal distortion: lane 9 d = +0.54 (SNR 15). Not a miss. |
+
+Development result under v1.2: 0 misses (spec rule), 0 (candidate rule), 3 exposures with
+low-signal distortion. **This is not evidence**: the rule was built on these series.
+
+**Annotation note.** In `plcg_ip_2025/flag_right` the lane-3 tubulin window contains a
+saturated 13x13 px dust spot at 20 s (y ≈ 647). The QC flags it, as it should. The lane is
+below the SNR floor and enters no pair. The annotation is left unchanged.
+
+**v1.2 confirmatory candidates.** Studies from the EMBO SourceData scan not screened
+before, in this order:
+
+1. S44318-026-00772-6 (dY-α-tubulin long/short, raw)
+2. S44319-025-00593-4 (anti-FLAG high/low exposure)
+3. S44319-025-00590-7 (ASYM26 long/short)
+4. S44318-025-00548-4 (pellet WB high/low, raw)
+5. S44319-026-00773-W (GNPTAB-Myc short/long)
+6. S44319-025-00455-Z (HA higher/lower exposure)
+7. S44321-026-00433-5 (APEX high/low)
+8. S44318-026-00753-9 (UFM1 lower-exposure replicates and their higher exposures)
+9. S44318-026-00783-3 (SCH 0 s / 8 s / 30 s / 150 s)
+10. S44318-026-00814-Z (`.scn` acquisitions)
+11. S44319-025-00558-7 ("longer exposure" files and their shorter partners)
+12. S44318-025-00577-Z (HA long/short)
+13. S44319-025-00561-Y (auto- and over-exposed)
+14. S44319-026-00828-Y (high-sensitivity westerns)
+15. S44319-026-00727-2 (chemiluminescence 10 s / 15 s)
+16. S44318-026-00889-8 (10 s / 180 s / 5 s westerns)
+
+Screening is done in two passes:
+
+* **Pass 1, every pair:** format, dimensions and phase-correlation shift.
+* **Pass 2, survivors only:** previews and annotation.
+
+Every candidate is reported in `validation/exposure/screening.md`.

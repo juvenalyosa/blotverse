@@ -18,11 +18,11 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 1283.8 | 0.0 | ok |
-| 2 | 150 | 407 | 145 | 250 | 318 | 16 | 1459.3 | 0.4 | flagged, distorted |
-| 3 | 357 | 585 | 377 | 455 | 530 | 266 | 652.0 | 0.5 | flagged, distorted |
-| 4 | 477 | 642 | 494 | 580 | 599 | 395 | 327.3 | 0.5 | flagged, distorted |
-| 5 | 561 | 693 | 574 | 615 | 643 | 487 | 156.6 | 0.5 | flagged, distorted |
+| 1 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | 1283.8 | 0.0 | no flag |
+| 2 | 150 | 407 | 145 | 250 | 318 | 16 | 1459.3 | 0.4 | flagged, sub-linear lane |
+| 3 | 357 | 585 | 377 | 455 | 530 | 266 | 652.0 | 0.5 | flagged, sub-linear lane |
+| 4 | 477 | 642 | 494 | 580 | 599 | 395 | 327.3 | 0.5 | flagged, sub-linear lane |
+| 5 | 561 | 693 | 574 | 615 | 643 | 487 | 156.6 | 0.5 | flagged, sub-linear lane |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -45,11 +45,11 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | lane 6 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | 0 | 0 | 0 | 0 | 0 | 0 | -15.3 | 0.1 | ok |
-| 2 | 0 | 0 | 0 | 0 | 0 | 0 | -19.8 | 0.0 | ok |
-| 3 | 0 | 0 | 0 | 0 | 0 | 0 | -26.0 | 0.0 | ok |
-| 4 | 0 | 0 | 0 | 0 | 0 | 0 | -30.0 | 0.0 | ok |
-| 5 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | -32.3 | 0.0 | **MISS: distorted, not flagged** |
+| 1 | 0 | 0 | 0 | 0 | 0 | 0 | -15.3 | 0.1 | no flag, low-signal distortion |
+| 2 | 0 | 0 | 0 | 0 | 0 | 0 | -19.8 | 0.0 | no flag |
+| 3 | 0 | 0 | 0 | 0 | 0 | 0 | -26.0 | 0.0 | no flag |
+| 4 | 0 | 0 | 0 | 0 | 0 | 0 | -30.0 | 0.0 | no flag |
+| 5 (ref) | 0 | 0 | 0 | 0 | 0 | 0 | -32.3 | 0.0 | no flag |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|

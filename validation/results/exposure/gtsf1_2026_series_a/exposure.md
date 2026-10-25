@@ -19,11 +19,11 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|
-| 1 (ref) | 0 | 0 | 0 | 0 | 0 | 113.3 | 0.0 | ok |
-| 2 | 223 | 411 | 325 | 424 | 139 | 2112.3 | 0.5 | flagged, distorted |
-| 3 | 450 | 584 | 571 | 610 | 370 | 1041.7 | 0.8 | flagged, distorted |
-| 4 | 565 | 638 | 659 | 704 | 492 | 563.3 | 1.1 | flagged, distorted |
-| 5 | 638 | 678 | 709 | 718 | 550 | 320.5 | 1.3 | flagged, distorted |
+| 1 (ref) | 0 | 0 | 0 | 0 | 0 | 113.3 | 0.0 | no flag |
+| 2 | 223 | 411 | 325 | 424 | 139 | 2112.3 | 0.5 | flagged, sub-linear lane |
+| 3 | 450 | 584 | 571 | 610 | 370 | 1041.7 | 0.8 | flagged, sub-linear lane |
+| 4 | 565 | 638 | 659 | 704 | 492 | 563.3 | 1.1 | flagged, sub-linear lane |
+| 5 | 638 | 678 | 709 | 718 | 550 | 320.5 | 1.3 | flagged, sub-linear lane |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|
@@ -46,11 +46,11 @@ Saturated pixels per lane window, by exposure:
 
 | # | lane 1 | lane 2 | lane 3 | lane 4 | lane 5 | min SNR | max drift (px) | G3 (rb2/profile) |
 |---|---|---|---|---|---|---|---|---|
-| 1 | 0 | 0 | 0 | 0 | 0 | -2.0 | 0.0 | ok |
-| 2 | 0 | 0 | 0 | 0 | 0 | -44.8 | 0.0 | ok |
-| 3 | 0 | 0 | 0 | 0 | 0 | -59.7 | 0.0 | ok |
-| 4 | 0 | 0 | 0 | 0 | 0 | -68.6 | 0.0 | ok |
-| 5 (ref) | 0 | 0 | 0 | 0 | 0 | -75.2 | 0.0 | ok |
+| 1 | 0 | 0 | 0 | 0 | 0 | -2.0 | 0.0 | no flag |
+| 2 | 0 | 0 | 0 | 0 | 0 | -44.8 | 0.0 | no flag |
+| 3 | 0 | 0 | 0 | 0 | 0 | -59.7 | 0.0 | no flag |
+| 4 | 0 | 0 | 0 | 0 | 0 | -68.6 | 0.0 | no flag |
+| 5 (ref) | 0 | 0 | 0 | 0 | 0 | -75.2 | 0.0 | no flag |
 
 | Background | Band definition | Clean pairs | median abs delta | q95 abs delta | Flagged pairs | median abs delta (flagged) | QC TP | FP | FN | TN | Non-positive |
 |---|---|---|---|---|---|---|---|---|---|---|---|

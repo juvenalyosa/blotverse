@@ -7,14 +7,17 @@ RESULTS_DIR holds one sub-directory per series, each written by
 `blotverse exposure`; with prefixes, only the series whose directory name
 starts with one of them are pooled. Prints the pre-specified endpoints as Markdown:
 
-  P1  QC misses: exposures with a compressive distortion in the spec's
-      default branch and no lane flagged by the saturation rule (criterion: 0).
+  P1  (protocol v1.2) QC misses: exposures with a sub-linear bright lane
+      (lane-level attribution, spec's default branch) and no lane flagged by
+      the spec's saturation rule (criterion: 0). Also reported under the
+      candidate near-saturation rule, and under the v1.1 pair rule.
   P2  pair level, default branch: fraction of compressive-distorted pairs
       with a flagged lane (Wilson 95 % interval).
   S1  per branch: |delta log2 ratio| of clean pairs (no flag, above the SNR
       floor), pooled: n, median, 95th percentile.
   S2  per branch: median |delta| of flagged pairs (damage done by saturation).
   S3  per branch: clean pairs distorted beyond the threshold (not saturation).
+  S4  exposures blamed for low-signal distortion (lane-level attribution).
 Standard library only.
 """
 import csv
@@ -56,7 +59,8 @@ def main():
     series = sorted(p for p in root.iterdir() if (p / "exposure_pairs.csv").exists()
                     and (not prefixes or p.name.startswith(prefixes)))
     default = None
-    misses, not_evaluable, exposures_checked, flagged_exposures = [], [], 0, 0
+    misses, misses_cand, misses_v11, low_signal, not_evaluable = [], [], [], [], []
+    exposures_checked = flagged_exposures = near_exposures = 0
     clean = defaultdict(list)
     flagged = defaultdict(list)
     threshold = None
@@ -81,8 +85,16 @@ def main():
                     continue
                 exposures_checked += 1
                 flagged_exposures += r["qc_flagged"] == "1"
-                if r["qc_miss"] == "1":
-                    misses.append(f"{s.name} band {r['band']} exposure {r['exposure']} ({r['image']})")
+                near_exposures += r["qc_flagged"] == "1" or r["near_saturation_flagged"] == "1"
+                where = f"{s.name} band {r['band']} exposure {r['exposure']} ({r['image']})"
+                if r["miss_spec"] == "1":
+                    misses.append(where)
+                if r["miss_candidate"] == "1":
+                    misses_cand.append(where)
+                if r["qc_miss_v11"] == "1":
+                    misses_v11.append(where)
+                if r["superlinear"] == "1":
+                    low_signal.append(where)
         for r in csv.DictReader(open(s / "exposure_pairs.csv")):
             if r["dim"] == "1":
                 continue
@@ -96,12 +108,21 @@ def main():
     print(f"# Exposure-invariance bench: pooled results\n\n{len(series)} series "
           f"({', '.join(p.name for p in series)}); default branch `{default}`; "
           f"distortion threshold {threshold} log2.\n")
-    print(f"## P1. QC misses\n\n{len(misses)} of {exposures_checked} usable exposure x band combinations "
-          f"({flagged_exposures} carry a saturation flag).\n")
+    print(f"## P1. QC misses (v1.2 lane-level rule)\n\n{exposures_checked} usable exposure x band combinations; "
+          f"{flagged_exposures} carry a saturation flag, {near_exposures} a saturation or near-saturation flag.\n\n"
+          f"* **Spec rule (judged):** {len(misses)} misses")
     for m in misses:
-        print(f"* {m}")
+        print(f"  * {m}")
+    print(f"* Candidate near-saturation rule: {len(misses_cand)} misses")
+    for m in misses_cand:
+        print(f"  * {m}")
+    print(f"* v1.1 pair rule, for comparison: {len(misses_v11)} misses")
+    for m in misses_v11:
+        print(f"  * {m}")
     print(f"\nNot evaluable (a lane saturated at every exposure, so no reference): {len(not_evaluable)} bands"
           + (": " + "; ".join(not_evaluable) if not_evaluable else "") + ".")
+    print(f"\nS4. Exposures blamed for low-signal distortion: {len(low_signal)}"
+          + ("".join(f"\n  * {m}" for m in low_signal)))
     lo, hi = wilson(p2_k, p2_n)
     print(f"\n## P2. Compressive-distorted pairs with a flagged lane (default branch)\n\n"
           f"{p2_k} / {p2_n} = {fmt(p2_k / p2_n if p2_n else float('nan'))} (Wilson 95 % {fmt(lo)}-{fmt(hi)}).\n")
