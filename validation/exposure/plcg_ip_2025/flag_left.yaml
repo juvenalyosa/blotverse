@@ -1,0 +1,18 @@
+# HEK IP, FLAG (upper part) and tubulin (lower part), 5 s and 20 s. Lanes 1-6
+# of ten (lane 7 is empty; lanes 8-10 sit lower on the tilted membrane and are
+# in flag_right.yaml). Centres from the tubulin row's column profile, band rows
+# from row profiles of lanes 1 and 4, all on the 5 s image; refined +/- 8.
+name: HEK IP FLAG/tubulin, lanes 1-6 (5 s, 20 s)
+lane_width: 70
+band_half_height: 6
+refine_rows: 8
+exposures:
+  - {image: flag_5s.tif, seconds: 5}
+  - {image: flag_20s.tif, seconds: 20}
+lanes: [{x: 290}, {x: 392}, {x: 494}, {x: 598}, {x: 708}, {x: 818}]
+bands:
+  - {name: r248, y: 248}
+  - {name: r278, y: 278, half_height: 5}
+  - {name: r370, y: 370}
+  - {name: r450, y: 450}
+  - {name: tubulin, y: 606, half_height: 8}

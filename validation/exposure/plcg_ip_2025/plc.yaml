@@ -1,0 +1,18 @@
+# HEK IP, PLC (upper part) and tubulin (lower part) on one membrane, 5 s and
+# 20 s, identical 1408x1024 grid. Six sample lanes; centres from the column
+# profile of the tubulin row, band rows from row profiles of lanes 1-3, all on
+# the 5 s image. Band rows refined per lane (+/- 6) on the 5 s image.
+name: HEK IP PLC/tubulin (5 s, 20 s)
+lane_width: 70
+band_half_height: 6
+refine_rows: 6
+exposures:
+  - {image: plc_5s.tif, seconds: 5}
+  - {image: plc_20s.tif, seconds: 20}
+lanes: [{x: 418}, {x: 516}, {x: 624}, {x: 726}, {x: 824}, {x: 946}]
+bands:
+  - {name: r264, y: 264, half_height: 8}
+  - {name: r352, y: 352}
+  - {name: r404, y: 404, half_height: 5}
+  - {name: r444, y: 444}
+  - {name: tubulin, y: 600, half_height: 8}

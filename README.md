@@ -152,7 +152,8 @@ public LI-COR series of Pillai-Kastoori et al. (2020).
 Exposure series: `blotverse exposure CONFIG.yaml --out DIR` takes one membrane imaged at
 several exposures, where lane ratios must not change inside the linear range. It measures
 how far each branch moves those ratios and whether the saturation QC flags every exposure
-whose ratios are compressed. Protocol: [`docs/exposure_protocol.md`](docs/exposure_protocol.md).
+whose ratios are compressed. Protocol: [`docs/exposure_protocol.md`](docs/exposure_protocol.md);
+results: [`docs/exposure_bench.md`](docs/exposure_bench.md).
 To run it: `validation/exposure/run_all.sh`.
 
 Published experiments (plan level 3): reanalysis of raw images deposited with articles,

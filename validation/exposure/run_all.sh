@@ -17,4 +17,7 @@ for case_dir in "$here"/*/; do
     echo "ran $name"
   done
 done
-python3 "$here/summarize.py" "$out" | tee "$out/summary.md"
+# Development series (they shaped the protocol) and confirmatory series are
+# reported separately; see docs/exposure_protocol.md.
+python3 "$here/summarize.py" "$out" gtsf1_2026 > "$out/summary_development.md"
+python3 "$here/summarize.py" "$out" set1ip_2026 plcg_ip_2025 | tee "$out/summary_confirmatory.md"

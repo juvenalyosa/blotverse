@@ -1,6 +1,7 @@
-# Exposure-invariance bench: protocol (pre-specified)
+# Exposure-invariance bench: protocol (pre-specified, amended)
 
-Status: **fixed before the confirmatory series were screened.** This file, the
+Status: version 1.0 was **fixed before the confirmatory series were screened** (commit
+b56a6d2). Version 1.1 amends it after screening; see [Amendments](#amendments). This file, the
 `blotverse exposure` command and `validation/exposure/summarize.py` were committed before
 any confirmatory series was measured. Two of them had already been downloaded and checked
 for format only:
@@ -66,7 +67,7 @@ image.
 | Spec | `spec/multiverse.yaml` v1.2.0 (sha256 `50bbba7dacbcb1aa…`), all 4 background x 3 band-definition branches |
 | Saturation QC rule | ≥ 1 pixel at the detector maximum in the band window (spec `qc.saturation_min_pixels`) |
 | Reference exposure | the longest exposure with no flagged lane in that band |
-| SNR | band prominence: mean of the central rows minus the flanking rows, divided by the image's robust noise (1.4826 x MAD) |
+| SNR | band prominence: mean of the central rows minus the flanking rows, divided by the image's robust pixel noise (v1.1: 1.4826 x MAD of horizontal first differences / √2; v1.0: 1.4826 x MAD of the raw intensities) |
 | SNR floor | 10 at both exposures of a pair; pairs below it are *dim* and left out of every endpoint |
 | Distortion threshold | \|Δ\| > 0.2 log2 (about 15 %), where Δ = log2(S_i/S_j) at an exposure minus at the reference |
 | Compressive | distorted, and the ratio is closer to 1 at the longer of the two exposures; blamed on the longer exposure |
@@ -107,15 +108,17 @@ image.
   8. S44318-025-00566-2
   9. S44318-025-00643-6
   10. S44318-025-00585-Z
-  11. S44318-025-00745-0
-  12. S44318-025-00855-4
-  13. S44318-025-00550-1
+  11. S44319-026-00745-0
+  12. S44318-026-00855-4
+  13. S44319-025-00550-1
   14. S44318-025-00600-3
   15. S44318-025-00507-Z
   16. S44321-025-00357-6
 
   Every screened series is reported, whether included or excluded, with the reason for any
-  exclusion.
+  exclusion: [`validation/exposure/screening.md`](../validation/exposure/screening.md).
+  Three accessions were mistyped in v1.0 (00745-0, 00855-4 and 00550-1 had the wrong journal
+  or year prefix). They are corrected above; the studies are the same.
 
 ## Limitations
 
@@ -131,3 +134,32 @@ image.
   designed to expose exactly that case; the synthetic test
   `exposure bench: clipping below the detector maximum is reported as a QC miss` shows that
   the bench detects it.
+
+## Amendments
+
+### v1.1 (2026-10-25), after screening, before pooling
+
+Three changes were made after confirmatory cases 6 (`set1ip_2026`) and 14 (`plcg_ip_2025`)
+had been run and their per-band tables seen. No pooled P1 or P2 had been computed.
+
+1. **Noise for the SNR.** v1.0 used the whole-image MAD of raw intensities.
+   * When the membrane fills the frame (case 14), that MAD measures membrane structure, not
+     pixel noise: clearly visible tubulin bands scored a prominence of 3–5.
+   * v1.1 uses the MAD of horizontal first differences. That is 1.9–7.8x smaller on the
+     development images and about 60x smaller on case 14.
+   * The SNR floor stays at 10. It now admits more pairs, so it is not the same floor in
+     units of pixel noise.
+   * First differences underestimate the noise when neighbouring pixels are correlated
+     (smoothed exports); the bench's images are unsmoothed camera data.
+2. **Alignment check.** v1.0 compared band centroids in every lane, including lanes without
+   the band, where the "centroid" is noise. v1.1 uses only lanes where the band is present
+   (above the SNR floor) at both exposures. Found on case 6.
+3. **Per-band half-height.** This clarifies the annotation rule, which already set the
+   half-height per band. It was needed for the close doublet of case 6.
+
+**Effect on P1.** Changes 1 and 2 put more pairs and exposures into the endpoints. That
+gives more chances to register a QC miss, so the amendment makes the primary criterion
+harder to pass, not easier.
+
+The SNR floor, the 0.2 log2 threshold and the 2 px drift limit were **not** changed after
+seeing confirmatory data.

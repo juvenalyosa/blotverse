@@ -1,0 +1,13 @@
+band,exposure,image,seconds,excluded,reference,misaligned,qc_flagged,compressive_default,qc_miss
+r188,1,gfp_20s.tif,20,0,0,0,0,0,0
+r188,2,gfp_295s.tif,294.734,0,1,0,0,0,0
+r212,1,gfp_20s.tif,20,0,0,0,0,0,0
+r212,2,gfp_295s.tif,294.734,0,1,0,0,0,0
+r275,1,gfp_20s.tif,20,0,1,0,0,0,0
+r275,2,gfp_295s.tif,294.734,0,0,0,1,0,0
+r292,1,gfp_20s.tif,20,0,0,0,0,0,0
+r292,2,gfp_295s.tif,294.734,0,1,0,0,0,0
+doublet,1,gfp_20s.tif,20,0,0,0,0,0,0
+doublet,2,gfp_295s.tif,294.734,0,1,0,0,1,1
+gfp,1,gfp_20s.tif,20,0,0,0,1,0,0
+gfp,2,gfp_295s.tif,294.734,0,0,0,1,0,0

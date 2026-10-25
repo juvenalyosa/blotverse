@@ -1,0 +1,11 @@
+band,exposure,image,seconds,excluded,reference,misaligned,qc_flagged,compressive_default,qc_miss
+r264,1,plc_5s.tif,5,0,1,0,0,0,0
+r264,2,plc_20s.tif,20,0,0,0,1,1,0
+r352,1,plc_5s.tif,5,0,0,0,0,0,0
+r352,2,plc_20s.tif,20,0,1,0,0,0,0
+r404,1,plc_5s.tif,5,0,0,0,0,0,0
+r404,2,plc_20s.tif,20,0,1,0,0,1,1
+r444,1,plc_5s.tif,5,0,0,0,0,0,0
+r444,2,plc_20s.tif,20,0,1,0,0,1,1
+tubulin,1,plc_5s.tif,5,0,0,0,0,0,0
+tubulin,2,plc_20s.tif,20,0,1,0,0,0,0

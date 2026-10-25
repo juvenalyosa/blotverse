@@ -35,6 +35,7 @@ struct ExposureConfig {
   struct Band {
     std::string name;
     double y = 0.0;
+    int half_height = 0;  // 0: band_half_height
   };
   std::vector<Band> bands;
   std::string source_text;
@@ -45,7 +46,7 @@ ExposureConfig load_exposure_config(const std::filesystem::path& path);
 // One lane of one band at one exposure.
 struct ExposurePoint {
   std::size_t saturated_px = 0;  // pixels at the detector maximum in the band window
-  double snr = kNaN;             // band prominence over the flanking rows / robust image noise
+  double snr = kNaN;             // band prominence over the flanking rows / robust pixel noise
   double drift_px = kNaN;        // band centroid row minus the reference exposure's
 };
 

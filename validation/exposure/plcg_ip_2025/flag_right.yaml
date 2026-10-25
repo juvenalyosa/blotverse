@@ -1,0 +1,13 @@
+# Same membrane as flag_left.yaml, lanes 8-10 (lower on the tilted membrane).
+name: HEK IP FLAG/tubulin, lanes 8-10 (5 s, 20 s)
+lane_width: 70
+band_half_height: 6
+refine_rows: 8
+exposures:
+  - {image: flag_5s.tif, seconds: 5}
+  - {image: flag_20s.tif, seconds: 20}
+lanes: [{x: 1005}, {x: 1098}, {x: 1190}]
+bands:
+  - {name: r262, y: 262}
+  - {name: r286, y: 286, half_height: 4}
+  - {name: tubulin, y: 630, half_height: 8}

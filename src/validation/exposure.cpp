@@ -17,12 +17,19 @@
 namespace blotverse {
 namespace {
 
-// Image median and robust noise (1.4826 x median absolute deviation).
+// Image median and robust pixel noise. The noise comes from horizontal first
+// differences, 1.4826 x MAD(I(x+1,y) - I(x,y)) / sqrt(2), so that membrane
+// structure and smears (which dominate the spread of raw intensities when the
+// membrane fills the frame) do not count as noise. It underestimates the noise
+// when neighbouring pixels are correlated (smoothed exports).
 void image_level(const ImageF& img, double& med, double& noise) {
   std::vector<double> v(img.data().begin(), img.data().end());
   med = median(v);
-  for (auto& x : v) x = std::fabs(x - med);
-  noise = 1.4826 * median(std::move(v));
+  std::vector<double> d;
+  d.reserve(v.size());
+  for (int y = 0; y < img.height(); ++y)
+    for (int x = 0; x + 1 < img.width(); ++x) d.push_back(std::fabs(static_cast<double>(img(x + 1, y)) - img(x, y)));
+  noise = 1.4826 * median(std::move(d)) / std::sqrt(2.0);
 }
 
 ExposurePoint measure_point(const RawImage& raw, const ImageF& img, const Annotation& ann, std::size_t lane,
@@ -87,7 +94,9 @@ ExposureConfig load_exposure_config(const std::filesystem::path& path) {
     c.exposures.push_back({path.parent_path() / e["image"].as<std::string>(),
                            e["seconds"] ? e["seconds"].as<double>() : -1.0});
   for (const auto& l : root["lanes"]) c.lane_x.push_back(l["x"].as<double>());
-  for (const auto& b : root["bands"]) c.bands.push_back({b["name"].as<std::string>(), b["y"].as<double>()});
+  for (const auto& b : root["bands"])
+    c.bands.push_back({b["name"].as<std::string>(), b["y"].as<double>(),
+                       b["half_height"] ? b["half_height"].as<int>() : 0});
   if (c.exposures.size() < 2) throw std::runtime_error("exposure config needs at least two exposures");
   if (c.lane_x.size() < 2 || c.bands.empty())
     throw std::runtime_error("exposure config needs at least two lanes and one band");
@@ -126,8 +135,9 @@ ExposureResult analyze_exposure(const ExposureConfig& config, const MultiverseSp
   for (const auto& band : config.bands) {
     ExposureBand out;
     out.name = band.name;
-    const Annotation ann = band_row_annotation(imgs.front(), config.lane_x, config.lane_width,
-                                               config.band_half_height, band.y, config.refine_rows);
+    const int half_height = band.half_height > 0 ? band.half_height : config.band_half_height;
+    const Annotation ann =
+        band_row_annotation(imgs.front(), config.lane_x, config.lane_width, half_height, band.y, config.refine_rows);
     out.points.assign(ne, std::vector<ExposurePoint>(nl));
     for (std::size_t e = 0; e < ne; ++e)
       if (!result.excluded[e])
@@ -157,9 +167,14 @@ ExposureResult analyze_exposure(const ExposureConfig& config, const MultiverseSp
         for (std::size_t i = 0; i < nl; ++i) {
           auto& p = out.points[e][i];
           p.drift_px -= ref_row[i];
-          if (std::fabs(p.drift_px) > config.max_drift_px) out.misaligned[e] = true;
+          // Only a band that is there at both exposures has a centroid to compare.
+          const bool present = p.snr >= config.snr_floor && out.points[ref][i].snr >= config.snr_floor;
+          if (present && std::fabs(p.drift_px) > config.max_drift_px) out.misaligned[e] = true;
         }
       }
+    } else {
+      for (auto& row : out.points)
+        for (auto& p : row) p.drift_px = kNaN;
     }
 
     // Signals: every branch, every usable exposure.
@@ -323,7 +338,7 @@ void write_exposure_outputs(const std::filesystem::path& dir, const ExposureConf
       for (const auto& p : band.points[e]) {
         md << ' ' << p.saturated_px << " |";
         min_snr = std::min(min_snr, p.snr);
-        if (std::isfinite(p.drift_px)) max_drift = std::max(max_drift, std::fabs(p.drift_px));
+        if (std::isfinite(p.drift_px) && p.snr >= config.snr_floor) max_drift = std::max(max_drift, std::fabs(p.drift_px));
       }
       const char* g3 = band.any_flagged[e]           ? (band.compressive_default[e] ? "flagged, distorted" : "flagged")
                        : band.compressive_default[e]   ? "**MISS: distorted, not flagged**"

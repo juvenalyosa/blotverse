@@ -1,0 +1,19 @@
+# GFP-Set1 IP, anti-GFP blot: the same membrane at 20 s and 294.7 s (times
+# from the file names), identical 916x733 grid. Nine sample lanes between two
+# ladders (lanes 5 and 6 carry no band); lane centres from column profiles and
+# band rows from per-lane row profiles of the 20 s image. Every band row seen
+# in >= 2 lanes is measured; the close doublet near y = 350 is one band.
+name: GFP-Set1 IP anti-GFP (20 s, 295 s)
+lane_width: 32
+band_half_height: 5
+exposures:
+  - {image: gfp_20s.tif, seconds: 20}
+  - {image: gfp_295s.tif, seconds: 294.734}
+lanes: [{x: 359}, {x: 401}, {x: 441}, {x: 477}, {x: 517}, {x: 556}, {x: 593}, {x: 631}, {x: 670}]
+bands:
+  - {name: r188, y: 188}
+  - {name: r212, y: 212}
+  - {name: r275, y: 275}
+  - {name: r292, y: 292}
+  - {name: doublet, y: 350, half_height: 8}
+  - {name: gfp, y: 447}
