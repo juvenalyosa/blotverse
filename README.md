@@ -134,6 +134,11 @@ Spanish) is in [`docs/plan/BlotVerse_plan.txt`](docs/plan/BlotVerse_plan.txt).
 * blotRig: improving rigor and reproducibility in western blot experiments. *Scientific Reports*, 2024.
 * ImageJ `BackgroundSubtracter` (rolling-ball algorithm, Sternberg 1983).
 
+## Authors
+
+Juvenal Yosa, PhD and Jorge Leyva, PhD. See [CITATION.cff](CITATION.cff) for how to cite
+BlotVerse.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

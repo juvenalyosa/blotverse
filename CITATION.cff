@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use BlotVerse, please cite it as below."
+title: "BlotVerse: multiverse robustness analysis for western blot quantification"
+version: 0.1.0
+date-released: 2026-10-25
+license: MIT
+repository-code: "https://github.com/juvenalyosa/blotverse"
+authors:
+  - family-names: Yosa
+    given-names: Juvenal
+  - family-names: Leyva
+    given-names: Jorge
