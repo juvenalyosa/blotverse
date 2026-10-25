@@ -4,7 +4,12 @@
 
 find_package(Threads REQUIRED)
 find_package(TIFF REQUIRED)
-find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+# Any Eigen >= 3.3 works (3.x and 5.x); the version argument is not used
+# because Eigen's config file only accepts the same major version.
+find_package(Eigen3 REQUIRED NO_MODULE)
+if(Eigen3_VERSION VERSION_LESS 3.3)
+  message(FATAL_ERROR "Eigen >= 3.3 is required (found ${Eigen3_VERSION})")
+endif()
 
 include(FetchContent)
 
