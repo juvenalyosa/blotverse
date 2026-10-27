@@ -431,7 +431,7 @@ out. The frame is written to `candidates_frame2.csv` and `frame2_log.md` and com
 before any of its files is downloaded. Screening order: ascending
 `SHA-256("blotverse-level3-v2:" + lower-case DOI)`.
 
-**5. First-frame candidates under the revised rules.** The 19 excluded first-frame
+**5. First-frame candidates under the revised rules.** The 18 excluded first-frame
 candidates that were screened by agents (those with a raw blot image) are screened again
 under points 2 and 3, in first-frame order. Choosing among them would need judgement, so
 all are rescreened; the others fail criterion 2, which did not change. Those included form
