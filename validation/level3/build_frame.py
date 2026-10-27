@@ -7,6 +7,11 @@ datasets and writes candidates.csv in screening order.
 
     python3 -I validation/level3/build_frame.py --out validation/level3
 
+Second frame (Amendment 2):
+
+    python3 -I validation/level3/build_frame.py --out validation/level3 --start 2010-01-01 \
+        --end 2019-12-31 --previous validation/level3/candidates.csv --name frame2
+
 Only repository metadata is read: no image is downloaded.
 """
 import argparse
@@ -314,9 +319,16 @@ def dataverse(frame, name, host):
 
 
 def main():
+    global START, FREEZE
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--out", required=True, type=Path)
+    ap.add_argument("--start", default=START, help="first deposit date (YYYY-MM-DD)")
+    ap.add_argument("--end", default=FREEZE, help="last deposit date (YYYY-MM-DD)")
+    ap.add_argument("--previous", type=Path, help="candidates.csv of an earlier frame: its articles are left out")
+    ap.add_argument("--name", default="", help="frame name: writes candidates_<name>.csv and <name>_log.md")
     args = ap.parse_args()
+    START, FREEZE = args.start, args.end
+    salt = "blotverse-level3-v2:" if args.name else "blotverse-level3-v1:"
     frame = Frame()
     for step in (embo, zenodo, mendeley, figshare, dryad,
                  lambda f: dataverse(f, "Harvard Dataverse", "dataverse.harvard.edu"),
@@ -324,26 +336,31 @@ def main():
         step(frame)
         print(frame.log[-1], file=sys.stderr)
 
-    rows = [r for d, r in frame.rows.items() if d not in frame.dropped]
+    previous = set()
+    if args.previous:
+        previous = {r["doi"] for r in csv.DictReader(open(args.previous))}
+    rows = [r for d, r in frame.rows.items() if d not in frame.dropped and d not in previous]
     for r in rows:
-        r["order"] = hashlib.sha256(("blotverse-level3-v1:" + r["doi"]).encode()).hexdigest()
+        r["order"] = hashlib.sha256((salt + r["doi"]).encode()).hexdigest()
     rows.sort(key=lambda r: r["order"])
     args.out.mkdir(parents=True, exist_ok=True)
-    with open(args.out / "candidates.csv", "w", newline="") as f:
+    with open(args.out / (f"candidates_{args.name}.csv" if args.name else "candidates.csv"), "w", newline="") as f:
         w = csv.writer(f)
         w.writerow(["rank", "doi", "repositories", "datasets", "queries", "date_searched", "order_sha256"])
         for k, r in enumerate(rows, 1):
             w.writerow([k, r["doi"], ";".join(sorted(r["repositories"])), ";".join(sorted(r["datasets"])),
                         ";".join(sorted(r["queries"])), TODAY, r["order"]])
-    with open(args.out / "frame_log.md", "w") as f:
-        f.write(f"# Level-3 sampling frame: search log ({TODAY})\n\n"
+    with open(args.out / (f"{args.name}_log.md" if args.name else "frame_log.md"), "w") as f:
+        f.write(f"# Level-3 sampling frame{' ' + args.name if args.name else ''}: search log ({TODAY}, "
+                f"deposits {START} to {FREEZE})\n\n"
                 "Written by `build_frame.py`. *Hits*: records returned. *Kept*: in the date window and\n"
                 "matching the text filter (EMBO: with a blot image file). *Linked*: linked to an article DOI.\n\n"
                 "| Repository | Query | Hits | Kept | Linked |\n|---|---|---|---|---|\n")
         for repo, q, hits, kept, linked in frame.log:
             f.write(f"| {repo} | {q} | {hits} | {'' if kept is None else kept} | {'' if linked is None else linked} |\n")
         f.write(f"\nArticles (merged by DOI): {len(frame.rows)}; dropped as development datasets: "
-                f"{len(frame.dropped & frame.rows.keys())}; **candidates: {len(rows)}**.\n")
+                f"{len(frame.dropped & frame.rows.keys())}; already in an earlier frame: "
+                f"{len(previous & frame.rows.keys())}; **candidates: {len(rows)}**.\n")
     print(f"{len(rows)} candidates", file=sys.stderr)
 
 

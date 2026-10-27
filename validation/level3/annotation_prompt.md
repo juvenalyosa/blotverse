@@ -3,6 +3,9 @@
 Frozen with [`docs/level3_protocol.md`](../../docs/level3_protocol.md). It does not change
 during the study; any change is an amendment.
 
+**Changes:** Amendment 2 (2026-10-27) added the `total_protein` item in step 4. Experiments
+annotated before it used the prompt without that item.
+
 | Annotator | Model | Context |
 |---|---|---|
 | A | `claude-opus-5-5` | fresh agent per experiment |
@@ -46,6 +49,8 @@ and `<X>` by `a` or `b`.
 >    * blots, lanes (group, sample), `annotation` blocks;
 >    * `reference_image` and `reference_annotation` when the loading control is a
 >      separate image;
+>    * `total_protein` instead, when the loading control is a total-protein image with the
+>      same size and lane positions as the target image;
 >    * `invert: true` when bands are dark on a light background.
 > 5. **Write the log.** Write `<DIR>/annotator_<X>.md`. For each lane, give the evidence
 >    for its group and replicate (source and quote or description). Also list:

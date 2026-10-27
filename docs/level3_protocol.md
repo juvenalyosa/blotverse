@@ -398,3 +398,53 @@ description of its figure panel. The article DOI is the one encoded in the acces
 
 **UNC Dataverse** is searched when the API allows it. When it refuses, the refusal is
 logged in `frame_log.md` and UNC contributes no candidates.
+
+### Amendment 2 (2026-10-27): second frame and revised inclusion rules
+
+Made after the first frame had been screened in full ([`screening.md`](../validation/level3/screening.md)):
+1 of 235 candidates was included, and that experiment had been annotated and run. Every
+candidate's screening notes had been read, so the changes below were made **knowing
+which first-frame candidates they would let in**. This is why their effect is reported
+separately (point 5).
+
+**1. The first frame is reported as a deposit audit.** Its screening is final and is
+reported as a descriptive result: the share of articles with deposited western blot images
+whose deposit allows a reanalysis, and the first failing criterion of the others
+(flow diagram). This is a new, post hoc endpoint, labelled as such.
+
+**2. Criterion 7 no longer excludes.** The authors' per-replicate numbers are needed only
+for T1 and T2. S6 needs only the claim in `claim.yaml`. Experiments without per-replicate
+numbers are included; T1 and T2 are computed on the experiments that have them, and that
+number is reported.
+
+**3. Phospho / total counts as a loading control.** *Unit of analysis* and criterion 6
+also accept the total form of the target protein as the reference band when the target is
+a phospho-specific (or other modification-specific) antibody. The total form may be on the
+same membrane after reprobing, on a separate strip, or on a parallel blot of the same
+lysates, as long as each lane can be matched. Normalisation to an immunoprecipitated bait
+(co-IP) is still not a loading control.
+
+**4. Second frame.** Built with `build_frame.py --start 2010-01-01 --end 2019-12-31`:
+the same repositories, queries and operational rules (Amendment 1), with the deposit date
+window moved to 2010-01-01 to 2019-12-31. Articles already in the first frame are left
+out. The frame is written to `candidates_frame2.csv` and `frame2_log.md` and committed
+before any of its files is downloaded. Screening order: ascending
+`SHA-256("blotverse-level3-v2:" + lower-case DOI)`.
+
+**5. First-frame candidates under the revised rules.** First-frame candidates excluded
+under criterion 7, or because their only quantified panels were phospho / total, are
+screened again under points 2 and 3, in first-frame order. Those included form a
+separately labelled group. Every analysis is reported with and without them.
+
+**6. Stopping rule.** Screening of both frames stops at 50 included experiments or when
+the second frame is exhausted. If fewer than 30 are included, no further frame is added:
+level 3 is reported as the deposit audit (point 1) plus a case series of the included
+experiments, with every estimate and its interval. The proportions in *Endpoints* are
+still computed, with their (wide) intervals.
+
+**7. Annotation prompt.** `annotation_prompt.md` gains one sentence (change logged there):
+a total-protein image is given as `total_protein` when it has the same size and lane
+positions as the target image (BlotVerse then runs the `tp` loading branch); otherwise, as
+for any separate loading-control image, as `reference_image`. The experiment already
+annotated (10.1038/s41467-026-71753-w) has a total-protein image of a different size, so
+its annotation is unchanged.
