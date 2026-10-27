@@ -1,0 +1,47 @@
+# Volk et al. 2026 (Nat Commun 17:5200) Fig. 1e, gammaH2AX (14+0d), first of four Fig. 1e blots.
+# Annotator B. Target: Blot 66 800 nm bottom strip (0000817_02_800.TIF); loading control:
+# total protein stain 700 nm (0000807_01_700.TIF). Lane order from Supp Fig 11b layout.
+# Bands are bright on dark background (fluorescence): no invert.
+name: Volk 2026 Fig 1e gammaH2AX / total protein (14+0d liver)
+control_group: Juvenile NT
+blots:
+  - id: B66
+    image: images/0000817_02_800.TIF
+    reference_image: images/0000807_01_700.TIF
+    lanes:
+      - {group: Juvenile NT, sample: JNT-M1}
+      - {group: Juvenile NT, sample: JNT-M2}
+      - {group: Juvenile NT, sample: JNT-M3}
+      - {group: Juvenile NT, sample: JNT-F1}
+      - {group: Juvenile NT, sample: JNT-F2}
+      - {group: Juvenile NT, sample: JNT-F3}
+      - {group: Juvenile NDMA, sample: JNDMA-M1}
+      - {group: Juvenile NDMA, sample: JNDMA-M2}
+      - {group: Juvenile NDMA, sample: JNDMA-M3}
+      - {group: Juvenile NDMA, sample: JNDMA-F1}
+      - {group: Juvenile NDMA, sample: JNDMA-F2}
+      - {group: Juvenile NDMA, sample: JNDMA-F3}
+      - {group: Adult NT, sample: ANT-M1}
+      - {group: Adult NT, sample: ANT-M2}
+      - {group: Adult NT, sample: ANT-M3}
+      - {group: Adult NT, sample: ANT-F1}
+      - {group: Adult NT, sample: ANT-F2}
+      - {group: Adult NT, sample: ANT-F3}
+      - {group: Adult NDMA, sample: ANDMA-M1}
+      - {group: Adult NDMA, sample: ANDMA-M2}
+      - {group: Adult NDMA, sample: ANDMA-M3}
+      - {group: Adult NDMA, sample: ANDMA-F1}
+      - {group: Adult NDMA, sample: ANDMA-F2}
+      - {group: Adult NDMA, sample: ANDMA-F3}
+    annotation:
+      lanes: [{x: 131, width: 22}, {x: 159, width: 22}, {x: 187, width: 22}, {x: 215, width: 22}, {x: 244, width: 22}, {x: 272, width: 22}, {x: 327, width: 22}, {x: 353, width: 22}, {x: 380, width: 22}, {x: 407, width: 22}, {x: 433, width: 22}, {x: 460, width: 22}, {x: 514, width: 22}, {x: 540, width: 22}, {x: 567, width: 22}, {x: 594, width: 22}, {x: 620, width: 22}, {x: 647, width: 22}, {x: 703, width: 22}, {x: 733, width: 22}, {x: 763, width: 22}, {x: 793, width: 22}, {x: 822, width: 22}, {x: 852, width: 22}]
+      target_y: [396, 396, 396, 396, 396, 396, 394, 394, 394, 394, 394, 394, 393, 393, 393, 393, 393, 393, 391, 391, 391, 391, 391, 391]
+      reference_y: [396, 396, 396, 396, 396, 396, 394, 394, 394, 394, 394, 394, 393, 393, 393, 393, 393, 393, 391, 391, 391, 391, 391, 391]
+      band_half_height: 10
+      source: manual
+    reference_annotation:
+      lanes: [{x: 170.4, width: 22}, {x: 197.7, width: 22}, {x: 229.9, width: 22}, {x: 256.8, width: 22}, {x: 285.1, width: 22}, {x: 310.9, width: 22}, {x: 363.7, width: 22}, {x: 389.3, width: 22}, {x: 415.8, width: 22}, {x: 441.9, width: 22}, {x: 468.9, width: 22}, {x: 495.8, width: 22}, {x: 544.0, width: 22}, {x: 570.1, width: 22}, {x: 596.1, width: 22}, {x: 623.2, width: 22}, {x: 649.3, width: 22}, {x: 676.3, width: 22}, {x: 724.4, width: 22}, {x: 751.5, width: 22}, {x: 778.5, width: 22}, {x: 804.7, width: 22}, {x: 832.9, width: 22}, {x: 860.8, width: 22}]
+      target_y: [290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290]
+      reference_y: [290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290, 290]
+      band_half_height: 140
+      source: manual

@@ -1,0 +1,97 @@
+# BlotVerse experiment file - annotator A
+# Volk et al. 2026, Nat Commun 17:5200, Fig. 1e gammaH2AX (14+0d), Blot 66.
+# Target: 0000817_02_800.TIF bottom strip (800 nm). Loading control: Revert total
+# protein stain of the same membrane, 0000807_01_700.TIF (separate image, whole-lane window).
+# Lane layout from Supplementary Fig. 11b; see annotator_a.md for evidence.
+name: volk2026_fig1e_gH2AX
+control_group: Juvenile NT
+blots:
+  - id: blot66
+    image: images/0000817_02_800.TIF
+    invert: false
+    reference_image: images/0000807_01_700.TIF
+    lanes:
+      - {group: Juvenile NT, sample: JNT_M1}
+      - {group: Juvenile NT, sample: JNT_M2}
+      - {group: Juvenile NT, sample: JNT_M3}
+      - {group: Juvenile NT, sample: JNT_F1}
+      - {group: Juvenile NT, sample: JNT_F2}
+      - {group: Juvenile NT, sample: JNT_F3}
+      - {group: Juvenile NDMA, sample: JNDMA_M1}
+      - {group: Juvenile NDMA, sample: JNDMA_M2}
+      - {group: Juvenile NDMA, sample: JNDMA_M3}
+      - {group: Juvenile NDMA, sample: JNDMA_F1}
+      - {group: Juvenile NDMA, sample: JNDMA_F2}
+      - {group: Juvenile NDMA, sample: JNDMA_F3}
+      - {group: Adult NT, sample: ANT_M1}
+      - {group: Adult NT, sample: ANT_M2}
+      - {group: Adult NT, sample: ANT_M3}
+      - {group: Adult NT, sample: ANT_F1}
+      - {group: Adult NT, sample: ANT_F2}
+      - {group: Adult NT, sample: ANT_F3}
+      - {group: Adult NDMA, sample: ANDMA_M1}
+      - {group: Adult NDMA, sample: ANDMA_M2}
+      - {group: Adult NDMA, sample: ANDMA_M3}
+      - {group: Adult NDMA, sample: ANDMA_F1}
+      - {group: Adult NDMA, sample: ANDMA_F2}
+      - {group: Adult NDMA, sample: ANDMA_F3}
+    annotation:
+      source: manual
+      band_half_height: 8
+      lanes:
+        - {x: 131, width: 20}
+        - {x: 159, width: 20}
+        - {x: 187, width: 20}
+        - {x: 215, width: 20}
+        - {x: 243, width: 20}
+        - {x: 271, width: 20}
+        - {x: 326.6, width: 20}
+        - {x: 352.4, width: 20}
+        - {x: 379.8, width: 20}
+        - {x: 405.8, width: 20}
+        - {x: 432.3, width: 20}
+        - {x: 459.4, width: 20}
+        - {x: 513, width: 20}
+        - {x: 540, width: 20}
+        - {x: 566, width: 20}
+        - {x: 592, width: 20}
+        - {x: 619, width: 20}
+        - {x: 645, width: 20}
+        - {x: 701, width: 20}
+        - {x: 728, width: 20}
+        - {x: 756, width: 20}
+        - {x: 784, width: 20}
+        - {x: 813, width: 20}
+        - {x: 842, width: 20}
+      target_y: [392, 392, 392, 392, 392, 392, 394, 394, 394, 394, 394, 394, 394, 394, 394, 394, 394, 394, 390, 390, 390, 390, 390, 390]
+      reference_y: [392, 392, 392, 392, 392, 392, 394, 394, 394, 394, 394, 394, 394, 394, 394, 394, 394, 394, 390, 390, 390, 390, 390, 390]
+    reference_annotation:
+      source: manual
+      band_half_height: 112
+      lanes:
+        - {x: 168.3, width: 20}
+        - {x: 195.7, width: 20}
+        - {x: 222.0, width: 20}
+        - {x: 249.6, width: 20}
+        - {x: 277.4, width: 20}
+        - {x: 304.3, width: 20}
+        - {x: 356.0, width: 20}
+        - {x: 383.2, width: 20}
+        - {x: 409.3, width: 20}
+        - {x: 435.4, width: 20}
+        - {x: 462.4, width: 20}
+        - {x: 488.6, width: 20}
+        - {x: 540.2, width: 20}
+        - {x: 566.2, width: 20}
+        - {x: 592.0, width: 20}
+        - {x: 618.4, width: 20}
+        - {x: 645.7, width: 20}
+        - {x: 671.9, width: 20}
+        - {x: 724.5, width: 20}
+        - {x: 752.7, width: 20}
+        - {x: 780.6, width: 20}
+        - {x: 808.9, width: 20}
+        - {x: 836.7, width: 20}
+        - {x: 865.3, width: 20}
+      target_y: [285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285]
+      reference_y: [285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285, 285]
