@@ -1,0 +1,41 @@
+# Tsuchiya et al. 2017 Mol Cell 66:488 (doi 10.1016/j.molcel.2017.04.024), Fig. S7D.
+# Target: Cdc48 (~100 kDa), loading control: Pgk1 (~45 kDa), separate image of the
+# lower strip of the same membrane. Annotator A; evidence in annotator_a.md.
+name: molcel_2017_04_024_figS7D_cdc48
+control_group: WT
+blots:
+  - id: figS7D
+    image: images/FigS7D_IB-Cdc48.tif
+    reference_image: images/FigS7D_IB-Pgk1.tif
+    invert: true
+    lanes:
+      - {group: WT, sample: exp1}
+      - {group: cdc48-3, sample: exp1}
+      - {group: WT, sample: exp2}
+      - {group: cdc48-3, sample: exp2}
+      - {group: WT, sample: exp3}
+      - {group: cdc48-3, sample: exp3}
+    annotation:
+      lanes:
+        - {x: 275.1, width: 36}
+        - {x: 323.5, width: 36}
+        - {x: 419.4, width: 36}
+        - {x: 470.3, width: 36}
+        - {x: 568.6, width: 36}
+        - {x: 621.7, width: 36}
+      target_y: [493, 494, 492, 491, 490, 490]
+      reference_y: [493, 494, 492, 491, 490, 490]  # unused: replaced by target_y when reference_image is set
+      band_half_height: 8
+      source: manual
+    reference_annotation:
+      lanes:
+        - {x: 256.8, width: 40}
+        - {x: 306.8, width: 40}
+        - {x: 403.4, width: 40}
+        - {x: 455.7, width: 40}
+        - {x: 554.5, width: 40}
+        - {x: 606.3, width: 40}
+      target_y: [151, 152, 149, 148, 148, 148]     # Pgk1 band rows
+      reference_y: [151, 152, 149, 148, 148, 148]  # same rows (single band per lane in this image)
+      band_half_height: 15
+      source: manual

@@ -1,0 +1,29 @@
+# Tsuchiya et al. 2017 Mol Cell 66:488 Fig. S7D: Cdc48 / Pgk1, WT vs cdc48-3, 3 independent experiments on one membrane.
+# Annotator B. Target: images/FigS7D_IB-Cdc48.tif; loading control: images/FigS7D_IB-Pgk1.tif (separate image,
+# different size). Dark bands on light background: invert. Within each pair WT is left (claim.yaml / published crop).
+name: Tsuchiya 2017 Fig S7D Cdc48 / Pgk1 (WT vs cdc48-3)
+control_group: WT
+blots:
+  - id: S7D
+    image: images/FigS7D_IB-Cdc48.tif
+    reference_image: images/FigS7D_IB-Pgk1.tif
+    invert: true
+    lanes:
+      - {group: WT, sample: WT-1}
+      - {group: cdc48-3, sample: cdc48-3-1}
+      - {group: WT, sample: WT-2}
+      - {group: cdc48-3, sample: cdc48-3-2}
+      - {group: WT, sample: WT-3}
+      - {group: cdc48-3, sample: cdc48-3-3}
+    annotation:
+      lanes: [{x: 275.0, width: 34}, {x: 323.5, width: 34}, {x: 419.2, width: 34}, {x: 470.9, width: 34}, {x: 568.2, width: 34}, {x: 621.4, width: 34}]
+      target_y: [493, 494, 491, 491, 490, 490]
+      reference_y: [493, 494, 491, 491, 490, 490]
+      band_half_height: 10
+      source: manual
+    reference_annotation:
+      lanes: [{x: 257.5, width: 44}, {x: 306.8, width: 44}, {x: 403.5, width: 44}, {x: 455.7, width: 44}, {x: 553.7, width: 44}, {x: 605.3, width: 44}]
+      target_y: [151, 152, 149, 148, 148, 148]
+      reference_y: [151, 152, 149, 148, 148, 148]
+      band_half_height: 14
+      source: manual
