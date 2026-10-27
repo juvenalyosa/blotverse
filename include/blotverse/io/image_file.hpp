@@ -15,4 +15,9 @@ RawImage read_scn(const std::filesystem::path& path);
 // .tif/.tiff, .gel (ImageQuant/Molecular Dynamics TIFF) and .scn.
 RawImage read_image(const std::filesystem::path& path);
 
+// Why a file that read_image accepted is still not a raw acquisition (empty
+// when it is one): 8-bit, upscaled 8-bit, an RGB export or strongly quantised
+// data. Inclusion criterion 2 of docs/level3_protocol.md.
+std::string raw_acquisition_problem(const ImageMeta& meta);
+
 }  // namespace blotverse

@@ -80,4 +80,12 @@ RawImage read_image(const std::filesystem::path& path) {
   return read_tiff(path);  // .tif, .tiff, .gel and anything TIFF-shaped
 }
 
+std::string raw_acquisition_problem(const ImageMeta& meta) {
+  if (meta.bits_per_sample == 8) return "8-bit file";
+  if (meta.effective_bits == 8) return "upscaled 8-bit data in a 16-bit file";
+  if (meta.colour_file) return "RGB export";
+  if (meta.grey_levels < 128) return "only " + std::to_string(meta.grey_levels) + " grey levels";
+  return {};
+}
+
 }  // namespace blotverse

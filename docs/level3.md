@@ -16,7 +16,8 @@ and the authors' own quantification are available.
 * **Scientific:** does the authors' conclusion survive the multiverse?
 
 Status: pilot. Two experiments have been processed by one annotator. The plan requires two
-independent annotators and 30–50 experiments.
+independent annotators and 30–50 experiments; the confirmatory study follows
+[level3_protocol.md](level3_protocol.md), and these pilot cases are not part of it.
 
 ## Case 1: AURORA A – DICER, Fig. 3G (included, partially)
 

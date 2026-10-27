@@ -25,6 +25,7 @@ struct ImageMeta {
   int effective_bits = 16;             // 8 when a 16-bit file holds upscaled 8-bit data
   std::size_t grey_levels = 0;         // distinct pixel values in the image
   bool appears_inverted = false;       // bright background (dark bands)
+  bool colour_file = false;            // RGB(A) file whose channels were identical (an export)
   double exposure_s = -1.0;            // from the acquisition metadata, if known
   double float_scale = 0.0;            // > 0 when floating-point pixels were rescaled
   std::string sha256;                  // fingerprint of the decoded pixel data

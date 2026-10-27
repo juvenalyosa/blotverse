@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 
+#include "blotverse/io/image_file.hpp"
 #include "blotverse/io/sha256.hpp"
 #include "blotverse/io/tiff.hpp"
 
@@ -135,6 +136,25 @@ TEST_CASE("upscaled 8-bit data and inverted images are flagged") {
   invert_image(raw);
   CHECK(raw.pixels(0, 0) == 65535 - 257 * 249);
   CHECK_FALSE(raw.meta.appears_inverted);
+}
+
+TEST_CASE("raw-acquisition check rejects 8-bit, upscaled 8-bit and RGB exports") {
+  ImageU16 img(64, 64);
+  for (int y = 0; y < 64; ++y)
+    for (int x = 0; x < 64; ++x) img(x, y) = static_cast<std::uint16_t>(500 + 37 * x + 11 * y);
+  write_tiff16(temp_dir() / "raw16.tif", img);
+  CHECK(raw_acquisition_problem(read_image(temp_dir() / "raw16.tif").meta).empty());
+
+  write_tiff8(temp_dir() / "export8.tif", 64, 64);
+  CHECK(raw_acquisition_problem(read_image(temp_dir() / "export8.tif").meta) == "8-bit file");
+
+  for (auto& v : img.data()) v = static_cast<std::uint16_t>(257 * (v % 200));
+  write_tiff16(temp_dir() / "upscaled8.tif", img);
+  CHECK(raw_acquisition_problem(read_image(temp_dir() / "upscaled8.tif").meta) ==
+        "upscaled 8-bit data in a 16-bit file");
+
+  write_rgb16(temp_dir() / "grey_rgb_export.tif", 64, 64, true);
+  CHECK(raw_acquisition_problem(read_image(temp_dir() / "grey_rgb_export.tif").meta) == "RGB export");
 }
 
 namespace {

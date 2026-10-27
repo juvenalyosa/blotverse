@@ -64,6 +64,7 @@ Usage:
   blotverse forensics-bench IMAGE... --out DIR [--repeats N] [--seed N] [--patch N] [--threads N]
                                                     inject known manipulations into raw images and
                                                     measure detection and false findings
+  blotverse inspect   FILE...                       format, bit depth and raw-acquisition check (TSV)
   blotverse imagestats FILE... | --simulate LEVEL [--count N]
                                                     image statistics for the realism check
   blotverse --version
@@ -285,6 +286,32 @@ int cmd_imagestats(const Args& a) {
   return 0;
 }
 
+// Level-3 screening (docs/level3_protocol.md, criterion 2): is each file a raw
+// acquisition BlotVerse can quantify? Unreadable files are reported, not fatal.
+int cmd_inspect(const Args& a) {
+  if (a.positional.empty()) throw std::runtime_error("inspect needs at least one FILE");
+  std::cout << "file\twidth\theight\tbits\teffective_bits\tgrey_levels\tsaturated_px\texposure_s"
+               "\traw\treason\twarnings\n";
+  for (const auto& f : a.positional) {
+    try {
+      const RawImage img = read_image(f);
+      std::size_t saturated = 0;
+      for (std::uint16_t v : img.pixels.data())
+        if (v >= img.meta.detector_max) ++saturated;
+      const std::string problem = raw_acquisition_problem(img.meta);
+      std::string warnings;
+      for (const auto& w : img.meta.warnings) warnings += (warnings.empty() ? "" : "; ") + w;
+      std::cout << f << '\t' << img.pixels.width() << '\t' << img.pixels.height() << '\t'
+                << img.meta.bits_per_sample << '\t' << img.meta.effective_bits << '\t' << img.meta.grey_levels
+                << '\t' << saturated << '\t' << img.meta.exposure_s << '\t' << (problem.empty() ? "yes" : "no")
+                << '\t' << problem << '\t' << warnings << '\n';
+    } catch (const std::exception& e) {
+      std::cout << f << "\t\t\t\t\t\t\t\tno\trejected: " << e.what() << "\t\n";
+    }
+  }
+  return 0;
+}
+
 int cmd_lanes(const Args& a) {
   if (a.positional.size() != 1) throw std::runtime_error("lanes needs one IMAGE");
   const RawImage raw = read_image(a.positional[0]);
@@ -415,6 +442,7 @@ int main(int argc, char** argv) {
     if (cmd == "validate") return cmd_validate(args);
     if (cmd == "spec") return cmd_spec(args);
     if (cmd == "imagestats") return cmd_imagestats(args);
+    if (cmd == "inspect") return cmd_inspect(args);
     if (cmd == "lanes") return cmd_lanes(args);
     if (cmd == "dilution") return cmd_dilution(args);
     if (cmd == "exposure") return cmd_exposure(args);

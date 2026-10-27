@@ -31,7 +31,7 @@ so the validation harness measures the tool exactly as a laboratory uses it.
 | `include/blotverse/sim` | sim | synthetic blots with ground truth |
 | `include/blotverse/report` | report | HTML report, CSV tables, reproducibility file |
 | `include/blotverse/validation` | validation | level-1 harness (E1-E5) and decision point G2 |
-| `apps/` | CLI | `simulate`, `detect`, `run`, `reproduce`, `validate`, `spec` |
+| `apps/` | CLI | `simulate`, `detect`, `run`, `reproduce`, `validate`, `spec`, `inspect` and the validation benches |
 | `tests/` | tests | doctest unit and integration tests, CLI smoke tests |
 
 ## Key design rules

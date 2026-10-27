@@ -235,6 +235,7 @@ RawImage read_tiff(const std::filesystem::path& path) {
     if (!grey_rgb)
       throw ImageRejected("colour (pseudo-coloured) image: export the greyscale acquisition file instead: " +
                           path.string());
+    raw.meta.colour_file = true;
     raw.meta.warnings.push_back("RGB file with identical channels: read as greyscale");
   }
   analyse_pixel_depth(raw);

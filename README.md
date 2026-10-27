@@ -167,7 +167,9 @@ Protocol: [`docs/forensics_protocol.md`](docs/forensics_protocol.md); results:
 `validation/forensics/run_all.sh`.
 
 Published experiments (plan level 3): reanalysis of raw images deposited with articles,
-compared with the authors' own quantification, in [`docs/level3.md`](docs/level3.md).
+compared with the authors' own quantification. Pilot cases: [`docs/level3.md`](docs/level3.md);
+protocol of the confirmatory study: [`docs/level3_protocol.md`](docs/level3_protocol.md).
+`blotverse inspect FILE...` checks whether deposited files are raw acquisitions.
 
 Real data: public raw 16-bit acquisitions, the simulator realism check (`blotverse
 imagestats`) and lane detection against authors' Image Lab annotations are in
