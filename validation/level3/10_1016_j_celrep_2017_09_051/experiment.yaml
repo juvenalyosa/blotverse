@@ -1,0 +1,57 @@
+# Reconciled annotation (validation/level3/reconcile.py): lane mapping identical in
+# annotator_a.yaml and annotator_b.yaml; geometry is the mean of the two.
+name: 10_1016_j_celrep_2017_09_051
+control_group: AL
+blots:
+- id: blot1
+  image: images/0701 fat23 Gapdh Fabp5 CL-CM.tif
+  reference_image: images/0619 fat21 Fasn AceS CL.tif
+  lanes:
+  - {group: AL, sample: AL_1}
+  - {group: AL, sample: AL_2}
+  - {group: AL, sample: AL_3}
+  - {group: AL, sample: AL_4}
+  - {group: AL, sample: AL_5}
+  - {group: AL, sample: AL_6}
+  - {group: CR, sample: CR_1}
+  - {group: CR, sample: CR_2}
+  - {group: CR, sample: CR_3}
+  - {group: CR, sample: CR_4}
+  - {group: CR, sample: CR_5}
+  - {group: CR, sample: CR_6}
+  annotation:
+    source: manual
+    band_half_height: 15
+    lanes:
+    - {x: 428.9, width: 45.5}
+    - {x: 491.1, width: 45.5}
+    - {x: 552.9, width: 45.5}
+    - {x: 608.5, width: 45.5}
+    - {x: 667.0, width: 45.5}
+    - {x: 721.5, width: 45.5}
+    - {x: 775.0, width: 45.5}
+    - {x: 831.0, width: 45.5}
+    - {x: 886.9, width: 45.5}
+    - {x: 939.6, width: 45.5}
+    - {x: 999.1, width: 45.5}
+    - {x: 1060.7, width: 45.5}
+    target_y: [450.5, 448.5, 451.5, 450.5, 451.5, 452.5, 453.0, 455.5, 455.0, 455.5, 456.0, 458.0]
+    reference_y: [450.5, 448.5, 451.5, 450.5, 451.5, 452.5, 453.0, 455.5, 455.0, 455.5, 456.0, 458.0]
+  reference_annotation:
+    source: manual
+    band_half_height: 11
+    lanes:
+    - {x: 451.4, width: 43.0}
+    - {x: 509.6, width: 43.0}
+    - {x: 566.6, width: 43.0}
+    - {x: 620.0, width: 43.0}
+    - {x: 675.1, width: 43.0}
+    - {x: 729.8, width: 43.0}
+    - {x: 783.1, width: 43.0}
+    - {x: 839.0, width: 43.0}
+    - {x: 895.2, width: 43.0}
+    - {x: 947.2, width: 43.0}
+    - {x: 997.6, width: 43.0}
+    - {x: 1052.3, width: 43.0}
+    target_y: [606.0, 609.0, 615.0, 618.5, 623.0, 626.0, 630.0, 629.0, 634.0, 635.0, 639.5, 643.0]
+    reference_y: [606.0, 609.0, 615.0, 618.5, 623.0, 626.0, 630.0, 629.0, 634.0, 635.0, 639.5, 643.0]
