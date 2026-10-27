@@ -56,3 +56,17 @@ Each agent receives this brief with `<DOI>`, `<DIR>` and `<DATASETS>` filled in.
 When no panel qualifies, the candidate's reason is the failing criterion of its **first**
 quantified panel in figure order. The other panels are listed in the candidate's
 `screening_notes.md`.
+
+## Amendment 2 (2026-10-27)
+
+From Amendment 2 on, the brief above is given with this addition after step 2:
+
+> **Revised rules (Amendment 2 of the protocol, read it):** criterion 7 no longer excludes
+> (record whether per-replicate numbers exist, then go on); and the total form of the
+> target counts as a loading control when the target is modification-specific (phospho /
+> total), as long as each lane can be matched. Normalisation to an immunoprecipitated bait
+> is still not a loading control.
+
+For a first-frame rescreen (Amendment 2, point 5), the agent also reads the candidate's
+existing `screening_notes.md`, reuses the evidence that the revised rules do not touch,
+and appends a section `## Rescreen under Amendment 2` instead of overwriting the notes.
