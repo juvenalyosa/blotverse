@@ -1,0 +1,2 @@
+contrast,verdict,robustness_R,joint_p,default_lfc,default_p,median_lfc,lfc_q05,lfc_q95,opposite_fraction,significant_fraction,agreement,n_valid,n_universes,n_excluded,most_influential,eta2_background,eta2_band,eta2_loading,eta2_normalization,eta2_scale,eta2_test
+cdc48-3 vs WT,Not evaluable,nan,1,nan,nan,nan,nan,nan,nan,nan,nan,0,144,288,,0,0,0,0,0,0

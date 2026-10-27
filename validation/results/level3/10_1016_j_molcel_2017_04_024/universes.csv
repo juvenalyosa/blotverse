@@ -1,0 +1,145 @@
+contrast,universe_id,is_default,background,band,loading,normalization,scale,test,valid,lfc,effect,p,n_control,n_treatment,note
+cdc48-3 vs WT,0,0,rb1,rect,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,1,0,rb1,rect,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,2,0,rb1,rect,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,3,0,rb1,rect,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,4,0,rb1,rect,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,5,0,rb1,rect,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,6,0,rb1,rect,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,7,0,rb1,rect,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,8,0,rb1,rect,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,9,0,rb1,rect,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,10,0,rb1,rect,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,11,0,rb1,rect,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,12,0,rb1,profile,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,13,0,rb1,profile,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,14,0,rb1,profile,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,15,0,rb1,profile,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,16,0,rb1,profile,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,17,0,rb1,profile,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,18,0,rb1,profile,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,19,0,rb1,profile,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,20,0,rb1,profile,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,21,0,rb1,profile,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,22,0,rb1,profile,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,23,0,rb1,profile,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,24,0,rb1,mask,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,25,0,rb1,mask,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,26,0,rb1,mask,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,27,0,rb1,mask,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,28,0,rb1,mask,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,29,0,rb1,mask,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,30,0,rb1,mask,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,31,0,rb1,mask,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,32,0,rb1,mask,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,33,0,rb1,mask,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,34,0,rb1,mask,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,35,0,rb1,mask,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,36,0,rb2,rect,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,37,0,rb2,rect,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,38,1,rb2,rect,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,39,0,rb2,rect,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,40,0,rb2,rect,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,41,0,rb2,rect,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,42,0,rb2,rect,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,43,0,rb2,rect,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,44,0,rb2,rect,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,45,0,rb2,rect,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,46,0,rb2,rect,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,47,0,rb2,rect,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,48,0,rb2,profile,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,49,0,rb2,profile,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,50,0,rb2,profile,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,51,0,rb2,profile,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,52,0,rb2,profile,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,53,0,rb2,profile,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,54,0,rb2,profile,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,55,0,rb2,profile,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,56,0,rb2,profile,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,57,0,rb2,profile,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,58,0,rb2,profile,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,59,0,rb2,profile,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,60,0,rb2,mask,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,61,0,rb2,mask,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,62,0,rb2,mask,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,63,0,rb2,mask,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,64,0,rb2,mask,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,65,0,rb2,mask,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,66,0,rb2,mask,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,67,0,rb2,mask,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,68,0,rb2,mask,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,69,0,rb2,mask,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,70,0,rb2,mask,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,71,0,rb2,mask,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,72,0,rb4,rect,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,73,0,rb4,rect,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,74,0,rb4,rect,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,75,0,rb4,rect,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,76,0,rb4,rect,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,77,0,rb4,rect,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,78,0,rb4,rect,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,79,0,rb4,rect,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,80,0,rb4,rect,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,81,0,rb4,rect,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,82,0,rb4,rect,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,83,0,rb4,rect,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,84,0,rb4,profile,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,85,0,rb4,profile,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,86,0,rb4,profile,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,87,0,rb4,profile,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,88,0,rb4,profile,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,89,0,rb4,profile,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,90,0,rb4,profile,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,91,0,rb4,profile,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,92,0,rb4,profile,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,93,0,rb4,profile,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,94,0,rb4,profile,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,95,0,rb4,profile,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,96,0,rb4,mask,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,97,0,rb4,mask,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,98,0,rb4,mask,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,99,0,rb4,mask,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,100,0,rb4,mask,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,101,0,rb4,mask,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,102,0,rb4,mask,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,103,0,rb4,mask,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,104,0,rb4,mask,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,105,0,rb4,mask,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,106,0,rb4,mask,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,107,0,rb4,mask,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,108,0,local,rect,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,109,0,local,rect,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,110,0,local,rect,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,111,0,local,rect,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,112,0,local,rect,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,113,0,local,rect,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,114,0,local,rect,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,115,0,local,rect,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,116,0,local,rect,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,117,0,local,rect,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,118,0,local,rect,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,119,0,local,rect,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,120,0,local,profile,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,121,0,local,profile,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,122,0,local,profile,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,123,0,local,profile,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,124,0,local,profile,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,125,0,local,profile,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,126,0,local,profile,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,127,0,local,profile,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,128,0,local,profile,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,129,0,local,profile,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,130,0,local,profile,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,131,0,local,profile,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,132,0,local,mask,hk,fixed,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,133,0,local,mask,hk,fixed,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,134,0,local,mask,hk,fixed,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,135,0,local,mask,hk,fixed,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,136,0,local,mask,hk,sum,lin,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,137,0,local,mask,hk,sum,lin,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,138,0,local,mask,hk,sum,log,welch,0,nan,nan,nan,0,0,Welch test needs >= 2 per group
+cdc48-3 vs WT,139,0,local,mask,hk,sum,log,mixed,0,nan,nan,nan,0,0,mixed model needs >= 4 observations
+cdc48-3 vs WT,140,0,local,mask,hk,align,lin,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,141,0,local,mask,hk,align,lin,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,142,0,local,mask,hk,align,log,welch,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
+cdc48-3 vs WT,143,0,local,mask,hk,align,log,mixed,0,nan,nan,nan,0,0,normalisation undefined (optimal_alignment)
