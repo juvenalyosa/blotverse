@@ -431,10 +431,11 @@ out. The frame is written to `candidates_frame2.csv` and `frame2_log.md` and com
 before any of its files is downloaded. Screening order: ascending
 `SHA-256("blotverse-level3-v2:" + lower-case DOI)`.
 
-**5. First-frame candidates under the revised rules.** First-frame candidates excluded
-under criterion 7, or because their only quantified panels were phospho / total, are
-screened again under points 2 and 3, in first-frame order. Those included form a
-separately labelled group. Every analysis is reported with and without them.
+**5. First-frame candidates under the revised rules.** The 19 excluded first-frame
+candidates that were screened by agents (those with a raw blot image) are screened again
+under points 2 and 3, in first-frame order. Choosing among them would need judgement, so
+all are rescreened; the others fail criterion 2, which did not change. Those included form
+a separately labelled group. Every analysis is reported with and without them.
 
 **6. Stopping rule.** Screening of both frames stops at 50 included experiments or when
 the second frame is exhausted. If fewer than 30 are included, no further frame is added:
