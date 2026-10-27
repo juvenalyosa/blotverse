@@ -37,3 +37,24 @@ described. Fig. 6G is an in-gel peroxidase activity stain, not a western blot.
 **Excluded, criterion 1**: peer-reviewed article, but no western blot panel is quantified
 by the authors (Fig. 2D/E and Appendix Fig. S2h are qualitative blots only). No panel was
 examined against criteria 2–8, so no `fetch.sh` or `claim.yaml` was prepared.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. The revised rules (criterion 7 no
+longer excludes; phospho / total accepted as loading control when each lane can be matched;
+co-IP bait normalisation still not) do not touch criterion 1. The full text, figure legends
+and Appendix were re-searched for phospho-specific or other modification-specific blots: none
+(the only western blots are DmdA in Fig. 2D, 2E and Appendix Fig. S2h; no phospho antibody,
+no co-IP). None of the three panels is quantified (no densitometry, no normalisation, no bar
+chart), so there is still no panel to examine against criteria 2–8.
+
+| Panel | Revised outcome | Evidence |
+|---|---|---|
+| Fig. 2D | 1 (unchanged) | Blot only, one lane per condition, no quantification (see above). |
+| Fig. 2E | 1 (unchanged) | Same as 2D. |
+| Appendix Fig. S2h | 1 (unchanged) | Coomassie loading shown qualitatively, no densitometry. |
+
+### Decision (rescreen)
+
+**Excluded, criterion 1** (unchanged): no western blot panel quantified by the authors.
+No `fetch.sh` or `claim.yaml` prepared.

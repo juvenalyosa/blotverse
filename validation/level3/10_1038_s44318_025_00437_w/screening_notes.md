@@ -43,3 +43,23 @@ No `claim.yaml` or `fetch.sh` written (no qualifying panel). `images/` holds the
 downloaded by `screen_files.py` (`Blot_antiFlag.tif`, Fig. 1D; and
 `WholeMount_Dissection_Kre28_deltaRWD.tif`, Fig. 1C tetrad plate). No file with the
 authors' numbers was downloaded.
+
+## Rescreen under Amendment 2
+
+Rescreened on 2026-10-27 under Amendment 2, point 5 (criterion 7 no longer excludes; the
+total form of a modification-specific target counts as a loading control when each lane can
+be matched; normalisation to an immunoprecipitated bait is still not a loading control).
+The evidence above is reused; neither revised rule touches it.
+
+* **Phospho / total panels.** None. No western blot uses a phospho-specific antibody. The
+  phosphorylation readouts (Ipl1 autophosphorylation and KMN substrates, Fig. EV3B-C) are
+  kinase-assay autoradiographs, and the Ipl1/Sli15 mobility shift in Fig. 5E is a
+  pull-down "judged by protein band intensity", with no band normalised to a total form or
+  to a loading control.
+* Every western blot remains a representative image (expression checks against Pgk1,
+  time courses, pull-downs), with no densitometry, normalisation or statistics. The revised
+  rules change what counts as a loading control and drop criterion 7, but do not create a
+  quantified western blot panel.
+
+**Decision under Amendment 2: excluded. First failing criterion: 1** (no western blot panel
+quantified by the authors). Unchanged. No `fetch.sh` or `claim.yaml` written.

@@ -34,3 +34,22 @@ confocal); the quantified western blot panels are in the supplement.
 the candidate: **criterion 5** (lane-to-group and replicate mapping of the 12 deposited lanes
 is not identifiable without using the band signals; no labels or sample guide for S1A).
 No panel qualifies, so no `fetch.sh` or `claim.yaml` was written.
+
+## Rescreen under Amendment 2
+
+Rescreened 2026-10-27 under Amendment 2, point 5. Two rules changed: criterion 7 no longer
+excludes, and phospho / total counts as a loading control when each lane can be matched.
+
+* **Phospho / total.** The article has no phospho-to-total normalisation. STAR Methods says "protein levels were
+  normalized to Vinculin", and the antibody table lists no total Cdk2 or total H3. The S1
+  phospho targets (Cdk2 pTyr15, H3 pSer10) are normalised to vinculin, a housekeeping protein,
+  as before. No new panel enters the unit of analysis, and the order is unchanged: S1A/B, then S6A.
+* **Criterion 7.** Criterion 7 no longer excludes. As recorded above, the deposit and the supplement hold no per-replicate numbers.
+
+| Panel | First failing criterion | Evidence |
+|---|---|---|
+| S1A/S1B (Cdk2 pTyr15, H3 pSer10 / vinculin; Prolif vs Arrest) | **5** | Reused from above, because the amendment does not touch it. C2–C4 pass. The 12 deposited lanes (two 6-lane blocks) have no labels, sample guide, legend description or file-name cues, so the mapping of lanes to group and replicate cannot be identified without the band signals. |
+| S6A (SMC1A, SMC3 / vinculin) | 4 | Reused from above, unchanged: one representative blot, one lane per group. |
+
+**Decision under Amendment 2: still excluded, criterion 5** (Figure S1A/B, the first quantified panel).
+No `fetch.sh` or `claim.yaml` was written.

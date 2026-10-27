@@ -38,3 +38,23 @@ condition to confirm senescence and has no band quantification; the same holds f
 
 No `fetch.sh` or `claim.yaml` was prepared (no qualifying panel). The four files already in
 `images/` (from `screen_files.py`) were left untouched.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. The revised rules (criterion 7 no
+longer excludes; phospho / total accepted as loading control when each lane can be matched;
+co-IP bait normalisation still not) do not touch criterion 1. The full text and legends were
+re-searched for phospho-specific or other modification-specific blots and for co-IP: none
+(the only western blots are Fig. 1A, 1C, 1E: p16INK4a, p21, LMNB1, β-actin). None is
+quantified, so there is still no panel to examine against criteria 2–8.
+
+| Panel | Revised outcome | Evidence |
+|---|---|---|
+| Fig. 1A | 1 (unchanged) | One lane per condition, no densitometry; only EdU is quantified. |
+| Fig. 1C | 1 (unchanged) | Same as 1A. |
+| Fig. 1E | 1 (unchanged) | Two lanes, no quantification. |
+
+### Decision (rescreen)
+
+**Excluded, criterion 1** (unchanged): no western blot panel quantified by the authors.
+No `fetch.sh` or `claim.yaml` prepared.

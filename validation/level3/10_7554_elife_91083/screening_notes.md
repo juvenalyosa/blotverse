@@ -101,3 +101,73 @@ A–C) and criterion 7 (no per-replicate numbers found).
 
 No `fetch.sh` or `claim.yaml` was written, because no panel qualified. Nothing with the
 authors' numbers is kept in this folder.
+
+## Rescreen under Amendment 2
+
+Rescreened 2026-10-27 under Amendment 2, point 5. Two rules changed: criterion 7 no longer
+excludes, and phospho / total counts as a loading control when each lane can be matched.
+Evidence the revised rules do not touch is reused from above: criterion 1 (peer-reviewed VOR),
+Fig. 6B as the only western blot figure, and criterion 2 (`blotverse inspect`: images A, B and C
+are 1092 x 736, 16-bit, raw = yes, 0 saturated px).
+
+**Effect of the revised rules.** Fig. 6C (pRab10 / total Rab10) and Fig. 6D (LRRK2 pS935 / total
+LRRK2, 24D8) now fit the unit of analysis. Both compare 7 LRRK2 variants with wt, report n = 3 and
+show significance marks. In figure order, 6B/6C comes first, then 6B/6D.
+
+**New evidence (raw images rendered and read in scratch; band x-positions taken from column
+profiles, not from intensities):**
+
+* Every membrane has 12 lanes at a pitch of ~30 px. The labels (deposit `Annotation.png` =
+  Fig. 6—figure supplement 2) cover lanes 1–10: wt, R1441G, G2019S, I2020T, K1906M, T1343A,
+  T1343A/G2019S, Marker, PEI only, not transfected. Lanes 11–12 carry LRRK2, pRab10 and Rab10
+  bands but no label. The annotation crops them off, so they are left out. Lanes 9–10 have
+  Rab10 only, which fits PEI and untransfected controls. This confirms that the labels start
+  at lane 1.
+* Image A holds two complete label sets side by side. Each set has four strips (pS935, pRab10,
+  LRRK2 24D8, Rab10), i.e. a phospho membrane and a total membrane, both cut at 140 kDa. Image B
+  has a phospho membrane on the left (pS935 and pRab10) and a total membrane on the right
+  (24D8, nearly blank, and Rab10). Image C is the repeat 24D8 blot for B, with 7 bands in lanes
+  1–7 and 2 in lanes 11–12.
+* **Replicate-3 pRab10 strip (image B, left, lower strip) is offset from its labels.** On the
+  pS935 strip above it, lane 1 (wt) sits at x ≈ 79 px. On the pRab10 strip, the lane streaks
+  and the first band start at x ≈ 100 px, ~0.7 lane to the right. The lane count (bands in
+  lanes 11–12 at x ≈ 405/437) fits lane 1 = x ≈ 100. In the authors' own overview
+  (`Annotation.png`, panel B), however, the pRab10 bands fall one label to the right. That
+  reading gives a pRab10 band to the kinase-dead K1906M lane and to the Marker lane, and none to
+  wt. The two readings give different groups for every pRab10 lane of replicate 3. Choosing
+  between them means preferring the strip geometry over the authors' labelling, or using the
+  expected band pattern. That is an ambiguous mapping.
+
+| Panel | First failing criterion | Evidence |
+|---|---|---|
+| Fig. 6B/6C: pRab10(T73) / total Rab10; wt vs 6 variants; n = 3 | **5** | C2 passes (above). C3 passes: whole membranes with all 12 lanes. C4 passes: n = 3 per group, with replicates in A-left, A-right and B, each with pRab10 and Rab10. C5 **fails**: the replicate-3 pRab10 strip is offset by ~0.7 lane from its labels, and the authors' overview assigns its bands one lane to the right of the strip-geometry reading (above). So the lane-to-group mapping of replicate 3 is ambiguous. C6 would pass (Rab10 on every membrane, or on the parallel membrane in B). C7 (no longer excluding): no per-replicate values. Supplementary file 1c gives only mean ± error per variant (it was opened only to see what it contains, now in `authors/`). |
+| **Fig. 6B/6D: LRRK2 pS935 / total LRRK2 (24D8); wt vs 6 variants; n = 3** | **included** | C1, C2 pass (above). **C3:** whole membranes; lanes 1–7 of every quantified replicate are shown for pS935 and for 24D8. **C4:** n = 3 per group (legend). Replicates 1 and 2 are A-left and A-right (pS935 strip + 24D8 strip each); replicate 3 is B-left pS935 + C 24D8. Every replicate has the target and the reference. **C5:** groups come from the labels in `Annotation.png` / Fig. 6—S2. These are identical on every membrane, and the bands on the pS935 strips of A and B and on the 24D8 strips of A and C fall on the labelled lanes 1–7 (lane pitch and lane 11–12 positions agree). Replicates come from the legend of Fig. 6—S2: "(A–C) Biological replicates. Panel (C) shows the total-LRRK2 blot (24D8) for panel (B)". With n = 3, panel A holds two replicates, and each side of A is a complete, separately labelled set. No authors' numbers were used. **C6:** total LRRK2 for every replicate: A-left and A-right 24D8 strips (parallel membranes in the same image), and C for replicate 3 (repeat blot of the same lysates). Lanes are matched by label (Amendment 2 point 3). **C7** (recorded only): no per-replicate numbers. Supplementary file 1c has mean ± error per variant. **C8:** vertical lanes, no rotation. |
+
+Notes for the reviewer:
+
+* The split into 6B/6C and 6B/6D follows the per-quantification rows used above in the
+  first-frame notes (6C and 6D are separate panels with separate targets). If Fig. 6B were
+  treated as one experiment whose primary contrast is the first stated one (pRab10, R1441G
+  vs wt), it would fail criterion 5, and the candidate would be excluded.
+* The primary contrast of 6D is R1441G vs wt. It is the first contrast cited for Fig. 6C and D
+  in the text ("R1441G and I2020T showed an approximately eightfold increase in Rab10
+  phosphorylation (Figure 6C and D)"), and the first significance bracket in Fig. 6D. The text
+  gives no direction for pS935, so the direction (down) is taken from Fig. 6D.
+* The first-frame notes say that eLife's data files hold only kinetics. That is incomplete:
+  Supplementary file 1 also has table 1c ("Cell-based phospho-Rab assays. Quantification of
+  Western Blots": mean ± error of pRab10 and pS935 per variant). It is now in `authors/`.
+
+**Decision under Amendment 2: included, Fig. 6B/6D** (pS935 / total LRRK2, primary contrast
+R1441G vs wt, direction down, *, n = 3). Folder prepared:
+
+* `fetch.sh`: tested in a scratch copy, where every hash checked out.
+* `claim.yaml`.
+* `article/`: Europe PMC XML, Fig. 6—figure supplement 2, deposit `Annotation.png`, Zenodo
+  record JSON.
+* `images/Figure6_source_data_1/{A,B,C}`: raw 16-bit images and focus photos. The duplicate
+  `B/B_focus.tif` was removed.
+* `authors/`: article PDF and figures PDF (Fig. 6C/D bar charts), the Fig. 6 image and
+  Supplementary file 1.
+* `archives/` was removed. It held the deposit zips from `screen_files.py`: the Fig. 6 zip is
+  re-downloaded by `fetch.sh`, and the others are kinetics raw data and AlphaFold models,
+  unrelated to the experiment.

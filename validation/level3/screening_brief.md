@@ -70,3 +70,8 @@ From Amendment 2 on, the brief above is given with this addition after step 2:
 For a first-frame rescreen (Amendment 2, point 5), the agent also reads the candidate's
 existing `screening_notes.md`, reuses the evidence that the revised rules do not touch,
 and appends a section `## Rescreen under Amendment 2` instead of overwriting the notes.
+
+**Operational rule (added 2026-10-27, not a screening rule):** agents never send the user's
+email address or any other personal identifier to an external service (for example the
+`email` parameter of Unpaywall). If an API requires one, the agent skips it and says so in
+the notes.

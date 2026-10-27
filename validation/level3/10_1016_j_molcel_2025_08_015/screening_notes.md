@@ -68,3 +68,22 @@ that the authors quantify. All western blots (UPF1, V5, Myc, tubulin) are single
 representative images. The quantified data (n = 3) are SRSF2 end-point RT-PCR isoform ratios
 and qPCR. The `.scn` file is an RT-PCR agarose gel. No `fetch.sh` or `claim.yaml` was
 written, because no panel qualifies.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules applied: criterion 7
+no longer excludes; the total form of the target counts as a loading control for a
+modification-specific target when each lane can be matched; normalisation to an
+immunoprecipitated bait is still not a loading control.
+
+Evidence reused unchanged: the legends of Fig. 1C, 1F, 1G, 3G, S1C, S1L and S3H, the Methods
+and `Boehm et al Overview.pdf`. Every western blot (UPF1, V5, Myc, tubulin) is a single
+representative image. The n = 3 quantifications belong to the SRSF2 end-point RT-PCR and
+the qPCR. No western blot is phospho-specific, none is normalised to any reference band, and
+the deposit holds one western replicate per panel.
+
+Neither revised rule touches criterion 1 here: the article still has no western blot panel
+quantified by the authors.
+
+**Decision unchanged: excluded, first failing criterion 1.** No `fetch.sh` or
+`claim.yaml` written.

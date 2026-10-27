@@ -52,3 +52,24 @@ two deposit files downloaded by `screen_files.py`:
 `Figure2C_mag2D_20171208_1652_11.tif` (a Fig. 2C northern blot) and
 `Supplementary Figure2E_20211029_SDG-WB_MAG2-3HA_7.tif` (Fig. S2E WB). `archives/` holds the
 deposit zip for Figure 2 / Figure S2. No file with the authors' numbers was downloaded.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules applied: criterion 7
+no longer excludes; the total form of the target counts as a loading control for a
+modification-specific target when each lane can be matched; normalisation to an
+immunoprecipitated bait is still not a loading control.
+
+Evidence reused unchanged: the figure and legend review above (gr1-gr6, `mmc1.txt`,
+`Gel_processing_summary.pdf`). A fresh search of the supplementary legends (`mmc1.txt`) for
+quantification, normalisation, ratios or phospho-specific detection found nothing on any
+western blot. The article has no phospho / total panel, and its western blots (pull-downs,
+in vitro ubiquitination, sucrose-gradient fractions) are representative images with no
+densitometry, whatever the reference band. The only quantified blots are northern blots
+(Fig. 2C, 2F, 3D, 5E).
+
+Neither revised rule touches criterion 1 here: there is still no western blot panel
+quantified by the authors, so no panel enters the examination of criteria 2-8.
+
+**Decision unchanged: excluded, first failing criterion 1.** No `fetch.sh` or
+`claim.yaml` written.

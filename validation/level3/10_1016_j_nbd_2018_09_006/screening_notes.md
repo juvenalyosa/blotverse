@@ -66,3 +66,25 @@ deposited).
 No `claim.yaml` or `fetch.sh` written (no qualifying panel). `images/` holds the one file
 placed by `screen_files.py` (`BV_CLDN5_YOUNG_YOUNG_OLD_OLD_60SSEC.tiff`, Fig. 2B) and
 `archives/` the deposit zip. No file with the authors' numbers was downloaded (none exists).
+
+## Rescreen under Amendment 2
+
+Rescreened 2026-10-27 under Amendment 2, point 5. Two rules changed: criterion 7 no longer
+excludes, and phospho / total counts as a loading control when each lane can be matched.
+Co-IP bait normalisation is still not a loading control.
+
+* **Phospho / total.** The article has no phospho- or other modification-specific western blot (checked in the
+  legends and full text). The only other blot is Fig. 2C, a claudin-5/ZO-1 IP, which is "representative" and not
+  quantified. It would not count anyway, because normalisation to an immunoprecipitated bait is excluded. The VASP/pVASP files
+  in the deposit are grant pilot blots and do not belong to any article figure. No new panel enters, and the order is unchanged:
+  Fig. 2B, 3D, 5A.
+* **Criterion 7.** Criterion 7 no longer excludes. As recorded above, neither the deposit nor the article has per-replicate numbers.
+
+| Panel | First failing criterion | Evidence |
+|---|---|---|
+| Fig. 2B (claudin-5, ZO-1 / GAPDH; young vs old) | **4** | Reused from above, because the amendment does not touch it. The legend gives n = 5 per group. GAPDH is deposited for only one 6-lane membrane (at most 3 + 3), the other claudin-5 membranes have no GAPDH image, and ZO-1 is not deposited at all. |
+| Fig. 3D (Sirt1 / β-tubulin) | 2 | Unchanged: no raw image is deposited. |
+| Fig. 5A (claudin-5 / β-tubulin) | 2 | Unchanged: no raw image is deposited. |
+
+**Decision under Amendment 2: still excluded, criterion 4** (Fig. 2B, the first quantified panel).
+No `fetch.sh` or `claim.yaml` was written.

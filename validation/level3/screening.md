@@ -265,3 +265,184 @@ limitation.
 | 233 | 10.1016/j.molcel.2026.03.013 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
 | 234 | 10.1038/s44319-025-00660-w | EMBO SourceData | excluded | 2 | — | no raw image among 74 TIFF/.scn/.gel files |
 | 235 | 10.1007/s12195-026-00884-3 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+
+## First frame rescreened under Amendment 2 (point 5)
+
+The 18 agent-screened exclusions above, screened again with criterion 7 no longer excluding and phospho / total accepted. Inclusions here form a separately reported group.
+
+**Yield:** 2 included of 18.
+
+| Rank | DOI | Decision | Criterion | Panel | Reason |
+|---|---|---|---|---|---|
+| 19 | 10.7554/elife.88206 | excluded | 4 | Fig. 5A (pEB2 / EB2) | phospho/total panel now first; same replicate problem as before |
+| 43 | 10.1016/j.molcel.2021.06.009 | excluded | 5 | Fig. S1A/B | unchanged |
+| 76 | 10.1016/j.nbd.2018.09.006 | excluded | 4 | Fig. 2B | unchanged |
+| 84 | 10.1016/j.isci.2023.107207 | excluded | 4 | Fig. 1A (pSTAT3 / STAT3) | phospho/total panel now first; three membranes deposited for n = 4-27 per group |
+| 87 | 10.7554/elife.91083 | **included (provisional)** | — | Fig. 6B/6D (pS935 / LRRK2) | 6B/6C (pRab10/Rab10) fails 5; 6D counted as a separate experiment — decision for the auditor |
+| 95 | 10.1038/s44318-025-00560-8 | excluded | 2 | Fig. EV1C/D | phospho-paxillin panels are colour or 8-bit; unchanged |
+| 100 | 10.1016/j.molcel.2023.06.020 | excluded | 4 | Fig. 1C (S1C/D) | unchanged |
+| 108 | 10.1038/s44321-026-00479-5 | excluded | 2 | Fig. 1D | unchanged |
+| 109 | 10.1038/s44318-025-00587-x | excluded | 1 | Fig. 1G | unchanged |
+| 124 | 10.1038/s44321-026-00497-3 | excluded | 2 | Fig. 2D | unchanged |
+| 129 | 10.1016/j.molcel.2025.10.026 | excluded | 2 | Fig. 3E–F | unchanged |
+| 155 | 10.1038/s44318-025-00437-w | excluded | 1 | — | unchanged |
+| 163 | 10.1016/j.molcel.2022.08.018 | excluded | 1 | — | unchanged |
+| 171 | 10.1016/j.molcel.2025.08.015 | excluded | 1 | — | unchanged |
+| 186 | 10.1038/s44321-025-00336-x | excluded | 2 | Fig. 4J | unchanged (Fig. 5H phospho/total pair is 8-bit) |
+| 195 | 10.1038/s44318-026-00706-2 | excluded | 1 | — | unchanged |
+| 209 | 10.1016/j.celrep.2024.114831 | **included** | — | Fig. 5E | deoxyhypusinated eIF5A / Ponceau S, 3 replicates; excluded before only on criterion 7 |
+| 228 | 10.1038/s44319-026-00740-5 | excluded | 1 | — | unchanged |
+
+## Second frame (Amendment 2, point 4: deposits 2010–2019)
+
+Screened under the revised rules from the start, with the same steps as the first frame ([`criterion2_frame2.tsv`](criterion2_frame2.tsv), [`criterion2_blot_frame2.tsv`](criterion2_blot_frame2.tsv), [`criterion2_visual_frame2.tsv`](criterion2_visual_frame2.tsv)). In the visual check, ranks 63 and 64 (about 11 GB of microscopy stacks) were judged from their file names and one local file each.
+
+**Yield:** 3 included, 141 excluded, 1 pending of 145 candidates.
+
+| Rank | DOI | Repository | Decision | Criterion | Panel | Reason |
+|---|---|---|---|---|---|---|
+| 1 | 10.1016/j.virol.2019.07.018 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 2 | 10.1016/j.bbr.2018.06.028 | Mendeley Data | excluded | 2 | — | no raw image among 7 TIFF/.scn/.gel files |
+| 3 | 10.1016/j.molcel.2018.08.017 | Mendeley Data | excluded | 2 | Fig. 2E (S1D) | NOP56/ACTB blots are 8-bit; the 16-bit files are northern blots |
+| 4 | 10.1016/j.jnutbio.2019.03.022 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 5 | 10.1007/s00018-019-03227-w | Zenodo | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 6 | 10.1098/rsbl.2014.0734 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 7 | 10.1016/j.molcel.2018.06.021 | Mendeley Data | excluded | 2 | — | no raw image among 9 TIFF/.scn/.gel files |
+| 8 | 10.1016/j.chom.2018.11.008 | Zenodo | excluded | 1 | — | blots not quantified |
+| 9 | 10.1016/j.molcel.2018.05.026 | Mendeley Data | excluded | 1 | — | blots not quantified |
+| 10 | 10.1152/ajpcell.00375.2018 | Dryad | excluded | 2 | — | no raw image among 1 TIFF/.scn/.gel files |
+| 11 | 10.1016/j.molcel.2018.11.003 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 12 | 10.1371/journal.pone.0176446 | Dryad | excluded | 2 | — | no raw image among 18 TIFF/.scn/.gel files |
+| 13 | 10.1016/j.celrep.2018.03.054 | Mendeley Data | excluded | 2 | Fig. 6G (P-RIPK1 / RIPK1) | panel files are 8-bit |
+| 14 | 10.1152/ajpendo.00282.2019 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 15 | 10.1016/j.molcel.2018.08.042 | Mendeley Data | excluded | 1 | — | blots not quantified |
+| 16 | 10.1016/j.cryobiol.2018.07.004 | Mendeley Data | pending |  |  | article not accessible to the screening agent (closed access); deposit has 16-bit raw blots |
+| 17 | 10.1371/journal.pone.0112624 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 18 | 10.1016/j.molcel.2018.10.041 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 19 | 10.1371/journal.pone.0123967 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 20 | 10.1016/j.chom.2018.09.008 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 21 | 10.1016/j.molcel.2018.05.007 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 22 | 10.1016/j.molcel.2018.09.028 | Mendeley Data | excluded | 2 | — | no raw image among 122 TIFF/.scn/.gel files |
+| 23 | 10.1016/j.cell.2017.10.012 | Mendeley Data | excluded | 2 | — | no raw image among 6 TIFF/.scn/.gel files |
+| 24 | 10.1016/j.molcel.2017.02.006 | Mendeley Data | excluded | 2 | — | no raw image among 18 TIFF/.scn/.gel files |
+| 25 | 10.1016/j.jmii.2019.05.008 | Mendeley Data | excluded | 2 | — | no raw image among 47 TIFF/.scn/.gel files |
+| 26 | 10.1371/journal.pone.0163913 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 27 | 10.1016/j.celrep.2017.09.051 | Mendeley Data | **included** | — | Supp. Fig. 3C (Fabp5 / Gapdh) | CR vs AL, n = 6/6; Fig. 3B fails 2 (16-bit PNG) |
+| 28 | 10.1016/j.ccell.2019.08.008 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 29 | 10.1016/j.micpath.2018.11.029 | Mendeley Data | excluded | 2 | — | no raw image among 11 TIFF/.scn/.gel files |
+| 30 | 10.1016/j.cell.2018.02.008 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 31 | 10.1016/j.biopha.2019.109402 | Mendeley Data | excluded | 2 | — | no raw image among 20 TIFF/.scn/.gel files |
+| 32 | 10.1371/journal.pone.0171940 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 33 | 10.1016/j.molcel.2016.11.011 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 34 | 10.1016/j.lfs.2019.02.005 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 35 | 10.1016/j.molcel.2018.09.005 | Mendeley Data | excluded | 2 | — | no raw image among 6 TIFF/.scn/.gel files |
+| 36 | 10.1073/pnas.1909393116 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 37 | 10.1093/toxsci/kfx292 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 38 | 10.1016/j.molcel.2017.09.036 | Mendeley Data | excluded | 2 | — | no raw image among 88 TIFF/.scn/.gel files |
+| 39 | 10.1016/j.celrep.2019.10.130 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 40 | 10.1212/wnl.0000000000006435 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 41 | 10.1016/j.molcel.2017.06.009 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 42 | 10.1016/j.fsi.2018.12.054 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 43 | 10.1016/j.molcel.2018.05.020 | Mendeley Data | excluded | 2 | — | no raw image among 2 TIFF/.scn/.gel files |
+| 44 | 10.1371/journal.pone.0186168 | Dryad;Zenodo | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 45 | 10.1016/j.molcel.2017.06.028 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 46 | 10.1016/j.molcel.2018.09.010 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 47 | 10.1016/j.molcel.2018.04.016 | Mendeley Data | excluded | 2 | — | no raw image among 26 TIFF/.scn/.gel files |
+| 48 | 10.1371/journal.pone.0143160 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 49 | 10.1080/15384101.2017.1284715 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 50 | 10.1016/j.biopha.2019.109239 | Mendeley Data | excluded | 2 | — | no raw image among 99 TIFF/.scn/.gel files |
+| 51 | 10.1016/j.biopha.2019.108786 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 52 | 10.1016/j.nbd.2019.03.023 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 53 | 10.1016/j.molcel.2017.05.006 | Mendeley Data | excluded | 1 | — | blots not quantified |
+| 54 | 10.1016/j.molcel.2017.10.025 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 55 | 10.1016/j.biopha.2019.109462 | Mendeley Data | excluded | 2 | — | no raw image among 48 TIFF/.scn/.gel files |
+| 56 | 10.5534/wjmh.170005 | Harvard Dataverse | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 57 | 10.1016/j.cub.2017.10.014 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 58 | 10.1093/toxsci/kfw127 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 59 | 10.1016/j.molcel.2017.06.013 | Mendeley Data | excluded | 2 | — | no raw image among 37 TIFF/.scn/.gel files |
+| 60 | 10.1016/j.cbi.2019.108754 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 61 | 10.1371/journal.pone.0183681 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 62 | 10.1016/j.molcel.2017.03.020 | Mendeley Data | excluded | 2 | — | no raw image among 119 TIFF/.scn/.gel files |
+| 63 | 10.1016/j.molcel.2018.11.006 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 64 | 10.1016/j.molcel.2018.09.009 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 65 | 10.1016/j.molcel.2017.02.008 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 66 | 10.1371/journal.pone.0220860 | Dryad;Zenodo | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 67 | 10.1016/j.diabres.2017.11.028 | Mendeley Data | excluded | 2 | — | no raw image among 2 TIFF/.scn/.gel files |
+| 68 | 10.1016/j.molcel.2018.01.006 | Mendeley Data | excluded | 2 | — | no raw image among 9 TIFF/.scn/.gel files |
+| 69 | 10.1016/j.celrep.2018.04.070 | Mendeley Data | excluded | 1 | — | pull-down blots not quantified |
+| 70 | 10.1371/journal.pone.0109418 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 71 | 10.1371/journal.pone.0216463 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 72 | 10.1016/j.cell.2018.01.032 | Mendeley Data | excluded | 4 | Fig. 1F | one lane per group, 2 independent experiments |
+| 73 | 10.1016/j.biopha.2019.108760 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 74 | 10.1016/j.molcel.2017.09.009 | Mendeley Data | excluded | 2 | — | no raw image among 64 TIFF/.scn/.gel files |
+| 75 | 10.1016/j.biopha.2019.109045 | Mendeley Data | excluded | 2 | — | no raw image among 2 TIFF/.scn/.gel files |
+| 76 | 10.1371/journal.pone.0132046 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 77 | 10.1371/journal.pone.0138201 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 78 | 10.1016/j.molcel.2018.02.027 | Mendeley Data | excluded | 2 | — | no raw image among 115 TIFF/.scn/.gel files |
+| 79 | 10.5534/wjmh.190078 | Harvard Dataverse | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 80 | 10.1016/j.biopha.2019.109265 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 81 | 10.1016/j.biopha.2019.109053 | Mendeley Data | **included** | — | Fig. 3G/H (MHC / GAPDH) | control vs smoke 4/8/12 weeks, 3 rats per group; claim.yaml incomplete (article not accessible) |
+| 82 | 10.1038/nature22965 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 83 | 10.1016/j.celrep.2018.08.076 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 84 | 10.1371/journal.pone.0144309 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 85 | 10.5534/wjmh.180118 | Harvard Dataverse | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 86 | 10.1016/j.molcel.2017.01.004 | Mendeley Data | excluded | 2 | — | no raw image among 24 TIFF/.scn/.gel files |
+| 87 | 10.1016/j.molcel.2017.11.016 | Mendeley Data | excluded | 1 | — | supplementary blots not quantified |
+| 88 | 10.1016/j.molcel.2017.09.015 | Mendeley Data | excluded | 2 | — | no raw image among 184 TIFF/.scn/.gel files |
+| 89 | 10.1371/journal.pone.0126277 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 90 | 10.5534/wjmh.190031 | Harvard Dataverse | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 91 | 10.1016/j.cell.2018.04.039 | Mendeley Data | excluded | 1 | — | blots not quantified |
+| 92 | 10.1016/j.molcel.2018.05.013 | Mendeley Data | excluded | 1 | Fig. 3E | no loading control; S4N normalised to the IP bait |
+| 93 | 10.1016/j.biopha.2019.108901 | Mendeley Data | excluded | 2 | — | no raw image among 21 TIFF/.scn/.gel files |
+| 94 | 10.1016/j.molcel.2016.09.010 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 95 | 10.1371/journal.pone.0120133 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 96 | 10.1016/j.biopha.2018.01.111 | Mendeley Data | excluded | 2 | — | no raw image among 132 TIFF/.scn/.gel files |
+| 97 | 10.1016/j.celrep.2018.09.088 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 98 | 10.1016/j.redox.2019.101260 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 99 | 10.1016/j.molcel.2017.04.011 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 100 | 10.1016/j.bbi.2019.01.006 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 101 | 10.1098/rsos.172376 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 102 | 10.1016/j.molcel.2018.01.027 | Mendeley Data | excluded | 1 | Fig. 7C | only densitometry is a pull-down without loading control |
+| 103 | 10.7554/elife.38771 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 104 | 10.1016/j.molcel.2017.12.024 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 105 | 10.1016/j.molcel.2017.01.026 | Mendeley Data | excluded | 1 | — | blots not quantified; quantified bands are in-gel fluorescence |
+| 106 | 10.15252/embj.2018101379 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 107 | 10.1371/journal.pone.0184502 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 108 | 10.1016/j.molcel.2017.08.014 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 109 | 10.1016/j.molcel.2017.06.025 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 110 | 10.1016/j.molcel.2017.12.012 | Mendeley Data | excluded | 2 | Fig. 1C | pseudo-colour files |
+| 111 | 10.1016/j.redox.2019.101363 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 112 | 10.5534/wjmh.190034 | Harvard Dataverse | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 113 | 10.1016/j.molcel.2017.05.003 | Mendeley Data | excluded | 1 | Fig. 4D | normalised to the immunoprecipitated bait |
+| 114 | 10.1016/j.molcel.2017.10.011 | Mendeley Data | excluded | 2 | — | no raw image among 165 TIFF/.scn/.gel files |
+| 115 | 10.1016/j.molcel.2018.08.029 | Mendeley Data | excluded | 2 | — | no raw image among 20 TIFF/.scn/.gel files |
+| 116 | 10.1016/j.molcel.2018.01.002 | Mendeley Data | excluded | 2 | — | no raw image among 52 TIFF/.scn/.gel files |
+| 117 | 10.1016/j.phrs.2018.05.002 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 118 | 10.1016/j.molcel.2017.02.023 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 119 | 10.1016/j.molcel.2017.07.019 | Mendeley Data | excluded | 2 | — | no raw image among 9 TIFF/.scn/.gel files |
+| 120 | 10.1016/j.biopha.2018.11.124 | Mendeley Data | excluded | 2 | — | every quantified protein has 8-bit or colour replicates (article not accessible) |
+| 121 | 10.1007/s00401-017-1803-x | Zenodo | excluded | 2 | — | no raw image among 52 TIFF/.scn/.gel files |
+| 122 | 10.1016/j.molcel.2018.06.039 | Mendeley Data | excluded | 2 | — | no raw image among 62 TIFF/.scn/.gel files |
+| 123 | 10.1016/j.bbrc.2019.04.020 | Mendeley Data | excluded | 2 | — | no raw image among 1 TIFF/.scn/.gel files |
+| 124 | 10.1016/j.molcel.2017.11.025 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 125 | 10.1016/j.intimp.2019.106045 | Mendeley Data | excluded | 2 | — | no raw image among 2 TIFF/.scn/.gel files |
+| 126 | 10.1242/jcs.234666 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 127 | 10.1038/hdy.2011.92 | Dryad;Zenodo | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 128 | 10.1016/j.molcel.2018.03.030 | Mendeley Data | excluded | 2 | — | no raw image among 20 TIFF/.scn/.gel files |
+| 129 | 10.1098/rsos.181156 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 130 | 10.1016/j.lfs.2019.116822 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 131 | 10.1016/j.molcel.2017.05.020 | Mendeley Data | excluded | 2 | — | raw images are not western blots; every blot file is 8-bit, colour, PNG or PDF |
+| 132 | 10.1016/j.celrep.2015.09.017 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 133 | 10.1016/j.molcel.2017.06.020 | Mendeley Data | excluded | 1 | — | blots not quantified |
+| 134 | 10.1016/j.biopha.2019.01.050 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 135 | 10.1101/495432v2 | Mendeley Data | excluded | 2 | — | no raw image among 3 TIFF/.scn/.gel files |
+| 136 | 10.1016/j.molcel.2018.10.039 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 137 | 10.1371/journal.pone.0135991 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 138 | 10.1016/j.biopha.2019.108854 | Mendeley Data | excluded | 2 | — | no raw image among 49 TIFF/.scn/.gel files |
+| 139 | 10.1016/j.molcel.2017.04.024 | Mendeley Data | **included** | — | Fig. S7D (Cdc48 / Pgk1) | cdc48-3 vs WT, n = 3, claim: no difference |
+| 140 | 10.1016/j.biopha.2019.108603 | Mendeley Data | excluded | 2 | — | no raw image among 23 TIFF/.scn/.gel files |
+| 141 | 10.1016/j.jnutbio.2018.06.002 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 142 | 10.1016/j.biopha.2019.108710 | Mendeley Data | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 143 | 10.17504/protocols.io.kfpctmn.&nbsp | Zenodo | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |
+| 144 | 10.1016/j.molcel.2017.08.008 | Mendeley Data | excluded | 2 | — | no raw image among 2 TIFF/.scn/.gel files |
+| 145 | 10.1212/wnl.0000000000007850 | Dryad | excluded | 2 | — | no TIFF, .scn or .gel file in the deposit |

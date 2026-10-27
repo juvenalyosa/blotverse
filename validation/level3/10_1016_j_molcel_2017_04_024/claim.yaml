@@ -1,0 +1,51 @@
+doi: 10.1016/j.molcel.2017.04.024
+article: >-
+  Tsuchiya et al. (2017) "In Vivo Ubiquitin Linkage-type Analysis Reveals that the
+  Cdc48-Rad23/Dsk2 Axis Contributes to K48-Linked Chain Specificity of the Proteasome",
+  Molecular Cell 66:488-502 (PMID 28525741; no PMC copy).
+deposit: mendeley:t4xtrtj2gp (version 3, doi:10.17632/t4xtrtj2gp.3)
+panel:
+  figure: "Fig. S7"
+  letter: D
+  sub_panel: "Cdc48 / Pgk1 immunoblot of total lysate, WT vs cdc48-3 (supplementary, related to Figure 7)"
+target: Cdc48 (anti-Cdc48, ~100 kDa band)
+loading_control:
+  type: housekeeping
+  name: Pgk1 (anti-Pgk1, ~45 kDa; lower strip of the same membrane, separate image)
+groups:  # control first; budding yeast strains, total lysate (mild alkali method)
+  - WT
+  - cdc48-3
+primary_contrast: cdc48-3 vs WT
+direction: no difference
+p_value: "none reported (no test and no significance mark for Fig. S7D; bar chart of mean ± SEM)"
+n_per_group:
+  WT: 3
+  cdc48-3: 3
+quote: >-
+  "The mutant protein was expressed normally, but caused accumulation of substantial amounts
+  of Ub conjugates even at the permissive temperature (Figures S7D and S7F)."
+quote_location: >-
+  Results, section "Cdc48-Ufd1-Npl4 Contributes to the Selection of K48-Linked Chains Upstream
+  of Rad23/Dsk2 and the Proteasome"
+legend: >-
+  Fig. S7D: "Relative expression levels of Cdc48 between wild-type (WT) and cdc48-3 mutant.
+  Total lysate prepared by the mild alkali method was subjected to immunoblotting with
+  anti-Cdc48 and anti-Pgk1 antibodies. Signal intensities of Cdc48 were quantified and
+  normalized to Pgk1 and represented as means ± SEM of three biologically independent
+  experiments."
+lane_layout_source: >-
+  Fig. S7D (article/FigS7D_overview.png): the published crop shows two adjacent lanes labelled
+  WT, cdc48-3 (left to right). The deposited membrane carries six sample lanes in three pairs
+  separated by an empty lane, i.e. 3 independent experiments x (WT, cdc48-3); within each
+  pair WT is taken to be left, as in the published crop. Pairs 1-3 = replicates 1-3 (order of
+  replicates is arbitrary and not stated). The marker is at the left edge.
+images:
+  target:
+    file: images/FigS7D_IB-Cdc48.tif
+    deposit_name: "Figure S7D IB-Cdc48 .tif"
+    note: 16-bit, 918 x 1024, dark bands on light background (invert); handwritten "αCDC" label on the marker strip
+  loading_control:
+    file: images/FigS7D_IB-Pgk1.tif
+    deposit_name: "Figure S7D IB-Pgk1.tif"
+    note: 16-bit, 1080 x 574, separate image (different size), same six-lane pair layout; handwritten "αPGK"
+per_replicate_numbers: "yes: authors/mmc7.xlsx (Table S6), sheet 6D (per-lane Cdc48 and Pgk1 signals, 3 experiments)"

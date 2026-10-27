@@ -36,3 +36,26 @@ comparison.
 
 Because no panel qualifies, `fetch.sh` and `claim.yaml` were not written. `images/` holds the
 files that `screen_files.py` downloaded earlier and was left unchanged.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules: criterion 7 no longer
+excludes; the total form of the target counts as a loading control for a modification-specific
+target (phospho / total) when each lane can be matched; co-IP bait normalisation still does not.
+
+The full text (`article/PMC12669606.xml`) was searched again: "phospho" occurs only as
+"phospholipids"; there is no phospho-specific antibody, no total-protein reference, no
+co-immunoprecipitation and no densitometry. The only immunoblot remains Fig. 1G, a qualitative
+anti-FLAG mPEG-MAL band-shift assay with one lane per condition and no quantification. The
+revised rules concern loading-control type and criterion 7; they do not create a quantified
+western blot panel, so criterion 1 still fails.
+
+| Panel | First failing criterion (Amendment 2) | Evidence |
+|---|---|---|
+| Fig. 1G (Sip4-FLAG mPEG-MAL, anti-FLAG) | 1 | unchanged: not quantified, no loading control, no group comparison |
+
+Criterion 7: not applicable (no quantified western blot; Fig. 1 source data hold only the
+Fig. 1D growth curves).
+
+**Decision under Amendment 2: excluded**, unchanged. First failing criterion: **1**. No
+`fetch.sh` or `claim.yaml` written.

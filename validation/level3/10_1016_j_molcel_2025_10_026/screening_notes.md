@@ -34,3 +34,25 @@ in the deposit (S3H, found by the file screen) fails criterion 4 (n = 1 per grou
 No `fetch.sh` or `claim.yaml` written (no qualifying panel). `images/` holds the images
 downloaded by `screen_files.py`; S3H_WB_GAPDH.tif, S3I images and the source tables were
 inspected from a scratch copy only and are not stored here.
+
+## Rescreen under Amendment 2
+
+Rescreened on 2026-10-27 under Amendment 2, point 5 (criterion 7 no longer excludes; the
+total form of a modification-specific target counts as a loading control when each lane can
+be matched; normalisation to an immunoprecipitated bait is still not a loading control).
+The evidence above is reused; neither revised rule touches it.
+
+* **Phospho / total panels.** None. Every quantified blot normalises 3xFLAG-BRCA1 to actin
+  or GAPDH (Methods: "Results for FLAG levels were normalized over actin"). The full text
+  mentions phosphorylation only for pSXXF phosphopeptide binding and in references; no
+  phospho-specific antibody is blotted. The panel list is unchanged.
+* **Co-IP / pull-down panels** (2C, S1K, S2D): still not in the list. They are not
+  quantified against a loading control, and normalisation to a bait would still not count.
+* **Fig 3E-F**: still fails **criterion 2** (all eight `3E_WB_*` files are 8-bit, raw = no).
+* **Fig S2F**: still fails criterion 2 (8-bit).
+* **Fig S3H**: still fails criterion 4 (one membrane, one lane per variant and time point;
+  n = 1 per group). Not affected by the revised rules.
+* **Fig S3I**: still fails criterion 2 (8-bit).
+
+**Decision under Amendment 2: excluded. First failing criterion: 2 (Fig 3E-F).** Unchanged.
+No `fetch.sh` or `claim.yaml` written; no files moved.

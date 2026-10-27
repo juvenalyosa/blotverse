@@ -68,3 +68,51 @@ the same either way.
 
 No `fetch.sh` or `claim.yaml` was written because no panel qualified. `images/` and `archives/`
 still hold the files downloaded by `screen_files.py`.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules applied: criterion 7
+no longer excludes (recorded only); the total form of a modification-specific target counts
+as a loading control when each lane can be matched; normalisation to an immunoprecipitated
+bait is still not a loading control. Evidence above for criteria 2–6 and 8 is reused; only
+the panel list and criterion 7 are revisited.
+
+**Panel list under the revised rules.** No phospho / total panel is quantified anywhere in
+the article: pERK1/2, pRSK and ERK1/2 appear only as unquantified input / IP rows (Figs. 3A,
+3D, 3E, 5A–5D, 6E); in Fig. 3D the text mentions a higher pERK/ERK ratio in the IP fraction,
+but the plotted densitometry is ERK1/2 co-IP normalised to HA (bait). The co-IP panels
+(Figs. 3D, 3E, 4A–4C, 5A–5D, S4A, S4C, S5A–S5D) remain outside the panel list (bait
+normalisation). Fig. 3B (thiophosphate in vitro kinase assay, biological duplicates) is not a
+phospho / total normalisation and has no raw image in the deposit (it would fail criterion 2,
+and criterion 4 with n = 2). So the first quantified panel in figure order is still Fig. 5E.
+
+| Panel | Revised outcome | Evidence |
+|---|---|---|
+| Fig. 5E | **included** | C1: peer-reviewed, quantified. C2: all 21 Fig. 5E TIFFs `raw = yes` (2750 x 2200, 16 bit, 0 saturated px; re-run 2026-10-27). C3: chemiluminescence images show the full cut strips (12 lanes each) and Ponceau S images the whole membrane with ladders on both sides. C4: "triplicates (A and D–F)", Methods "All experiments were done in triplicates"; Replicate I, II, III folders each contain Control, ERK2 and BSA. C5: condition from file name "from the top control ERK2 BSA" and per-condition Ponceau / cutting-reference names; replicate from folder; time point of each lane from the figure's lane labels (0 … 60 min, left to right), no authors' numbers used. C6: Ponceau S of the same membrane per condition per replicate (total protein), 12 lanes in the same order. C7 (recorded, no longer excludes): **no per-replicate numbers** in article, supplement or deposit (only plotted mean ± SD). C8: lanes vertical in both chemiluminescence and Ponceau S images (checked on previews). |
+
+Panels after Fig. 5E are not examined (stop at the first qualifying panel).
+
+**Primary contrast:** 100 µM ERK2 vs Control (Results: "Western blot analysis of the reaction
+product indicated that ERK2 can competitively inhibit the DHPS-mediated reaction (Figure
+5E)"), direction down, no p-value or significance mark for Fig. 5E, n = 3 per group.
+
+### Decision (rescreen)
+
+**Included, Fig. 5E** (first-frame rescreen group, reported separately per Amendment 2
+point 5). The only change from the first screen is criterion 7, which no longer excludes;
+T1/T2 cannot be computed for this experiment (no per-replicate numbers).
+
+Folder prepared:
+* `fetch.sh` re-downloads everything with SHA-256 (tested in a scratch copy: all hashes OK,
+  overview crop reproduced byte-identical).
+* `article/`: `PMC11544350.xml` (text, legends, methods) and `Fig5E_overview.png` (crop of
+  the Fig. 5E representative blot from page 10 of the article PDF: time and condition
+  labels only, no graph).
+* `images/`: the 21 Fig. 5E TIFFs (3 chemiluminescence, 9 Ponceau S, 9 colorimetric
+  cutting-reference). The earlier `screen_files.py` download (a renamed copy of
+  `I_BSA_Colorimetric...`) and `archives/` (whole zip, also Fig. 5F / S5E) were removed.
+* `authors/`: publisher article PDF (`mmc2`) and supplement (`mmc1`), which print the plotted
+  points, means and p-values. The PMC figure JPGs (`nihms-2031309-f000*.jpg`) printed plotted
+  values and could not be re-downloaded by URL (PMC returns HTML), so they were deleted; the
+  same figures are in `authors/…-mmc2.pdf`.
+* `claim.yaml`.

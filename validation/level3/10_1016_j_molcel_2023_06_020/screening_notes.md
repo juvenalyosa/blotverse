@@ -54,3 +54,44 @@ quantified blot (Figs 1C, 4F, S4C), whereas the authors quantify n = 3 biologica
 
 No `fetch.sh` or `claim.yaml` was written (no panel qualifies). `images/` was left as
 downloaded by `screen_files.py`; it holds no authors' numbers.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules: criterion 7 no longer
+excludes; the total form of the target counts as a loading control when the target antibody is
+modification-specific (phospho / total) and each lane can be matched; co-IP bait normalisation
+is still not a loading control. Evidence above on criteria 1-6 and 8 is reused: the revised
+rules do not touch criteria 2-5.
+
+**Phospho panels reconsidered.**
+
+* Fig 1C / S1C (p-eIF2α): the Methods state that band intensities were "normalized to the
+  b-Actin loading control" (then to the membrane sum), so p-eIF2α is quantified against
+  β-actin, not total eIF2α. Point 3 does not change the panel; total eIF2α
+  (`I_eIF2alpha-uncropped.tif`) would not help anyway, since it is the same single replicate.
+* Fig 1D and Fig S1E (% phosphorylated IRE1α, Phos-tag): previously not counted. The blot uses
+  a pan-IRE1α antibody on a Phos-tag gel, and the value is p-IRE1α / (p-IRE1α + IRE1α) within
+  one lane (Methods, "Mn2+ Phos-tag gel analysis"). The target is not a modification-specific
+  antibody, so point 3 (read literally) does not make this a loading-control normalisation and
+  the panels stay outside the unit of analysis. Even if they were counted, they rank after
+  Fig 1C and fail criterion 3: the only Phos-tag image deposited (folder
+  `Fig-S2E-IRE1-Phos-tag`, `221201_SarsCoV2 version 2 IV IRE1a,2-2. Scan.tif`,
+  SHA-256 89235e93…f86fb, `blotverse inspect`: 16-bit, raw = yes) shows 2 membrane strips of
+  7 lanes each, i.e. one experiment, whereas the legends state n = 3 biologically independent
+  experiments (overview `Uncropped-highlighted.png`, SHA-256 5fe9690c…aa02e, looked at in the
+  scratchpad, not kept).
+* No other phospho / total or co-IP quantification in the article or Figures S1-S7.
+
+| Panel | First failing criterion (Amendment 2) | Evidence |
+|---|---|---|
+| Fig 1C (p-eIF2α, GADD34 vs β-actin; quantified in Fig S1C/D) | 3 | unchanged: one replicate membrane per antibody deposited, n = 3 quantified |
+| Fig 1D / S1E (% p-IRE1α, Phos-tag) | not an eligible panel (not a modification-specific antibody); would fail 3 | single 2 × 7-lane Phos-tag scan, n = 3 quantified |
+| Fig 4F (NUAK2 vs GAPDH) | 3 | unchanged |
+| Fig S4C (NUAK2 vs GAPDH, siNUAK2) | 3 | unchanged |
+| Fig S4I (NUAK2 vs GAPDH, DTT) | 2 | unchanged: no raw image deposited |
+
+Criterion 7 (recorded, no longer excluding): no per-replicate numbers exist (no source-data
+file in the article or the deposit).
+
+**Decision under Amendment 2: excluded**, unchanged. First failing criterion of the first
+quantified panel (Fig 1C): **3**. No `fetch.sh` or `claim.yaml` written.

@@ -34,3 +34,28 @@ readable for the target.
 `blotverse inspect`.
 
 No `fetch.sh` or `claim.yaml` written (no panel qualifies).
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules applied: criterion 7
+no longer excludes; the total form of the target counts as a loading control for a
+modification-specific target when each lane can be matched; normalisation to an
+immunoprecipitated bait is still not a loading control.
+
+The figure legends in `article/europepmc_PMC12686467.xml` were searched again for western
+blot quantification, including phospho / total. The quantified western panels in figure
+order are the same three: Fig. 4J, Fig. EV4F and Fig. 5H (main figures first: 4J, 5H; then
+EV4F). Fig. 5H is the only panel with a phospho / total pair (p-eIF2α / eIF2α). No other
+panel becomes eligible under the revised loading-control rule.
+
+| Panel | Criterion failed (Amendment 2) | Evidence |
+|---|---|---|
+| Fig. 4J (DHCR7, Cyclin D1 / vinculin) | 2 | Unchanged: all deposited files (`RD_DHCR7.tif.tif.tif`, `RD_vincuin.tif.tif`, `KLHEL1_DHCR7.tif`, `KLHEL1_vincuin.tif.tif`, `RH30_*`) rejected by `blotverse inspect` as pseudo-coloured. Criterion 2 precedes the changed criteria 6 and 7. |
+| Fig. 5H (p-eIF2α / eIF2α, PERK, ATF4, CHOP; stain-free) | 2 | eIF2α now counts as a loading control for p-eIF2α (criterion 6), but every target image, phospho and total alike (`280824_bpot1alaviiva_peif2alpha_4.tif`, `100424_blot1_p-eIF2Alpha(Chemiluminescence).tif`, `280824_blot1_eif2alpha_6.tif`, `090424_blot1_eIF2Alpha_2(Chemiluminescence).tif`, ...), is 8-bit: raw = no. Only the stain-free gel is 16-bit. |
+| Fig. EV4F (DHCR7, HMGCR / vinculin) | 2 | Unchanged: no image files deposited for EV figures. |
+
+Per-replicate numbers (criterion 7, now recorded only) were not re-examined, because every
+panel fails criterion 2 first.
+
+**Decision unchanged: excluded, first failing criterion 2 (Fig. 4J).** No `fetch.sh` or
+`claim.yaml` written.

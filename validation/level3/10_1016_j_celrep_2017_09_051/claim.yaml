@@ -1,0 +1,54 @@
+doi: 10.1016/j.celrep.2017.09.051
+article: >-
+  Charles, Li, Engin, Arruda, Inouye and Hotamisligil (2017) "Uncoupling of Metabolic Health
+  from Longevity through Genetic Alteration of Adipose Tissue Lipid-Binding Proteins",
+  Cell Reports 21:393-402 (PMC5682597, author manuscript).
+deposit: mendeley:rp8s5rd98p (10.17632/rp8s5rd98p.1)
+panel:
+  figure: "Supplementary Fig. 3"
+  letter: C
+  sub_panel: >-
+    Fabp5 in adipose explant cell lysates (CL) of male mice, the explants of Supp. Fig. 3A upper
+    panel. S3C also plots Fabp4, Acc, Acly and Acas2 (secondary).
+target: Fabp5 (cell lysate, ~15 kDa)
+loading_control:
+  type: housekeeping
+  name: >-
+    Gapdh (~37 kDa), probed on a second membrane loaded with the same 12 lysates
+    ("Fig. S3A Male Gapdh CL, Original Captured 5"); lanes matched by position (6 AL then 6 CR on both).
+groups:  # control first
+  - AL (ad libitum)
+  - CR (4-week 40% calorie restriction)
+primary_contrast: CR vs AL
+direction: up
+p_value: "*** (p < 0.001; unpaired two-way Student's t-test, Supp. Fig. 3 legend, panels A, C, F)"
+n_per_group:
+  AL: 6
+  CR: 6
+quote: >-
+  "Conversely, CR increased the expression of Fabp5 in adipose tissue without altering Fabp4
+  (Figure 3B and Supplementary Figure 3B–C)."
+quote_location: Results, section "Caloric restriction mimics adipose tissue lipidome changes observed in Fabp deficiency"
+legend: >-
+  Supp. Fig. 3A: "FABP secretion assay. Adipose tissue explants were dissected from short-term CR
+  mice and ad libitum control mice (N = 6, upper panel: male mice; lower panel: female mice). CM,
+  conditioned medium. CL, cell lysate. 12.5 µg of proteins isolated from tissue homogenates were
+  loaded per lane." C: "Density analysis of lipogenic enzymes and FABP in adipose explants
+  described in Panel A Upper Panel." (y axis: "Relative protein level (normalized to Gapdh)")
+lane_layout_source: >-
+  article/Fig S3A Male_Data Preparation.pptx: slide 4 "Fig. S3A Male Fabp5 CL, Original Captured 4"
+  (image 0701, crop box on the middle strip; labels AL | CR, "Invert & Crop", no flip); slide 5
+  "Fig. S3A Male Gapdh CL, Original Captured 5" (image 0619, crop box on the bottom strip, labels
+  Fasn / Acas2 / Gapdh). Lanes 1-6 AL, 7-12 CR, as in the Supp. Fig. 3A upper panel.
+per_replicate_numbers: no  # criterion 7 (Amendment 2: recorded, not excluding)
+images:
+  target:
+    file: "images/0701 fat23 Gapdh Fabp5 CL-CM.tif"
+    strip: >-
+      middle strip (Fabp5 CL, 12 lanes). Top strip = Gapdh, "a repeated WB, not included in
+      figure"; bottom strip = Fabp5 CM (not this panel).
+  target_white_light: "images/0701 fat23 Gapdh Fabp5 CL-CM w.tif"
+  loading_control:
+    file: "images/0619 fat21 Fasn AceS CL.tif"
+    strip: bottom band (Gapdh, 12 lanes); upper bands Fasn and Acas2
+  loading_control_white_light: "images/0619 fat21 Fasn AceS CL w.tif"

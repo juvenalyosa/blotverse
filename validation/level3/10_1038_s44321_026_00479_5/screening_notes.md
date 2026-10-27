@@ -41,3 +41,30 @@ membrane out of three.
 Because no panel qualifies, `fetch.sh` and `claim.yaml` were not written. `images/` holds the
 files that `screen_files.py` downloaded earlier. Files downloaded during this screening were
 removed, and no file with the authors' numbers is kept in this folder.
+
+## Rescreen under Amendment 2
+
+First-frame rescreen (Amendment 2, point 5), 2026-10-27. Revised rules: criterion 7 no longer
+excludes; the total form of the target counts as a loading control for a modification-specific
+target (phospho / total) when each lane can be matched; co-IP bait normalisation still does not.
+
+All figure legends (Fig. 1-7, EV1-EV9, `article/PMC13470486.xml`) were searched again for
+phospho / total or co-IP quantifications. There are none. The only modification-specific
+target, γH2AX (Fig. 1D), is normalised to GAPDH / Tubulin and was already in the panel list.
+The other quantified blots (53BP1, XRCC4, KU70, RAD51, LIG3, Cyclin D1) use GAPDH or Tubulin.
+The panel list is therefore unchanged. The revised rules do not touch criteria 2-4, so the
+evidence above is reused as is:
+
+| Panel | First failing criterion (Amendment 2) | Evidence |
+|---|---|---|
+| Fig. 1D (γH2AX / GAPDH or Tubulin) | 2 | unchanged: pseudo-coloured RGB TIFFs and JPEGs, raw = no |
+| Fig. 1E (53BP1 / GAPDH) | 2 | unchanged: M249 files raw = no; the A375 16-bit membrane holds 1 of 3 replicates (criterion 4 for that half) |
+| Fig. 3F, Fig. 5A/B, Fig. EV1B, Fig. EV8B | 2 | unchanged: pseudo-coloured, raw = no |
+| Fig. EV5B | 2 | unchanged: no blot image deposited |
+
+Criterion 7 (recorded, no longer excluding): source-data tables exist in the EMBO SourceData
+deposit and ESM zips (e.g. `EV5B_Western_M249_eFT226.xlsx`, noted above); they were not
+reopened in this rescreen, since no panel passes criterion 2.
+
+**Decision under Amendment 2: excluded**, unchanged. First failing criterion of the first
+quantified panel (Fig. 1D): **2**. No `fetch.sh` or `claim.yaml` written.

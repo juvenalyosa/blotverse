@@ -1,0 +1,83 @@
+doi: 10.1016/j.celrep.2024.114831
+article: >-
+  Cell Reports 43, 114831 (2024), "ERK1/2 interaction with DHPS regulates eIF5A
+  deoxyhypusination independently of ERK kinase activity" (PMID 39392755, PMC11544350).
+deposit: zenodo:17700326 (10.5281/zenodo.17700326), "Raw membrane images from in vitro deoxyhypusination assays in tiff format.zip", folder "... related to Figure 5_E"
+screening: first-frame rescreen under Amendment 2 (point 5); included because criterion 7 no longer excludes
+panel:
+  figure: "Fig. 5"
+  letter: E
+  description: >-
+    Time course in vitro eIF5A deoxyhypusination assay (DHPS + eIF5A1, NAD, spermidine);
+    western blot of deoxyhypusinated eIF5A, samples at 12 time points (0 to 60 min).
+target: deoxyhypusinated eIF5A (eIF5A Dhp; (deoxy)hypusine antibody Hpu98), ~17 kDa
+loading_control:
+  type: total protein
+  name: >-
+    Ponceau S stain of the same membrane, imaged per condition and per replicate before
+    immunodetection (Methods: "Panceau S signal was used for chemiluminescent signal normalization").
+groups:  # control first; each group is a 12-point time course (0, 1:15, 2:30, 3:45, 5, 6:15, 7:30, 8:45, 10, 15, 30, 60 min)
+  - Control (reaction without ERK2)
+  - 100 uM ERK2
+  - 100 uM BSA (molecular-crowding control)
+primary_contrast: 100 uM ERK2 vs Control
+direction: down
+p_value: "none reported for Fig. 5E (the legend's * / ** marks apply to other panels; Fig. 5E graph shows mean +/- SD with no significance mark)"
+secondary_contrasts_reported:
+  - "100 uM BSA vs Control: no test or statement; BSA curve plotted with Control"
+n_per_group:
+  Control: 3
+  100 uM ERK2: 3
+  100 uM BSA: 3
+n_source: >-
+  Legend: "Data are mean ± SD (A–C, E, and F) ... of biological duplicates (B and C) or
+  triplicates (A and D–F)"; Methods: "All experiments were done in triplicates."
+per_replicate_numbers: none (criterion 7 not met; no longer excluding under Amendment 2; T1/T2 not computable)
+quote: >-
+  "Western blot analysis of the reaction product indicated that ERK2 can competitively
+  inhibit the DHPS-mediated reaction (Figure 5E)."
+quote_location: Results, section "ERK2 competitively inhibits eIF5A deoxyhypusination in vitro"
+legend: >-
+  Fig. 5E: "Time course in vitro eIF5A deoxyhypusination assay determining DHPS inhibition by
+  ERK2. Western blotting of deoxyhypusinated eIF5A was used as the assay readout. Images of
+  representative blots forming different assay conditions are on the right, and a graph with
+  densitometry is on the left. Control stands for reaction without ERK2. BSA was used as a
+  control for molecular crowding effects."
+lane_layout_source: >-
+  File names and folders of the deposit, plus article/Fig5E_overview.png (lane labels only).
+  One folder per replicate (Replicate I, II, III). In each, the chemiluminescence image holds
+  three cut strips, "from the top control ERK2 BSA"; each strip has 12 sample lanes in time
+  order 0, 1:15, 2:30, 3:45, 5, 6:15, 7:30, 8:45, 10, 15, 30, 60 min (left to right, as in the
+  figure). Each condition has its own Ponceau S image (membrane before cutting, protein ladders
+  on both sides of the 12 lanes) and a colorimetric "membrane cutting reference" image.
+images:
+  replicate_I:
+    target: "images/I_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    loading_control:
+      Control: "images/I_control_Ponceau S.raw16.tif"
+      ERK2: "images/I_ERK2_Ponceau S.raw16.tif"
+      BSA: "images/I_BSA_Ponceau S.raw16.tif"
+    cutting_reference:
+      Control: "images/I_control_Colorimetric_membrane cutting reference_.raw16.tif"
+      ERK2: "images/I_ERK2_Colorimetric_membrane cutting reference.raw16.tif"
+      BSA: "images/I_BSA_Colorimetric_membrane cutting reference.raw16.tif"
+  replicate_II:
+    target: "images/II_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    loading_control:
+      Control: "images/II_control_Ponceau S.raw16.tif"
+      ERK2: "images/II_ERK2_Ponceau S.raw16.tif"
+      BSA: "images/II_BSA_Ponceau S.raw16.tif"
+    cutting_reference:
+      Control: "images/II_control_Colorimetric_membrane cutting reference.raw16.tif"
+      ERK2: "images/II_ERK2_Colorimetric_membrsne cutting reference.raw16.tif"
+      BSA: "images/II_BSA_Colorimetric_membrane cutting reference.raw16.tif"
+  replicate_III:
+    target: "images/III_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    loading_control:
+      Control: "images/III_control_Ponceau S.raw16.tif"
+      ERK2: "images/III_ERK2_Ponceau S.raw16.tif"
+      BSA: "images/III_BSA_Ponceau S.raw16.tif"
+    cutting_reference:
+      Control: "images/III_control_Colorimetric_membrane cutting reference.raw16.tif"
+      ERK2: "images/III_ERK2_Colorimetric_membrane cutting reference.raw16.tif"
+      BSA: "images/III_BSA_Colorimetric_membrane cutting reference.raw16.tif"

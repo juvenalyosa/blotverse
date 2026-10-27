@@ -75,3 +75,27 @@ No `claim.yaml` or `fetch.sh` written (no qualifying panel). `images/` holds the
 placed by `screen_files.py` (`Fig.1_CB1KO_actin.tif`, `Fig.1_CB1KO_actin_comp.tif`). Fig. 3B
 and 4A images were downloaded to a scratch directory only. No file with the authors'
 numbers (`Fig.N_datasets.xlsx`) was downloaded or opened.
+
+## Rescreen under Amendment 2
+
+Rescreened 2026-10-27 under Amendment 2, point 5. Two rules changed: criterion 7 no longer
+excludes, and phospho / total counts as a loading control when each lane can be matched.
+Evidence the revised rules do not touch is reused from above: criterion 1, the unquantified
+panels, Fig. S2E (criterion 2), and the criterion-4 findings for Fig. 3B/S3A and Fig. 4A.
+
+**Effect of the revised rules on panel order.** The pSTAT3 / total STAT3 panels (Fig. 1A, 2A/B,
+4C, 5C, 5D right, S2A) now fit the unit of analysis. **Fig. 1A becomes the first panel in figure
+order**, ahead of Fig. 3B.
+
+| Panel | First failing criterion | Evidence |
+|---|---|---|
+| Fig. 1A: pSTAT3 / total STAT3, mediobasal hypothalamus; 7 groups (WT leptin−/ACEA−, WT leptin+, WT leptin+ACEA 10, WT leptin+ACEA 2, CB1R−/− leptin−, CB1R−/− leptin+, CB1R−/− leptin+ACEA 10); n = 9-27-12-10-4-4-4 | **4** | **C2 passes.** Mendeley files downloaded to scratch only and run through `blotverse inspect`. Fig.1_CB1KO_pSTAT.tif, Fig.1_CB1KO_tSTAT.tif (2047 x 2047), Fig.1_pSTAT(Y).tif (1872 x 1272), Fig.1_total-STAT3.tif (1860 x 1252), Fig.1a_middle panel_pSTAT3.tif (1410 x 717) and Fig.1a_middle panel_tSTAT3.tif (1386 x 699) are all 16-bit, effective 16 bits, 0 saturated px, raw = yes. SHA-256 prefixes: c26d9f76, d875ea15, 95d4e883, a27d656d, c8d8d1b4, aeb192c0. **C3 passes**: whole membranes with ladders. **C4 fails.** Only three Fig. 1A membranes are deposited: (i) `Fig.1_pSTAT(Y)` / `Fig.1_total-STAT3`, labelled on the membrane "Veh / Leptin / ACEA / CB13", with ~3–4 vehicle lanes (the CB13 lanes are not in Fig. 1A); (ii) `Fig.1a_middle panel` with 10 lanes labelled A/V (leptin + ACEA 2 mg/kg or leptin + vehicle), no leptin− lanes; (iii) `Fig.1_CB1KO` with 6 lanes, "V V L L +A +A", i.e. 2 per CB1R−/− group. So at most 4 of the 9 WT leptin−/ACEA− replicates and 2 of the 4 replicates of each CB1R−/− group are deposited, and the 27 WT leptin+ replicates cannot fit on these membranes either. Phospho/total matching (C6) was not evaluated. C7 (no longer excluding): the deposit lists `Fig.1_datasets.xlsx`; it was not downloaded or opened. |
+
+The later panels are not re-examined because the stop rule applies at the first qualifying panel
+and none qualified. Fig. 3B/S3A and Fig. 4A still fail criterion 4 (above). The other p/t STAT3
+panels (Fig. 2A/B, 4C, 5C, 5D) were not examined. They are not needed for the decision.
+
+**Decision under Amendment 2: still excluded, criterion 4.** The first quantified panel in figure
+order is now Fig. 1A (pSTAT3 / total STAT3, n = 9–27 per WT group), not Fig. 3B. The criterion
+does not change. No `fetch.sh` or `claim.yaml` was written. The Fig. 1 images were downloaded
+to a scratch directory only. No `Fig.N_datasets.xlsx` was downloaded or opened.

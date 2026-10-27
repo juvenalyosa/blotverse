@@ -48,3 +48,26 @@ Two caveats:
 2. **Criterion 7 not reached.** The Dataverse deposit has no per-replicate quantification table for Fig. 5 or Fig. 5—S1; there are tables only for Fig. 4 (pzfx) and Fig. 6 (csv). Criterion 7 was not needed for the decision.
 
 No `fetch.sh` or `claim.yaml` was written, because no panel qualified.
+
+## Rescreen under Amendment 2
+
+Rescreened 2026-10-27 under Amendment 2, point 5. Two rules changed: criterion 7 no longer
+excludes, and phospho / total now counts as a loading control when each lane can be matched.
+Evidence the revised rules do not touch is reused from above: criterion 1, the status of Fig. 1, Fig. 4B and
+Fig. 5—S2 as unquantified, and the Fig. 5—S1 findings.
+
+**Effect of the revised rules on panel order.** Fig. 5A–C (pS222 EB2 / total EB2 and
+phospho-β-catenin / total β-catenin) now meet the unit of analysis. Each compares several
+doses against 0 nM, uses a Kruskal–Wallis test and gives significance marks. Fig. 5A therefore
+becomes the first quantified panel in figure order, ahead of Fig. 5—S1A. Fig. 6B (pEB2 / total
+EB2) also becomes a unit, but it comes later.
+
+| Panel | First failing criterion | Evidence |
+|---|---|---|
+| Fig. 5A: pS222 EB2 / total EB2 (and p-β-catenin / total β-catenin), CAF-382 (B1) 0/5/50/500/5000 nM | **4** | **C2 passes.** The eLife source data `elife-88206-fig5-data1-v2.zip` (https://cdn.elifesciences.org/articles/88206/elife-88206-fig5-data1-v2.zip, SHA-256 9722667fa2aeaea852edf11dc9c249b7d8fd022f620944fe6173c7deebe92b4e, downloaded to scratch only) contains `Western blot 2 - B1 - EB2 - uncropped.tif` and `Western blot 3 - B1 - pEB2 - uncropped.tif`. `blotverse inspect` reports both as 1024x1408, 16-bit, effective 16 bits, 0 saturated px, raw = yes. **C3 passes**: whole strips are shown. **C4 fails.** The legend states "n = 3 biological replicates with two repetitions". Only one pEB2 membrane (WB3) and one total-EB2 membrane (WB2) are deposited for B1. Each holds three 5-lane sets separated by marker lanes, and only one set per membrane is labelled "CAF-382 (B1) 0 5 50 500 5000". The labelled set is not the same on the two membranes: it is the 1st set on pEB2 WB3 and the 2nd set on total-EB2 WB2. The other sets carry no labels. No image of the second repetition is deposited. So the deposited images cannot be shown to contain every quantified replicate for both the target and the reference band. This is the same finding as Fig. 5—S1A above. For the record, C5 would also fail, together with the new phospho/total condition that each lane can be matched. Assigning the unlabelled sets to replicates, and pairing pEB2 lanes with total-EB2 lanes across two separately run membranes whose labelled sets differ, would need the band signals. C7 (no longer excluding): no per-replicate table for Fig. 5 exists in the Dataverse deposit or the eLife source data, which hold images only. |
+
+The later panels are not re-examined because the stop rule applies at the first qualifying panel and none qualified. Fig. 5—S1A–I (criterion 4) is unchanged by the amendment. Fig. 5B/C (B4, B12) have the same layout as Fig. 5A: one labelled set per membrane (WB7–12, WB13–18) and N = 3 × 2 stated. Fig. 6B is now a unit (pEB2 / total EB2), but no raw image of total EB2 is deposited for it. The Fig. 6 deposit holds only the pEB2 `full blot flattened.tif`.
+
+**Decision under Amendment 2: still excluded, criterion 4.** The first quantified panel in figure order is now
+Fig. 5A (pEB2 / total EB2, CAF-382), which comes ahead of Fig. 5—S1A. The criterion and the reason do not change. No `fetch.sh` or
+`claim.yaml` was written.

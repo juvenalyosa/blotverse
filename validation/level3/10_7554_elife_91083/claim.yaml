@@ -1,0 +1,93 @@
+doi: 10.7554/eLife.91083
+article: >-
+  Gilsbach, Ho, et al. (2024) "Intramolecular feedback regulation of the LRRK2 Roc G domain by
+  a LRRK2 kinase-dependent mechanism", eLife 12:RP91083 (version of record, PMC11658767).
+deposit: zenodo:14055918 (10.5281/zenodo.14055918; concept 10.5281/zenodo.11242229), Figure6_source_data_1.zip
+inclusion: Amendment 2, point 5 (first-frame rescreen; phospho / total accepted as loading control)
+panel:
+  figure: "Fig. 6"
+  letter: B
+  quantification: "Fig. 6D (relative LRRK2 pS935)"
+  note: >-
+    Fig. 6B is quantified twice. Fig. 6B/6C (pRab10 / total Rab10) comes first and fails
+    criterion 5 (see screening_notes.md); this experiment is Fig. 6B/6D.
+target: LRRK2 phospho-Ser935 (rabbit monoclonal UDD2, Abcam ab133450), ~280 kDa
+loading_control:
+  type: total form of the target (phospho / total, Amendment 2 point 3)
+  name: total LRRK2 (in-house rat monoclonal anti-pan-LRRK2, clone 24D8)
+  layout: >-
+    Parallel membranes of the same lysates (pS935 and 24D8 both run at the LRRK2 size, so they
+    are on different membranes, cut at 140 kDa). Replicates 1 and 2: both membranes imaged
+    together in image A. Replicate 3: pS935 in image B; total LRRK2 in image C, a repeat blot of
+    the replicate-3 lysates ("replication of the western blot B to allow quantification of the
+    reference", legend of Fig. 6-figure supplement 2). Lanes are matched by the lane labels,
+    which are the same on every membrane.
+groups:  # control first; HEK293T cells transfected with SF-tagged LRRK2 variants
+  - wt
+  - R1441G
+  - G2019S
+  - I2020T
+  - K1906M
+  - T1343A
+  - T1343A/G2019S
+primary_contrast: R1441G vs wt
+direction: down
+direction_source: >-
+  Fig. 6D: the R1441G bar is below wt (wt set to 1) with a significance bracket wt-R1441G-I2020T
+  marked "*". The text sentence citing Fig. 6D states the Rab10 result only (see quote).
+p_value: "* (legend: 'ANOVA followed by a post hoc test (n=3, *p=0.05)'); mark printed in Fig. 6D"
+secondary_contrasts_reported:
+  - "I2020T vs wt: * (same bracket, Fig. 6D)"
+  - "T1343A vs T1343A/G2019S: n.s. (Fig. 6D)"
+n_per_group:
+  wt: 3
+  R1441G: 3
+  G2019S: 3
+  I2020T: 3
+  K1906M: 3
+  T1343A: 3
+  T1343A/G2019S: 3
+quote: >-
+  "In agreement with published data (Kalogeropulou et al., 2022), the other PD mutations R1441G
+  and I2020T showed an approximately eightfold increase in Rab10 phosphorylation (Figure 6C and D)."
+quote_location: >-
+  Results, section "The phospho-null mutant T1343A is sufficient to disrupt the negative feedback
+  in the LRRK2 signaling cascade in cells". First contrast stated for Fig. 6C and D. The sentence
+  describes pRab10 only; no sentence states the pS935 direction, which is taken from Fig. 6D.
+legend: >-
+  Fig. 6: "(B) Western blot for LRRK2 pS935, total LRRK2, Rab10 pT73, and total Rab10.
+  (C) Relative Rab phosphorylation levels. (D) Relative LRRK2 pS935 levels. Significant
+  differences have been determined by an ANOVA followed by a post hoc test (n=3, *p=0.05)."
+  Methods: "Total LRRK2 and Rab10 levels were determined as a reference for normalization."
+lane_layout_source: >-
+  article/Figure6_source_data_1_Annotation.png (deposit) = Fig. 6-figure supplement 2: every
+  membrane is labelled, left to right, wt, R1441G, G2019S, I2020T, K1906M, T1343A,
+  T1343A/G2019S, Marker, PEI only, not transfected. Only lanes 1-7 belong to the experiment.
+  The raw images show two more lanes (11-12) to the right of "not transfected". They are cut off
+  in the annotation and are not part of the experiment.
+replicates:
+  "1": "image A, left pair of membranes"
+  "2": "image A, right pair of membranes"
+  "3": "image B, left membrane (pS935, top strip) + image C (total LRRK2)"
+  basis: >-
+    Legend of Fig. 6-figure supplement 2: "(A-C) Biological replicates. Panel (C) shows the
+    total-LRRK2 blot (24D8) for panel (B)". With n = 3, panel A holds two replicates. Each side of
+    A is a complete, separately labelled set of membranes (pS935, pRab10, 24D8, Rab10).
+images:
+  target:
+    - file: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+      strips: "top strip of the left set (replicate 1) and of the right set (replicate 2), labelled pS935 / LRRK2 pS935"
+    - file: images/Figure6_source_data_1/B/2023-02-17_2x2-180s-05.tif
+      strips: "top strip of the left membrane (replicate 3), labelled pS935"
+  loading_control:
+    - file: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+      strips: "third strip from the top of the left and right sets, labelled LRRK2 (24D8)"
+    - file: images/Figure6_source_data_1/C/2023-02-20_24D8_2x2-180s-05.tif
+      strips: "single strip, LRRK2 (24D8), total LRRK2 for replicate 3"
+  not_used: >-
+    Image B right membrane, top strip (labelled LRRK2 (24D8), nearly blank; the legend replaces
+    it with image C). The focus.tif files are white-light photos of the same membranes
+    (marker positions), for orientation only.
+per_replicate_numbers: >-
+  None found (criterion 7 no longer excludes). Supplementary file 1c (authors/) gives only
+  mean +/- error per variant.

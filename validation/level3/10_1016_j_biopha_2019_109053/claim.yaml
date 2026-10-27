@@ -1,0 +1,85 @@
+doi: 10.1016/j.biopha.2019.109053
+article: >-
+  "The effect of various durations of cigarette smoke exposure on muscle fibre remodeling in rat
+  diaphragms", Biomedicine & Pharmacotherapy (2019) 117:109053, PMID 31176169 (gold OA, CC BY-NC-ND).
+deposit: >-
+  Mendeley Data m34zcvp3nd v1 (10.17632/m34zcvp3nd.1), "Data for: The Effect of Various Durations of
+  Cigarette Smoke Exposure on Muscle Fibre Remodeling in Rat Diaphragms", supplementary figures.zip
+inclusion: Amendment 2, second frame (criterion 7 recorded, not excluding)
+status: >-
+  PROVISIONAL for primary_contrast, quote and quote_location. The full text and legends
+  (ScienceDirect) returned HTTP 403 to every scripted download during screening, so the first
+  contrast "stated in the text or legend" could not be read. The fields below marked PENDING must
+  be completed from the article text before annotation starts. Everything else is taken from the
+  figure and the deposit.
+panel:
+  figure: "Fig. 3"
+  letter: G
+  quantification: "Fig. 3H (relative density unit; MHC, MHC-I, MHC-II)"
+target: >-
+  MHC (myosin heavy chain, first target of Fig. 3G/3H; deposit file MHC.tif). The same panel also
+  quantifies MHC-I (deposit BAF8.tif, slow MHC antibody) and MHC-II (deposit F59.tif); these are
+  secondary targets.
+loading_control:
+  type: housekeeping
+  name: GAPDH
+  source: >-
+    Deposit description: "GAPDH served as a loading control." Separate image
+    images/Gapdh(fig3).tif (same size as the target images, 12 lanes); give it as reference_image.
+groups:  # control first; rats exposed to cigarette smoke (CS) for 4, 8 or 12 weeks
+  - control
+  - CS4w
+  - CS8w
+  - CS12w
+primary_contrast: >-
+  PENDING (from the article text). Provisional: CS4w vs control, the first bracket of the MHC
+  bars in Fig. 3H read left to right; if the text first states CS exposure in general or 12 weeks,
+  use CS12w vs control.
+direction: down  # MHC is lower than control in all three CS groups in Fig. 3H
+p_value: >-
+  Significance marks printed in Fig. 3H (MHC): control vs cs4w "*", control vs cs8w "**",
+  control vs cs12w "***". Deposit description: one-way ANOVA. Threshold definitions of the marks
+  are in the legend (PENDING).
+secondary_contrasts_reported:
+  - "MHC: cs4w vs cs12w **, cs8w vs cs12w * (Fig. 3H)"
+  - "MHC-I: control vs cs4w **, control vs cs8w ***, control vs cs12w ***, cs4w vs cs8w **, cs4w vs cs12w * (up; Fig. 3H)"
+  - "MHC-II: control vs cs12w **, cs4w vs cs12w **, cs8w vs cs12w * (down; Fig. 3H)"
+n_per_group:
+  control: 3
+  CS4w: 3
+  CS8w: 3
+  CS12w: 3
+n_source: >-
+  Deposit description (authors): "western blot detection was performed among randomly selected
+  three samples from each group of total four groups for the purpose of quantitative analysis via
+  one-way analysis of variance (ANOVA)." Fig. 3G lane labels C-1..C-3, 4W-1..4W-3, 8W-1..8W-3,
+  12W-1..12W-3.
+quote: PENDING (sentence of the Results that first states the Fig. 3G/H result)
+quote_location: PENDING
+supporting_text_available: >-
+  Abstract (Europe PMC, article/europepmc_31176169.json): "CS exposure resulted in increased
+  percentage of type I muscle fibres ... and a reduction in fibre diameters in rat diaphragms."
+  The abstract does not state the MHC western blot result.
+lane_layout_source: >-
+  Deposit description: "The sequence from left to right side represents the control group, the
+  CS(cigarette smoke)4w group, the CS8w group, the CS12w group." Fig. 3G (article/fig3G_lane_labels.jpg)
+  labels the 12 lanes C-1, C-2, C-3, 4W-1, 4W-2, 4W-3, 8W-1, 8W-2, 8W-3, 12W-1, 12W-2, 12W-3.
+  Every deposited image of the panel has exactly 12 lanes and no ladder lane.
+images:
+  target:
+    - file: images/MHC.tif
+      note: "MHC, 12 lanes, dark bands on a bright background (invert: true)"
+  secondary_targets:
+    - file: images/BAF8.tif
+      note: "MHC-I (BAF8 = anti-slow MHC); 12 lanes"
+    - file: images/F59.tif
+      note: "MHC-II (F59); 12 lanes; file-to-row mapping by antibody name, the article Methods were not readable"
+  loading_control:
+    - file: images/Gapdh(fig3).tif
+      note: "GAPDH for Fig. 3 (file name), 12 lanes"
+  not_used: >-
+    The other files of the zip belong to Figs 4, 6 and 7 (PGC-1a, COX4, GRP78, CHOP, caspase-12,
+    p53, p21 and their GAPDH images) and are not extracted.
+per_replicate_numbers: >-
+  None found (criterion 7 no longer excludes). The deposit holds only images; no source-data
+  table, xlsx or csv. T1/T2 cannot be computed for this experiment.

@@ -75,3 +75,26 @@ holds the file put there by `screen_files.py`
 (`Complex_I_assembly_western_blot_example_c12orf65.tif`, Fig 2B, SHA-256
 `dd49054db742f9a8e99509da53a9f2ce6bf797c388fb6a22807254ce6ba3942d`). No files with the authors'
 numbers were placed in this folder.
+
+## Rescreen under Amendment 2
+
+Rescreened on 2026-10-27 under Amendment 2, point 5 (criterion 7 no longer excludes; the
+total form of a modification-specific target counts as a loading control when each lane can
+be matched; normalisation to an immunoprecipitated bait is still not a loading control).
+The evidence above is reused; neither revised rule touches it.
+
+* **Phospho / total panels.** None. The article has two figures and no EV or Appendix
+  figures. A search of the full text and legends finds no phospho-specific (or other
+  modification-specific) antibody; "phosphorylation" occurs only in "oxidative
+  phosphorylation". The panel list is unchanged.
+* **Fig 2B** (BN-PAGE complex I assembly, NDUFS2): still not in the list. It has no loading
+  control and is not a modification-specific target with its total form.
+* **Fig 2D** (MTCO1 / citrate synthase): still fails **criterion 2**. The lower sub-blot
+  (NARS2, MRPS18C, MRPS16, MRPL39 against control) exists only as 8-bit files
+  (`mtco1_western_NARS2_etc_*_original.tif`, inspect: raw = no, "8-bit file"). The 16-bit
+  SURF1 sub-blot alone still fails criterion 4 (representative, 2 lanes per group, no
+  stated n ≥ 3), and criterion 5 too. Criterion 7, previously "doubtful", is now only
+  recorded: per-cell-line "MTCO1 % control" values exist in Dataset EV2, no per-lane values.
+
+**Decision under Amendment 2: excluded. First failing criterion: 2 (Fig 2D).** Unchanged.
+No `fetch.sh` or `claim.yaml` written; no files moved.

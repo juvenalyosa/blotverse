@@ -68,3 +68,37 @@ checked.
 * `images/`: left as downloaded by `screen_files.py`; no panel qualified, so it was not
   curated. No `fetch.sh` or `claim.yaml` was written, because the candidate is excluded.
 * No file containing the authors' numbers was saved in `<DIR>`.
+
+## Rescreen under Amendment 2
+
+Rescreened 2026-10-27 under Amendment 2, point 5. Two rules changed: criterion 7 no longer
+excludes, and phospho / total counts as a loading control when each lane can be matched. Co-IP
+normalisation to the immunoprecipitated bait is still not a loading control. Evidence the
+revised rules do not touch is reused from above: criterion 1, the per-panel quantification
+table, and the criterion-2 result for Fig. EV1C/D (the only raw file is the RGB journal ESM
+`44318_2025_560_MOESM7_ESM.tiff`, raw = no).
+
+**Effect of the revised rules on panel order.**
+
+* Fig. 1K, 4C/D, 4E and 4G are co-IP blots normalised to the IP'd bait (FLAG or PXN). They are
+  still not experiments.
+* Fig. 2E/F and 2G/H quantify p-Paxillin S119/Y118 in FLAG immunoprecipitates "norm. to IP'd
+  Paxillin". The target is the phospho form of the bait and the reference is the bait itself,
+  so they meet the phospho/total wording and the excluded "normalisation to an
+  immunoprecipitated bait" wording at once. Read literally, the reference is an IP'd bait and
+  they are not experiments. Either reading gives the same result, because they fail criterion 2
+  (below).
+* Fig. EV1C/D ("norm. to actin" and "norm. to pan-paxillin") was already a unit and stays the
+  first panel under the literal reading.
+
+| Panel | First failing criterion | Evidence |
+|---|---|---|
+| Fig. 2E/F (examined in case the IP'd bait counts as the total form) | 2 | Downloaded the eight `Revision_Figure_2E_*.tiff` files (p-PXN S119, p-PXN Y118 and FLAG M2 blots of input and FLAG IP, two treatment series) to scratch from BioStudies. `blotverse inspect` on all eight: raw = no, "rejected: colour (pseudo-coloured) image". |
+| Fig. 2G/H (same reading) | 2 | `Revision_Figure_2G_WB_with_anti-p-PXN_S119_*.tiff` and `..._anti-GFP_*.tiff`: raw = no, colour. `..._Flag_M2_*.tiff`: raw = no, 8-bit. |
+| Fig. EV1C/D (p-Paxillin S119/Y118 / actin or / pan-paxillin) | **2** | Unchanged: no greyscale acquisition is deposited, and the ESM TIFF is RGB (raw = no). The phospho/total reading (pan-paxillin reprobe of the same membrane) does not change this. C7 (no longer excluding): no per-replicate table for EV1 is listed in BioStudies. |
+| Fig. EV1E, Appendix S1E, S6A/B | 2 | Unchanged: no raw images deposited. |
+
+**Decision under Amendment 2: still excluded, criterion 2.** The first panel is Fig. EV1C/D
+under the literal reading of Amendment 2 (Fig. 2E/F under the alternative reading), and the
+criterion is 2 either way. No `fetch.sh` or `claim.yaml` was written. The Fig. 2E/G files were
+downloaded to a scratch directory only. No file with the authors' numbers was downloaded.
