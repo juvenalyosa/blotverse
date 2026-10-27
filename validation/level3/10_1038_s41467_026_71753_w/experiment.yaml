@@ -1,0 +1,97 @@
+# Reconciled annotation (validation/level3/reconcile.py): lane mapping identical in
+# annotator_a.yaml and annotator_b.yaml; geometry is the mean of the two.
+name: 10_1038_s41467_026_71753_w
+control_group: Juvenile NT
+blots:
+- id: blot1
+  image: images/0000817_02_800.TIF
+  reference_image: images/0000807_01_700.TIF
+  lanes:
+  - {group: Juvenile NT, sample: Juvenile_NT_1}
+  - {group: Juvenile NT, sample: Juvenile_NT_2}
+  - {group: Juvenile NT, sample: Juvenile_NT_3}
+  - {group: Juvenile NT, sample: Juvenile_NT_4}
+  - {group: Juvenile NT, sample: Juvenile_NT_5}
+  - {group: Juvenile NT, sample: Juvenile_NT_6}
+  - {group: Juvenile NDMA, sample: Juvenile_NDMA_1}
+  - {group: Juvenile NDMA, sample: Juvenile_NDMA_2}
+  - {group: Juvenile NDMA, sample: Juvenile_NDMA_3}
+  - {group: Juvenile NDMA, sample: Juvenile_NDMA_4}
+  - {group: Juvenile NDMA, sample: Juvenile_NDMA_5}
+  - {group: Juvenile NDMA, sample: Juvenile_NDMA_6}
+  - {group: Adult NT, sample: Adult_NT_1}
+  - {group: Adult NT, sample: Adult_NT_2}
+  - {group: Adult NT, sample: Adult_NT_3}
+  - {group: Adult NT, sample: Adult_NT_4}
+  - {group: Adult NT, sample: Adult_NT_5}
+  - {group: Adult NT, sample: Adult_NT_6}
+  - {group: Adult NDMA, sample: Adult_NDMA_1}
+  - {group: Adult NDMA, sample: Adult_NDMA_2}
+  - {group: Adult NDMA, sample: Adult_NDMA_3}
+  - {group: Adult NDMA, sample: Adult_NDMA_4}
+  - {group: Adult NDMA, sample: Adult_NDMA_5}
+  - {group: Adult NDMA, sample: Adult_NDMA_6}
+  annotation:
+    source: manual
+    band_half_height: 9
+    lanes:
+    - {x: 131.0, width: 21.0}
+    - {x: 159.0, width: 21.0}
+    - {x: 187.0, width: 21.0}
+    - {x: 215.0, width: 21.0}
+    - {x: 243.5, width: 21.0}
+    - {x: 271.5, width: 21.0}
+    - {x: 326.8, width: 21.0}
+    - {x: 352.7, width: 21.0}
+    - {x: 379.9, width: 21.0}
+    - {x: 406.4, width: 21.0}
+    - {x: 432.6, width: 21.0}
+    - {x: 459.7, width: 21.0}
+    - {x: 513.5, width: 21.0}
+    - {x: 540.0, width: 21.0}
+    - {x: 566.5, width: 21.0}
+    - {x: 593.0, width: 21.0}
+    - {x: 619.5, width: 21.0}
+    - {x: 646.0, width: 21.0}
+    - {x: 702.0, width: 21.0}
+    - {x: 730.5, width: 21.0}
+    - {x: 759.5, width: 21.0}
+    - {x: 788.5, width: 21.0}
+    - {x: 817.5, width: 21.0}
+    - {x: 847.0, width: 21.0}
+    target_y: [394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 393.5,
+      393.5, 393.5, 393.5, 393.5, 393.5, 390.5, 390.5, 390.5, 390.5, 390.5, 390.5]
+    reference_y: [394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0, 394.0,
+      393.5, 393.5, 393.5, 393.5, 393.5, 393.5, 390.5, 390.5, 390.5, 390.5, 390.5, 390.5]
+  reference_annotation:
+    source: manual
+    band_half_height: 126
+    lanes:
+    - {x: 169.4, width: 21.0}
+    - {x: 196.7, width: 21.0}
+    - {x: 225.9, width: 21.0}
+    - {x: 253.2, width: 21.0}
+    - {x: 281.2, width: 21.0}
+    - {x: 307.6, width: 21.0}
+    - {x: 359.9, width: 21.0}
+    - {x: 386.2, width: 21.0}
+    - {x: 412.6, width: 21.0}
+    - {x: 438.6, width: 21.0}
+    - {x: 465.6, width: 21.0}
+    - {x: 492.2, width: 21.0}
+    - {x: 542.1, width: 21.0}
+    - {x: 568.2, width: 21.0}
+    - {x: 594.0, width: 21.0}
+    - {x: 620.8, width: 21.0}
+    - {x: 647.5, width: 21.0}
+    - {x: 674.1, width: 21.0}
+    - {x: 724.5, width: 21.0}
+    - {x: 752.1, width: 21.0}
+    - {x: 779.5, width: 21.0}
+    - {x: 806.8, width: 21.0}
+    - {x: 834.8, width: 21.0}
+    - {x: 863.0, width: 21.0}
+    target_y: [287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5,
+      287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5]
+    reference_y: [287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5,
+      287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5, 287.5]
