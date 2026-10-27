@@ -1,0 +1,36 @@
+# Charles et al. 2017 Cell Rep, Supp. Fig. 3C: Fabp5 in male adipose explant cell lysates (CL), CR vs AL.
+# One membrane, 12 lanes (lanes 1-6 AL, 7-12 CR). Target Fabp5 = middle strip of
+# '0701 fat23 Gapdh Fabp5 CL-CM.tif'; loading control Gapdh = bottom strip of the separate
+# image '0619 fat21 Fasn AceS CL.tif' (same 12 lysates, lanes matched by position).
+# Bands are bright on dark (no invert). Bands slope down to the right, so rows are per lane.
+name: Celrep 2017 Supp Fig 3C Fabp5 / Gapdh (male explant CL)
+control_group: AL
+blots:
+  - id: S3A_male_CL
+    image: images/0701 fat23 Gapdh Fabp5 CL-CM.tif
+    reference_image: images/0619 fat21 Fasn AceS CL.tif
+    lanes:
+      - {group: AL, sample: AL1}
+      - {group: AL, sample: AL2}
+      - {group: AL, sample: AL3}
+      - {group: AL, sample: AL4}
+      - {group: AL, sample: AL5}
+      - {group: AL, sample: AL6}
+      - {group: CR, sample: CR1}
+      - {group: CR, sample: CR2}
+      - {group: CR, sample: CR3}
+      - {group: CR, sample: CR4}
+      - {group: CR, sample: CR5}
+      - {group: CR, sample: CR6}
+    annotation:
+      lanes: [{x: 427.8, width: 44}, {x: 486.8, width: 44}, {x: 548.2, width: 44}, {x: 605.4, width: 44}, {x: 665.0, width: 44}, {x: 718.6, width: 44}, {x: 772.9, width: 44}, {x: 830.0, width: 44}, {x: 886.7, width: 44}, {x: 939.8, width: 44}, {x: 999.7, width: 44}, {x: 1060.9, width: 44}]
+      target_y: [451, 450, 451, 451, 452, 452, 453, 455, 455, 456, 456, 458]
+      reference_y: [451, 450, 451, 451, 452, 452, 453, 455, 455, 456, 456, 458]
+      band_half_height: 14
+      source: manual
+    reference_annotation:
+      lanes: [{x: 450.8, width: 44}, {x: 509.2, width: 44}, {x: 566.3, width: 44}, {x: 618.9, width: 44}, {x: 674.2, width: 44}, {x: 729.6, width: 44}, {x: 782.7, width: 44}, {x: 838.5, width: 44}, {x: 895.5, width: 44}, {x: 947.5, width: 44}, {x: 997.8, width: 44}, {x: 1051.6, width: 44}]
+      target_y: [606, 609, 615, 618, 623, 626, 630, 629, 634, 635, 639, 643]
+      reference_y: [606, 609, 615, 618, 623, 626, 630, 629, 634, 635, 639, 643]
+      band_half_height: 12
+      source: manual

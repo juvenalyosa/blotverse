@@ -1,0 +1,62 @@
+# Annotator A - Charles et al. 2017 Cell Rep 21:393 (10.1016/j.celrep.2017.09.051)
+# Supp. Fig. 3C (male adipose explant cell lysates, explants of Supp. Fig. 3A upper panel):
+# Fabp5 CL, normalised to Gapdh CL. One membrane strip per antibody, 12 lanes each
+# (lanes 1-6 AL, 7-12 CR). Chemiluminescence: bright bands on a dark background, no invert.
+# Evidence and choices: annotator_a.md.
+name: celrep_2017_09_051_suppfig3c_fabp5_male_CL
+control_group: AL
+blots:
+  - id: fat23_fabp5_CL
+    # target: middle strip (Fabp5 CL) of "0701 fat23 Gapdh Fabp5 CL-CM.tif"
+    image: "images/0701 fat23 Gapdh Fabp5 CL-CM.tif"
+    # loading control: bottom strip (Gapdh CL) of "0619 fat21 Fasn AceS CL.tif"
+    reference_image: "images/0619 fat21 Fasn AceS CL.tif"
+    lanes:
+      - {group: AL, sample: AL1}
+      - {group: AL, sample: AL2}
+      - {group: AL, sample: AL3}
+      - {group: AL, sample: AL4}
+      - {group: AL, sample: AL5}
+      - {group: AL, sample: AL6}
+      - {group: CR, sample: CR1}
+      - {group: CR, sample: CR2}
+      - {group: CR, sample: CR3}
+      - {group: CR, sample: CR4}
+      - {group: CR, sample: CR5}
+      - {group: CR, sample: CR6}
+    annotation:
+      lanes:
+        - {x: 430.0, width: 47}
+        - {x: 495.5, width: 47}
+        - {x: 557.5, width: 47}
+        - {x: 611.5, width: 47}
+        - {x: 669.0, width: 47}
+        - {x: 724.5, width: 47}
+        - {x: 777.0, width: 47}
+        - {x: 832.0, width: 47}
+        - {x: 887.0, width: 47}
+        - {x: 939.5, width: 47}
+        - {x: 998.5, width: 47}
+        - {x: 1060.5, width: 47}
+      target_y: [450, 447, 452, 450, 451, 453, 453, 456, 455, 455, 456, 458]
+      reference_y: [450, 447, 452, 450, 451, 453, 453, 456, 455, 455, 456, 458]  # unused: loading control is in reference_image
+      band_half_height: 16
+      source: manual
+    reference_annotation:
+      lanes:
+        - {x: 452.0, width: 42}
+        - {x: 510.0, width: 42}
+        - {x: 567.0, width: 42}
+        - {x: 621.0, width: 42}
+        - {x: 676.0, width: 42}
+        - {x: 730.0, width: 42}
+        - {x: 783.5, width: 42}
+        - {x: 839.5, width: 42}
+        - {x: 895.0, width: 42}
+        - {x: 947.0, width: 42}
+        - {x: 997.5, width: 42}
+        - {x: 1053.0, width: 42}
+      target_y: [606, 609, 615, 619, 623, 626, 630, 629, 634, 635, 640, 643]  # Gapdh band rows
+      reference_y: [606, 609, 615, 619, 623, 626, 630, 629, 634, 635, 640, 643]
+      band_half_height: 10
+      source: manual
