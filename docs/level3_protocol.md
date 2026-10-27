@@ -352,3 +352,49 @@ validation/level3/
     authors.csv           authors' per-replicate values (filled after the run)
 validation/results/level3/<doi-slug>/   BlotVerse output and repro.yaml
 ```
+
+## Amendments
+
+### Amendment 1 (2026-10-27): freeze record and operational search rules
+
+Made before the frame was built. At that point only the hit counts and the first few titles
+returned by test queries had been seen; no candidate's files had been opened.
+
+**1. Freeze.** The protocol was frozen in commit 377b2a4 and published on GitHub
+(`level3-protocol` branch) on 2026-10-27. The public commit fixes the freeze date. The OSF
+registration of the same files (same SHA-256) followed after the frame was built,
+contrary to the order stated under *Status*.
+
+**2. Operational search rules.** The queries above are applied through each repository's
+public API by `validation/level3/build_frame.py`, which also writes the search log
+`frame_log.md`. Three problems turned up when the queries were tested:
+
+* Mendeley Data and Figshare ignore the quotation marks and combine words with OR. The
+  query `"western blot" raw images` returned 22 458 Mendeley records, almost all unrelated.
+* Figshare honours the phrase only with the title qualifier (`:title: "western blot"`).
+  With `:description:`, or with no qualifier, it returns the whole catalogue in date order.
+  Figshare is therefore searched by title only.
+* UNC Dataverse refuses unauthenticated searches (HTTP 401).
+* No repository offers "links to a peer-reviewed article" as a search filter.
+
+The following rules therefore apply to every repository except EMBO SourceData:
+
+* **Query.** Searches use the phrase `"western blot"`. The protocol's extra Zenodo terms
+  (raw OR uncropped OR original) are kept, because Zenodo honours them.
+* **Text filter.** A hit is kept only if "western blot" (spaces, hyphen or underscore
+  allowed) appears in its title, description or categories.
+* **Date filter.** Its publication date must fall between 2020-01-01 and 2026-10-27.
+* **Article link.** The hit links to an article when its metadata carries an article DOI.
+  The DOI may come from:
+  * a related identifier, related article or publication field;
+  * failing that, the first DOI in its description that is not a data-repository DOI.
+
+  Hits without an article DOI do not enter the frame.
+
+**EMBO SourceData** studies come from the SourceData collection search for `blot` and
+`WB`. A study enters the frame when it was released in the date window and at least one
+of its `.scn`, `.gel`, `.tif` or `.tiff` files has "blot" or "WB" in its name or in the
+description of its figure panel. The article DOI is the one encoded in the accession.
+
+**UNC Dataverse** is searched when the API allows it. When it refuses, the refusal is
+logged in `frame_log.md` and UNC contributes no candidates.
