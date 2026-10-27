@@ -1,0 +1,50 @@
+doi: 10.1038/s41467-026-71753-w
+article: >-
+  Volk et al. (2026) "Early life exposure to N-nitrosamine drives genotoxicity, mutagenesis,
+  and tumorigenesis in DNA repair-deficient mice", Nature Communications 17:5200
+  (PMC13254281).
+deposit: zenodo:19122404 (10.5281/zenodo.19122404), Western_Blot.zip
+panel:
+  figure: "Fig. 1"
+  letter: e
+  sub_panel: "gammaH2AX (14+0d), first of the four Fig. 1e blots"
+target: gammaH2AX (phospho-H2AX Ser139), ~15 kDa
+loading_control:
+  type: total protein
+  name: Total Protein Stain (LI-COR Revert, 700 nm image of the same membrane, Blot 66)
+groups:  # control first; each n = 6 Aag-/-;Mgmt-/- mice (3 males, 3 females), liver, 14+0d
+  - Juvenile NT
+  - Juvenile NDMA
+  - Adult NT
+  - Adult NDMA
+primary_contrast: Juvenile NDMA vs Juvenile NT
+direction: up
+p_value: "<0.0001 (two-way ANOVA with Sidak's multiple comparison test, printed in Fig. 1e)"
+secondary_contrasts_reported:
+  - "Juvenile NDMA vs Adult NDMA: p = 0.0001 (Fig. 1e)"
+n_per_group:
+  Juvenile NT: 6
+  Juvenile NDMA: 6
+  Adult NT: 6
+  Adult NDMA: 6
+quote: >-
+  "Western blot analysis reinforced these age-specific disparities, revealing significantly
+  elevated γH2AX only in younger animals after NDMA treatment (Fig. 1e)."
+quote_location: Results, section "Enhanced juvenile genotoxicity is independent of DNA adduct levels"
+legend: >-
+  Fig. 1e: "Whole-cell lysates from liver tissue collected at 14 + 0 d were analyzed by
+  western blot for γH2AX, p-p53, p21, and RAD51. Band intensities normalized to Total
+  Protein Stain and untreated juvenile controls (n = 6 mice/group; 3 males, 3 females)."
+lane_layout_source: >-
+  Supplementary Fig. 11b (article/SupplementaryFig11_overview.png): lanes in order
+  Juvenile NT (M1 M2 M3 F1 F2 F3) | Juvenile NDMA (M1-F3) | Adult NT (M1-F3) |
+  Adult NDMA (M1-F3), each block of six separated by a protein ladder.
+images:
+  target:
+    file: images/0000817_02_800.TIF
+    acquisition: "Blot 66 - STAT1, PCNA, pH2AX (Odyssey CLx, 800 nm channel)"
+    strip: bottom strip (~15 kDa); top strip STAT1, middle strip PCNA (700 nm)
+  target_other_channel: images/0000817_02_700.TIF  # 700 nm: ladders and PCNA, for orientation
+  loading_control:
+    file: images/0000807_01_700.TIF
+    acquisition: "Blot 66 - TPS (Odyssey CLx, 700 nm channel)"

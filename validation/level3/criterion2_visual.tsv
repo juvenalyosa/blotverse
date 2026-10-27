@@ -1,0 +1,21 @@
+rank	doi	raw_blot	raw_blot_files	notes
+3	10.1038/s44318-025-00607-w	no		18 images, 6 raw: all wide-field fluorescence of scratch-wound monolayers (CD44/DAPI/JAG1). Western_blot.tif is CMYK (not raw)
+14	10.1038/s44321-025-00247-x	no		121 images, 8 raw: all TEM micrographs of muscle/cells (Figure_6_Panel_A_*_TEM, fl_*). WB files are 8-bit
+15	10.1038/s44319-026-00861-x	no		117 images, 13 raw: fluorescence max projections (Vehicle/CCL19 Y/ZMIP) and a kymograph. WB files are 8-bit
+47	10.1038/s44321-025-00249-9	no		51 files + 4 zips (94 images), 8 raw: P_AKT_Panel_1-4 (direct and in Figure_1 zip), tissue fluorescence/IHC microscopy. Blot files are 8-bit or pseudo-coloured
+64	10.1038/s44319-026-00728-1	no		138 images, 18 raw: Drosophila tissue fluorescence (Source_Fig2A-F, MAX projections). 11 MAX_*.lif projections (DAPI/GFP, microscopy by name) not checked: download race on duplicate names. Co-IP WB files are pseudo-coloured
+71	10.1038/s44321-026-00503-8	no		104 images, 19 raw: EM of myelinated axons, brain-section and microglia fluorescence. P20_Wt_25X_MBP.tif (microscopy by name) not checked. CD44 blots are pseudo-coloured
+74	10.1038/s44318-025-00686-9	no		180 images, 67 raw: fluorescence of cells/puncta. One doubtful crop: hum2_CTNS_mCh.tif (224x49, inverted, 3 irregular dark blobs, looks like a microscopy crop and not a lane/band pattern). WB files are pseudo-coloured
+82	10.1038/s44318-025-00515-z	no		200 images, 8 raw: time-lapse of a single cell (18min..114min.tif). WB files are 8-bit, pseudo-coloured or CMYK
+87	10.7554/elife.91083	yes	Figure6_source_data_1.zip/A/2023-02-07_2x2-300s-07.tif;Figure6_source_data_1.zip/B/2023-02-17_2x2-180s-05.tif;Figure6_source_data_1.zip/C/2023-02-20_24D8_2x2-180s-05.tif	Figure6_source_data_1.zip holds 3 chemiluminescence acquisitions (16-bit, 1092x736, raw=yes, no saturated px) of membrane strips with bands across lanes, each with a white-light focus/marker photo (focus.tif, also raw=yes). Other 3 zips (fold_pT1343 GTP/GDP, Michaelis Menten) hold no image files
+102	10.1002/biof.1774	no		9 images, 5 raw: fluorescence of cultured cells (DMSO/OSMI/ThiematG). No blot images
+120	10.1038/s44320-026-00229-2	no		5 images, 1 raw: live-cell confocal max projection (EGFP-PRKCA). WB files are CMYK
+123	10.1016/j.molcel.2020.12.042	no		9 zips; 6 raw: FRET microscopy of cells (Fig 3 IntrA/IntEr receptor FRET cyan/magenta). Figure 2 zip (6.7 GB) listed remotely: dSTORM stacks and .czi only. S4H WB files are pseudo-coloured
+125	10.1038/s44318-026-00703-5	no		62 images, 42 raw: fluorescence and brightfield of single round cells (FRET Camui etc). WB files are 8-bit
+127	10.1038/s44318-025-00604-z	no		130 images, 62 raw: fluorescence (mitochondria, neurites) and EM. Western files are pseudo-coloured
+131	10.1038/s44318-025-00519-9	no		78 images, 2 raw: DAPI skin-section fluorescence (P6_Gli2-3EKO_DAPI_4/6). Western_Blot_* are 8-bit
+169	10.1038/s44321-026-00385-w	no		48 images, 13 raw: nuclear-stain fluorescence fields. WB files are pseudo-coloured
+224	10.1038/s44319-026-00776-7	no		21 images, 17 raw: fluorescence of cultured cells (mitochondria, nuclei). Blot files are pseudo-coloured
+225	10.1038/s44319-025-00583-6	no		47 images, 45 raw: fluorescence of single melanoma cells on matrices (tdTomato, pFAK, MITF, YAP, DAPI). WB files are pseudo-coloured
+230	10.1038/s44318-026-00871-4	no		179 images, 1 raw: wt_untreated_TUNEL.TIF (cell microscopy). All WB_*.Tif are 8-bit
+231	10.1038/s44318-025-00422-3	no		9 images, 4 raw: brightfield of colonies/organoids in matrix (Fig_5a_Wnt1_*). Fig_7e_WB.tif is CMYK

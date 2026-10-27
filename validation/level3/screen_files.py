@@ -216,7 +216,7 @@ def screen(row, blotverse, data_dir, blot_names=False):
                         notes.append(f"{name}: {h[1]} samples per pixel (header)")
                         continue
                 try:
-                    path = download(url, images_dir / Path(name).name)
+                    path = download(url, images_dir / name.replace("/", "__"))  # keep folders: names repeat across them
                 except Exception as e:  # noqa: BLE001
                     notes.append(f"{name}: download failed ({e})")
                     continue
@@ -236,7 +236,7 @@ def screen(row, blotverse, data_dir, blot_names=False):
                                    and (not blot_names or BLOT_NAME.search((name + "/" + m).lower()))]
                         for m in members:
                             checked += 1
-                            target = images_dir / (Path(name).stem + "__" + Path(m).name)
+                            target = images_dir / (Path(name).stem + "__" + m.replace("/", "__"))
                             if not target.exists():
                                 target.parent.mkdir(parents=True, exist_ok=True)
                                 target.write_bytes(z.read(m))
