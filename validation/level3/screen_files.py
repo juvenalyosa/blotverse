@@ -11,6 +11,9 @@ chosen. Zip archives are opened and their image members checked the same way.
     python3 -I validation/level3/screen_files.py --blotverse build/apps/blotverse \
         --data DATA_DIR --out validation/level3/criterion2.tsv [--first N]
 
+With --blot-names --only criterion2.tsv it rescreens the candidates that passed,
+counting only files named as blots.
+
 Downloads go to DATA_DIR/<doi-slug>/images/. Rows already in the output file
 are kept, so the script can be resumed.
 """
@@ -34,6 +37,9 @@ from pathlib import Path
 IMAGE_EXT = (".scn", ".gel", ".tif", ".tiff")
 MAX_ZIP = 4 * 1024 ** 3  # archives larger than this are not opened (logged)
 RANGE_MIN = 50 * 1024 ** 2  # TIFFs above this size are first judged from their header
+# --blot-names: file or member names that mark a blot (first-pass hits were often microscopy)
+BLOT_NAME = re.compile(r"blot|western|(?<![a-z])wb(?![a-z])|uncrop|membrane|ponceau|stain.?free|"
+                       r"actin|gapdh|tubulin|vinculin|\.scn$|\.gel$")
 UA = {"User-Agent": "blotverse-level3-screening"}
 
 
@@ -181,7 +187,7 @@ def download(url, dest):
     return dest
 
 
-def screen(row, blotverse, data_dir):
+def screen(row, blotverse, data_dir, blot_names=False):
     images_dir = data_dir / slug(row["doi"]) / "images"
     checked, notes = 0, []
     for dataset in row["datasets"].split(";"):
@@ -193,6 +199,8 @@ def screen(row, blotverse, data_dir):
         for name, size, url in files:
             low = name.lower()
             if low.endswith(IMAGE_EXT):
+                if blot_names and not BLOT_NAME.search(low):
+                    continue
                 checked += 1
                 # Header-only check for large files; some servers (EBI) answer range
                 # requests far more slowly than a whole small file.
@@ -224,7 +232,8 @@ def screen(row, blotverse, data_dir):
                     zpath = download(url, images_dir.parent / "archives" / Path(name).name)
                     with zipfile.ZipFile(zpath) as z:
                         members = [m for m in z.namelist()
-                                   if m.lower().endswith(IMAGE_EXT) and not m.startswith("__MACOSX")]
+                                   if m.lower().endswith(IMAGE_EXT) and not m.startswith("__MACOSX")
+                                   and (not blot_names or BLOT_NAME.search((name + "/" + m).lower()))]
                         for m in members:
                             checked += 1
                             target = images_dir / (Path(name).stem + "__" + Path(m).name)
@@ -249,11 +258,16 @@ def main():
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--candidates", type=Path, default=Path(__file__).with_name("candidates.csv"))
     ap.add_argument("--first", type=int, default=0, help="screen only the first N candidates")
+    ap.add_argument("--only", type=Path, help="screen only the DOIs marked yes in this criterion-2 table")
+    ap.add_argument("--blot-names", action="store_true", help="count only files whose name marks a blot")
     ap.add_argument("--jobs", type=int, default=6, help="candidates screened in parallel")
     args = ap.parse_args()
     rows = list(csv.DictReader(open(args.candidates)))
     if args.first:
         rows = rows[: args.first]
+    if args.only:
+        keep = {r["doi"] for r in csv.DictReader(open(args.only), delimiter="\t") if r["raw_acquisition"] == "yes"}
+        rows = [r for r in rows if r["doi"] in keep]
     done = set()
     if args.out.exists():
         done = {r["doi"] for r in csv.DictReader(open(args.out), delimiter="\t")}
@@ -265,7 +279,7 @@ def main():
         lock = threading.Lock()
 
         def one(row):
-            result, checked, first, notes = screen(row, args.blotverse, args.data)
+            result, checked, first, notes = screen(row, args.blotverse, args.data, args.blot_names)
             with lock:
                 w.writerow([row["rank"], row["doi"], result, checked, first, " | ".join(notes)[:2000]])
                 f.flush()
