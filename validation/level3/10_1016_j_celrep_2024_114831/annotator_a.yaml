@@ -1,0 +1,480 @@
+# BlotVerse experiment file - annotator A
+# Cell Reports 43, 114831 (2024), Fig. 5E: time-course in vitro eIF5A deoxyhypusination assay.
+# Target: deoxyhypusinated eIF5A (Hpu98), chemiluminescence; one image per replicate holding three
+# cut strips, top to bottom Control / 100 uM ERK2 / 100 uM BSA (file name).
+# Loading control: Ponceau S image of each condition's own membrane (separate image, different
+# lane positions) -> reference_image / reference_annotation, reference band = eIF5A substrate band.
+# One blot per replicate x condition (each condition was run on its own gel/membrane).
+# NOTE: ERK2 and BSA blots have no Control lane; see annotator_a.md (schema limitation).
+# Bands are light on a dark background in both images: no invert.
+name: celrep_2024_114831_fig5E
+control_group: Control
+blots:
+  - id: repI_control
+    image: "images/I_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/I_control_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "Control", sample: "repI_control_0min"}
+      - {group: "Control", sample: "repI_control_1m15s"}
+      - {group: "Control", sample: "repI_control_2m30s"}
+      - {group: "Control", sample: "repI_control_3m45s"}
+      - {group: "Control", sample: "repI_control_5min"}
+      - {group: "Control", sample: "repI_control_6m15s"}
+      - {group: "Control", sample: "repI_control_7m30s"}
+      - {group: "Control", sample: "repI_control_8m45s"}
+      - {group: "Control", sample: "repI_control_10min"}
+      - {group: "Control", sample: "repI_control_15min"}
+      - {group: "Control", sample: "repI_control_30min"}
+      - {group: "Control", sample: "repI_control_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 946.0, width: 66}
+        - {x: 1032.2, width: 66}
+        - {x: 1121.6, width: 66}
+        - {x: 1209.9, width: 66}
+        - {x: 1294.3, width: 66}
+        - {x: 1380.7, width: 66}
+        - {x: 1470.0, width: 66}
+        - {x: 1556.7, width: 66}
+        - {x: 1644.6, width: 66}
+        - {x: 1732.0, width: 66}
+        - {x: 1821.0, width: 66}
+        - {x: 1909.3, width: 66}
+      target_y: [887, 887, 886, 884, 882, 881, 886, 891, 897, 901, 906, 905]
+      reference_y: [887, 887, 886, 884, 882, 881, 886, 891, 897, 901, 906, 905]
+      band_half_height: 24
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 945.7, width: 65}
+        - {x: 1030.5, width: 65}
+        - {x: 1116.0, width: 65}
+        - {x: 1204.6, width: 65}
+        - {x: 1288.3, width: 65}
+        - {x: 1375.5, width: 65}
+        - {x: 1461.3, width: 65}
+        - {x: 1548.7, width: 65}
+        - {x: 1635.9, width: 65}
+        - {x: 1725.7, width: 65}
+        - {x: 1814.9, width: 65}
+        - {x: 1900.9, width: 65}
+      target_y: [1540, 1540, 1536, 1532, 1527, 1525, 1526, 1529, 1530, 1532, 1533, 1533]
+      reference_y: [1540, 1540, 1536, 1532, 1527, 1525, 1526, 1529, 1530, 1532, 1533, 1533]
+      band_half_height: 20
+  - id: repI_ERK2
+    image: "images/I_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/I_ERK2_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "100 uM ERK2", sample: "repI_ERK2_0min"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_1m15s"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_2m30s"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_3m45s"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_5min"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_6m15s"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_7m30s"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_8m45s"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_10min"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_15min"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_30min"}
+      - {group: "100 uM ERK2", sample: "repI_ERK2_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 910, width: 66}
+        - {x: 995.0, width: 66}
+        - {x: 1089.1, width: 66}
+        - {x: 1178.1, width: 66}
+        - {x: 1266.0, width: 66}
+        - {x: 1355.9, width: 66}
+        - {x: 1444.7, width: 66}
+        - {x: 1532.3, width: 66}
+        - {x: 1619.7, width: 66}
+        - {x: 1707.6, width: 66}
+        - {x: 1795.3, width: 66}
+        - {x: 1883.1, width: 66}
+      target_y: [1075, 1075, 1075, 1076, 1077, 1078, 1081, 1085, 1092, 1097, 1104, 1111]
+      reference_y: [1075, 1075, 1075, 1076, 1077, 1078, 1081, 1085, 1092, 1097, 1104, 1111]
+      band_half_height: 22
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 898.6, width: 66}
+        - {x: 985.5, width: 66}
+        - {x: 1077.8, width: 66}
+        - {x: 1164.9, width: 66}
+        - {x: 1253.8, width: 66}
+        - {x: 1341.4, width: 66}
+        - {x: 1429.3, width: 66}
+        - {x: 1518.0, width: 66}
+        - {x: 1604.9, width: 66}
+        - {x: 1694.2, width: 66}
+        - {x: 1782.9, width: 66}
+        - {x: 1870.6, width: 66}
+      target_y: [1490, 1489, 1486, 1483, 1479, 1476, 1473, 1473, 1474, 1477, 1480, 1484]
+      reference_y: [1490, 1489, 1486, 1483, 1479, 1476, 1473, 1473, 1474, 1477, 1480, 1484]
+      band_half_height: 20
+  - id: repI_BSA
+    image: "images/I_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/I_BSA_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "100 uM BSA", sample: "repI_BSA_0min"}
+      - {group: "100 uM BSA", sample: "repI_BSA_1m15s"}
+      - {group: "100 uM BSA", sample: "repI_BSA_2m30s"}
+      - {group: "100 uM BSA", sample: "repI_BSA_3m45s"}
+      - {group: "100 uM BSA", sample: "repI_BSA_5min"}
+      - {group: "100 uM BSA", sample: "repI_BSA_6m15s"}
+      - {group: "100 uM BSA", sample: "repI_BSA_7m30s"}
+      - {group: "100 uM BSA", sample: "repI_BSA_8m45s"}
+      - {group: "100 uM BSA", sample: "repI_BSA_10min"}
+      - {group: "100 uM BSA", sample: "repI_BSA_15min"}
+      - {group: "100 uM BSA", sample: "repI_BSA_30min"}
+      - {group: "100 uM BSA", sample: "repI_BSA_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 932.9, width: 66}
+        - {x: 1013.9, width: 66}
+        - {x: 1103.2, width: 66}
+        - {x: 1194.4, width: 66}
+        - {x: 1284.0, width: 66}
+        - {x: 1372.7, width: 66}
+        - {x: 1459.4, width: 66}
+        - {x: 1546.9, width: 66}
+        - {x: 1635.3, width: 66}
+        - {x: 1722.1, width: 66}
+        - {x: 1805.8, width: 66}
+        - {x: 1893.2, width: 66}
+      target_y: [1303, 1304, 1303, 1303, 1304, 1306, 1309, 1311, 1314, 1315, 1318, 1329]
+      reference_y: [1303, 1304, 1303, 1303, 1304, 1306, 1309, 1311, 1314, 1315, 1318, 1329]
+      band_half_height: 26
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 928.0, width: 65}
+        - {x: 1011.4, width: 65}
+        - {x: 1098.4, width: 65}
+        - {x: 1187.3, width: 65}
+        - {x: 1277.6, width: 65}
+        - {x: 1364.5, width: 65}
+        - {x: 1451.5, width: 65}
+        - {x: 1538.8, width: 65}
+        - {x: 1625.9, width: 65}
+        - {x: 1716.0, width: 65}
+        - {x: 1798.4, width: 65}
+        - {x: 1877.8, width: 65}
+      target_y: [1511, 1509, 1505, 1502, 1501, 1501, 1500, 1499, 1499, 1499, 1501, 1504]
+      reference_y: [1511, 1509, 1505, 1502, 1501, 1501, 1500, 1499, 1499, 1499, 1501, 1504]
+      band_half_height: 22
+  - id: repII_control
+    image: "images/II_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/II_control_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "Control", sample: "repII_control_0min"}
+      - {group: "Control", sample: "repII_control_1m15s"}
+      - {group: "Control", sample: "repII_control_2m30s"}
+      - {group: "Control", sample: "repII_control_3m45s"}
+      - {group: "Control", sample: "repII_control_5min"}
+      - {group: "Control", sample: "repII_control_6m15s"}
+      - {group: "Control", sample: "repII_control_7m30s"}
+      - {group: "Control", sample: "repII_control_8m45s"}
+      - {group: "Control", sample: "repII_control_10min"}
+      - {group: "Control", sample: "repII_control_15min"}
+      - {group: "Control", sample: "repII_control_30min"}
+      - {group: "Control", sample: "repII_control_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 913.8, width: 63}
+        - {x: 995.2, width: 63}
+        - {x: 1081.0, width: 63}
+        - {x: 1169.3, width: 63}
+        - {x: 1256.6, width: 63}
+        - {x: 1340.6, width: 63}
+        - {x: 1422.7, width: 63}
+        - {x: 1503.4, width: 63}
+        - {x: 1584.7, width: 63}
+        - {x: 1666.2, width: 63}
+        - {x: 1751.9, width: 63}
+        - {x: 1843.7, width: 63}
+      target_y: [945, 940, 937, 930, 930, 927, 922, 922, 917, 917, 913, 909]
+      reference_y: [945, 940, 937, 930, 930, 927, 922, 922, 917, 917, 913, 909]
+      band_half_height: 26
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 937.5, width: 64}
+        - {x: 1032.5, width: 64}
+        - {x: 1122.4, width: 64}
+        - {x: 1208.4, width: 64}
+        - {x: 1294.5, width: 64}
+        - {x: 1378.5, width: 64}
+        - {x: 1461.6, width: 64}
+        - {x: 1544.5, width: 64}
+        - {x: 1630.3, width: 64}
+        - {x: 1714.3, width: 64}
+        - {x: 1799.8, width: 64}
+        - {x: 1888.6, width: 64}
+      target_y: [1389, 1389, 1389, 1391, 1392, 1393, 1392, 1390, 1386, 1385, 1384, 1381]
+      reference_y: [1389, 1389, 1389, 1391, 1392, 1393, 1392, 1390, 1386, 1385, 1384, 1381]
+      band_half_height: 24
+  - id: repII_ERK2
+    image: "images/II_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/II_ERK2_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "100 uM ERK2", sample: "repII_ERK2_0min"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_1m15s"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_2m30s"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_3m45s"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_5min"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_6m15s"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_7m30s"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_8m45s"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_10min"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_15min"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_30min"}
+      - {group: "100 uM ERK2", sample: "repII_ERK2_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 902.5, width: 60}
+        - {x: 982.9, width: 60}
+        - {x: 1075.5, width: 60}
+        - {x: 1158.8, width: 60}
+        - {x: 1239.1, width: 60}
+        - {x: 1321.0, width: 60}
+        - {x: 1403.7, width: 60}
+        - {x: 1483.1, width: 60}
+        - {x: 1561.5, width: 60}
+        - {x: 1641.7, width: 60}
+        - {x: 1719.5, width: 60}
+        - {x: 1803.7, width: 60}
+      target_y: [1141, 1139, 1136, 1131, 1127, 1125, 1120, 1116, 1113, 1109, 1106, 1103]
+      reference_y: [1141, 1139, 1136, 1131, 1127, 1125, 1120, 1116, 1113, 1109, 1106, 1103]
+      band_half_height: 24
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 972.8, width: 62}
+        - {x: 1060.5, width: 62}
+        - {x: 1143.5, width: 62}
+        - {x: 1226.6, width: 62}
+        - {x: 1309.6, width: 62}
+        - {x: 1391.7, width: 62}
+        - {x: 1471.4, width: 62}
+        - {x: 1550.4, width: 62}
+        - {x: 1628.4, width: 62}
+        - {x: 1709.3, width: 62}
+        - {x: 1793.1, width: 62}
+        - {x: 1880.0, width: 62}
+      target_y: [1376, 1377, 1377, 1379, 1382, 1384, 1386, 1386, 1387, 1385, 1383, 1384]
+      reference_y: [1376, 1377, 1377, 1379, 1382, 1384, 1386, 1386, 1387, 1385, 1383, 1384]
+      band_half_height: 22
+  - id: repII_BSA
+    image: "images/II_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/II_BSA_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "100 uM BSA", sample: "repII_BSA_0min"}
+      - {group: "100 uM BSA", sample: "repII_BSA_1m15s"}
+      - {group: "100 uM BSA", sample: "repII_BSA_2m30s"}
+      - {group: "100 uM BSA", sample: "repII_BSA_3m45s"}
+      - {group: "100 uM BSA", sample: "repII_BSA_5min"}
+      - {group: "100 uM BSA", sample: "repII_BSA_6m15s"}
+      - {group: "100 uM BSA", sample: "repII_BSA_7m30s"}
+      - {group: "100 uM BSA", sample: "repII_BSA_8m45s"}
+      - {group: "100 uM BSA", sample: "repII_BSA_10min"}
+      - {group: "100 uM BSA", sample: "repII_BSA_15min"}
+      - {group: "100 uM BSA", sample: "repII_BSA_30min"}
+      - {group: "100 uM BSA", sample: "repII_BSA_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 894.7, width: 60}
+        - {x: 975.5, width: 60}
+        - {x: 1060.1, width: 60}
+        - {x: 1144.1, width: 60}
+        - {x: 1223.2, width: 60}
+        - {x: 1301.8, width: 60}
+        - {x: 1383.4, width: 60}
+        - {x: 1463.9, width: 60}
+        - {x: 1540.3, width: 60}
+        - {x: 1618.5, width: 60}
+        - {x: 1695.7, width: 60}
+        - {x: 1781.6, width: 60}
+      target_y: [1318, 1322, 1319, 1316, 1313, 1308, 1303, 1301, 1296, 1299, 1296, 1298]
+      reference_y: [1318, 1322, 1319, 1316, 1313, 1308, 1303, 1301, 1296, 1299, 1296, 1298]
+      band_half_height: 31
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 1019.9, width: 61}
+        - {x: 1102.0, width: 61}
+        - {x: 1183.5, width: 61}
+        - {x: 1263.7, width: 61}
+        - {x: 1341.5, width: 61}
+        - {x: 1423.8, width: 61}
+        - {x: 1501.5, width: 61}
+        - {x: 1583.5, width: 61}
+        - {x: 1664.5, width: 61}
+        - {x: 1746.5, width: 61}
+        - {x: 1827.2, width: 61}
+        - {x: 1907.7, width: 61}
+      target_y: [1426, 1425, 1426, 1426, 1426, 1426, 1426, 1426, 1424, 1422, 1422, 1422]
+      reference_y: [1426, 1425, 1426, 1426, 1426, 1426, 1426, 1426, 1424, 1422, 1422, 1422]
+      band_half_height: 24
+  - id: repIII_control
+    image: "images/III_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/III_control_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "Control", sample: "repIII_control_0min"}
+      - {group: "Control", sample: "repIII_control_1m15s"}
+      - {group: "Control", sample: "repIII_control_2m30s"}
+      - {group: "Control", sample: "repIII_control_3m45s"}
+      - {group: "Control", sample: "repIII_control_5min"}
+      - {group: "Control", sample: "repIII_control_6m15s"}
+      - {group: "Control", sample: "repIII_control_7m30s"}
+      - {group: "Control", sample: "repIII_control_8m45s"}
+      - {group: "Control", sample: "repIII_control_10min"}
+      - {group: "Control", sample: "repIII_control_15min"}
+      - {group: "Control", sample: "repIII_control_30min"}
+      - {group: "Control", sample: "repIII_control_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 963, width: 64}
+        - {x: 1048.7, width: 64}
+        - {x: 1142.6, width: 64}
+        - {x: 1231.4, width: 64}
+        - {x: 1316.7, width: 64}
+        - {x: 1399.9, width: 64}
+        - {x: 1485.9, width: 64}
+        - {x: 1568.0, width: 64}
+        - {x: 1652.6, width: 64}
+        - {x: 1736.3, width: 64}
+        - {x: 1823.0, width: 64}
+        - {x: 1919.4, width: 64}
+      target_y: [945, 946, 948, 950, 956, 957, 960, 960, 960, 960, 963, 961]
+      reference_y: [945, 946, 948, 950, 956, 957, 960, 960, 960, 960, 963, 961]
+      band_half_height: 26
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 936.0, width: 63}
+        - {x: 1032.5, width: 63}
+        - {x: 1123.3, width: 63}
+        - {x: 1211.4, width: 63}
+        - {x: 1296.6, width: 63}
+        - {x: 1380.8, width: 63}
+        - {x: 1461.4, width: 63}
+        - {x: 1542.6, width: 63}
+        - {x: 1624.6, width: 63}
+        - {x: 1705.5, width: 63}
+        - {x: 1789.9, width: 63}
+        - {x: 1870.4, width: 63}
+      target_y: [1473, 1468, 1466, 1463, 1464, 1462, 1460, 1461, 1458, 1459, 1455, 1454]
+      reference_y: [1473, 1468, 1466, 1463, 1464, 1462, 1460, 1461, 1458, 1459, 1455, 1454]
+      band_half_height: 24
+  - id: repIII_ERK2
+    image: "images/III_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/III_ERK2_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_0min"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_1m15s"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_2m30s"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_3m45s"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_5min"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_6m15s"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_7m30s"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_8m45s"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_10min"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_15min"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_30min"}
+      - {group: "100 uM ERK2", sample: "repIII_ERK2_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 963, width: 63}
+        - {x: 1047, width: 63}
+        - {x: 1133.7, width: 63}
+        - {x: 1218.5, width: 63}
+        - {x: 1303.4, width: 63}
+        - {x: 1385.5, width: 63}
+        - {x: 1465.5, width: 63}
+        - {x: 1544.0, width: 63}
+        - {x: 1621.2, width: 63}
+        - {x: 1702.7, width: 63}
+        - {x: 1786.4, width: 63}
+        - {x: 1874.0, width: 63}
+      target_y: [1144, 1144, 1146, 1147, 1148, 1149, 1149, 1148, 1148, 1145, 1141, 1137]
+      reference_y: [1144, 1144, 1146, 1147, 1148, 1149, 1149, 1148, 1148, 1145, 1141, 1137]
+      band_half_height: 21
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 926.9, width: 61}
+        - {x: 1014.6, width: 61}
+        - {x: 1099.6, width: 61}
+        - {x: 1182.7, width: 61}
+        - {x: 1264.7, width: 61}
+        - {x: 1345.7, width: 61}
+        - {x: 1425.6, width: 61}
+        - {x: 1505.3, width: 61}
+        - {x: 1585.4, width: 61}
+        - {x: 1666.3, width: 61}
+        - {x: 1744.2, width: 61}
+        - {x: 1822.0, width: 61}
+      target_y: [1609, 1609, 1607, 1603, 1601, 1599, 1596, 1593, 1591, 1588, 1587, 1584]
+      reference_y: [1609, 1609, 1607, 1603, 1601, 1599, 1596, 1593, 1591, 1588, 1587, 1584]
+      band_half_height: 24
+  - id: repIII_BSA
+    image: "images/III_Chemiluminescence_from the top control ERK2 BSA.raw16.tif"
+    reference_image: "images/III_BSA_Ponceau S.raw16.tif"
+    lanes:
+      - {group: "100 uM BSA", sample: "repIII_BSA_0min"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_1m15s"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_2m30s"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_3m45s"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_5min"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_6m15s"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_7m30s"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_8m45s"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_10min"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_15min"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_30min"}
+      - {group: "100 uM BSA", sample: "repIII_BSA_60min"}
+    annotation:
+      source: manual
+      lanes:
+        - {x: 963, width: 61}
+        - {x: 1045.9, width: 61}
+        - {x: 1129.0, width: 61}
+        - {x: 1212.1, width: 61}
+        - {x: 1290.4, width: 61}
+        - {x: 1370.8, width: 61}
+        - {x: 1451.7, width: 61}
+        - {x: 1531.1, width: 61}
+        - {x: 1613.3, width: 61}
+        - {x: 1692.1, width: 61}
+        - {x: 1773.8, width: 61}
+        - {x: 1859.3, width: 61}
+      target_y: [1336, 1336, 1338, 1339, 1340, 1341, 1340, 1340, 1340, 1340, 1340, 1342]
+      reference_y: [1336, 1336, 1338, 1339, 1340, 1341, 1340, 1340, 1340, 1340, 1340, 1342]
+      band_half_height: 26
+    reference_annotation:
+      source: manual
+      lanes:
+        - {x: 952.7, width: 60}
+        - {x: 1032.3, width: 60}
+        - {x: 1117.5, width: 60}
+        - {x: 1199.9, width: 60}
+        - {x: 1280.5, width: 60}
+        - {x: 1357.3, width: 60}
+        - {x: 1437.7, width: 60}
+        - {x: 1517.8, width: 60}
+        - {x: 1594.8, width: 60}
+        - {x: 1673.9, width: 60}
+        - {x: 1756.0, width: 60}
+        - {x: 1814.7, width: 60}
+      target_y: [1575, 1578, 1580, 1582, 1583, 1579, 1579, 1582, 1583, 1585, 1587, 1588]
+      reference_y: [1575, 1578, 1580, 1582, 1583, 1579, 1579, 1582, 1583, 1585, 1587, 1588]
+      band_half_height: 24
