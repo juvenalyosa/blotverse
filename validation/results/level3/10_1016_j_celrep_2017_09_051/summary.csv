@@ -1,0 +1,2 @@
+contrast,verdict,robustness_R,joint_p,default_lfc,default_p,median_lfc,lfc_q05,lfc_q95,opposite_fraction,significant_fraction,agreement,n_valid,n_universes,n_excluded,most_influential,eta2_background,eta2_band,eta2_loading,eta2_normalization,eta2_scale,eta2_test
+CR vs AL,Robust,1,0.03896103896,2.371265692,0.01852238768,2.090802838,1.720538235,2.472538054,0,1,1,216,216,216,scale,0.0007677138258,0.01482133218,0,0,0.9832874166,8.850864826e-19

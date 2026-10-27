@@ -1,0 +1,364 @@
+blotverse_version: 0.1.0
+spec_sha256: b13c69ec862eec1610bdab912bd96b512c88ca4cf8cc110492e1c1db72185d24
+seeds:
+  base: 20261024
+  joint_permutations: 1000
+  test_max_permutations: 10000
+experiment_dir: /Users/juvenalyosa/blotverse/validation/level3/10_1016_j_celrep_2017_09_051
+images:
+  images/0701 fat23 Gapdh Fabp5 CL-CM.tif: f2386a1993f9ac43c852dd1098cf6ab75061c45fe91dcb260c612518162e1504
+  images/0619 fat21 Fasn AceS CL.tif: 8964b0877be83d6ce430be3a6c732ac1dfe4ecbadb6a5a91736a48d25290fbda
+annotations:
+  blot1:
+    lanes:
+      - x: 428.89999999999998
+        width: 45.5
+      - x: 491.10000000000002
+        width: 45.5
+      - x: 552.89999999999998
+        width: 45.5
+      - x: 608.5
+        width: 45.5
+      - x: 667
+        width: 45.5
+      - x: 721.5
+        width: 45.5
+      - x: 775
+        width: 45.5
+      - x: 831
+        width: 45.5
+      - x: 886.89999999999998
+        width: 45.5
+      - x: 939.60000000000002
+        width: 45.5
+      - x: 999.10000000000002
+        width: 45.5
+      - x: 1060.7
+        width: 45.5
+    target_y:
+      - 450.5
+      - 448.5
+      - 451.5
+      - 450.5
+      - 451.5
+      - 452.5
+      - 453
+      - 455.5
+      - 455
+      - 455.5
+      - 456
+      - 458
+    reference_y:
+      - 450.5
+      - 448.5
+      - 451.5
+      - 450.5
+      - 451.5
+      - 452.5
+      - 453
+      - 455.5
+      - 455
+      - 455.5
+      - 456
+      - 458
+    band_half_height: 15
+    source: manual
+  blot1:reference:
+    lanes:
+      - x: 451.39999999999998
+        width: 43
+      - x: 509.60000000000002
+        width: 43
+      - x: 566.60000000000002
+        width: 43
+      - x: 620
+        width: 43
+      - x: 675.10000000000002
+        width: 43
+      - x: 729.79999999999995
+        width: 43
+      - x: 783.10000000000002
+        width: 43
+      - x: 839
+        width: 43
+      - x: 895.20000000000005
+        width: 43
+      - x: 947.20000000000005
+        width: 43
+      - x: 997.60000000000002
+        width: 43
+      - x: 1052.3
+        width: 43
+    target_y:
+      - 606
+      - 609
+      - 615
+      - 618.5
+      - 623
+      - 626
+      - 630
+      - 629
+      - 634
+      - 635
+      - 639.5
+      - 643
+    reference_y:
+      - 606
+      - 609
+      - 615
+      - 618.5
+      - 623
+      - 626
+      - 630
+      - 629
+      - 634
+      - 635
+      - 639.5
+      - 643
+    band_half_height: 11
+    source: manual
+results:
+  - contrast: CR vs AL
+    verdict: Robust
+    robustness: 1
+    joint_p: 0.03896103896103896
+    default_lfc: 2.3712656922714697
+    median_lfc: 2.0908028376955317
+spec: |
+  # BlotVerse multiverse specification v1.
+  #
+  # Pre-registration artefact: freeze this file (and publish its SHA-256 on OSF)
+  # before looking at any validation result. Every branch carries at least one
+  # literature reference; adding or removing branches is reported as a
+  # secondary sensitivity analysis, never done silently.
+  #
+  # 4 x 3 x 2 x 3 x 2 x 3 = 432 universes with a total-protein image,
+  # 216 without (the total_protein branch is excluded by rule). Small designs
+  # lose further universes through the design rules below.
+  #
+  # Changelog
+  #   1.0.0  Initial specification.
+  #   1.1.0  Design rules added after level-1 calibration (docs/validation.md),
+  #          before freezing: (a) the permutation-test branch is excluded when its
+  #          smallest attainable p-value is >= alpha; (b) blot-sum and
+  #          optimal-alignment normalisation are excluded when a blot has a single
+  #          lane of some group (type I error 0.15-0.17 in simulation); (c) the
+  #          verdict is "Not evaluable" when the joint test cannot reach alpha.
+  #   1.2.0  Linear-range QC made two-sided (linear_range_max_slope) after the
+  #          known-amount dilution series of Pillai-Kastoori et al. (2020) showed
+  #          loss of signal at low loads; the check is now applied to blots whose
+  #          lanes declare a load. No effect on level-1 results (simulated lanes
+  #          declare no loads; verified by rerunning seed 1).
+  #   1.3.0  Default band definition changed from profile to rect after the
+  #          real-data benches (docs/default_band_decision.md): rect is closer to
+  #          known truth or to the authors' values in every one of them (dilution
+  #          series, AURORA A reanalysis, both exposure-bench sets). In simulation
+  #          the two defaults are equivalent on the decision metrics (paired seed-5
+  #          run, E2 AUC 0.923 for both); profile has a smaller default-universe
+  #          error under severe simulated artefacts. Branches are unchanged.
+
+  name: blotverse-v1
+  version: "1.3.0"
+  alpha: 0.05
+
+  decisions:
+    background:
+      - id: rb1
+        method: rolling_ball
+        radius_factor: 1.0          # radius = 1 x band height
+        references: [Gassmann2009, ImageJ-BackgroundSubtracter]
+        rationale: Smallest radius that still spans a band vertically.
+      - id: rb2
+        method: rolling_ball
+        radius_factor: 2.0
+        references: [Gassmann2009, ImageJ-BackgroundSubtracter]
+        rationale: Typical ImageJ advice (radius larger than the largest object).
+      - id: rb4
+        method: rolling_ball
+        radius_factor: 4.0
+        references: [Gassmann2009, ImageJ-BackgroundSubtracter]
+        rationale: Conservative large radius; follows only slow background trends.
+      - id: local
+        method: local
+        references: [LICOR-Empiria-Background, Gassmann2009]
+        rationale: Median of strips just above and below each band in the same lane.
+
+    band:
+      - id: rect
+        method: fixed_rectangle
+        references: [Gassmann2009, Fiji-GelAnalyzer]
+        rationale: Same rectangle in every lane, integrated density.
+      - id: profile
+        method: profile_peak
+        references: [Fiji-GelAnalyzer, Gassmann2009]
+        rationale: Lane profile peak area above a straight baseline.
+      - id: mask
+        method: threshold_mask
+        references: [Gassmann2009]
+        rationale: Pixels above an Otsu threshold inside the band window.
+
+    loading:
+      - id: hk
+        method: housekeeping
+        references: [MisleadingWesterns2019]
+        rationale: Target divided by the housekeeping band of the same lane.
+      - id: tp
+        method: total_protein
+        references: [MisleadingWesterns2019]
+        rationale: Target divided by the total-protein signal of the lane.
+
+    normalization:
+      - id: fixed
+        method: fixed_point
+        references: [Degasperi2014]
+        rationale: Each blot divided by the mean of its control lanes.
+      - id: sum
+        method: blot_sum
+        references: [Degasperi2014]
+        rationale: Each blot divided by the sum of its lanes.
+      - id: align
+        method: optimal_alignment
+        references: [Degasperi2014]
+        rationale: Per-blot scale factors that best align replicates.
+
+    scale:
+      - id: lin
+        method: linear
+        references: [Degasperi2014]
+        rationale: Ratios analysed on the linear scale.
+      - id: log
+        method: log
+        references: [blotRig2024, Degasperi2014]
+        rationale: Log2 ratios (multiplicative errors become additive).
+
+    test:
+      - id: welch
+        method: welch
+        references: [blotRig2024]
+        rationale: Welch t test.
+      - id: mixed
+        method: mixed_model
+        references: [blotRig2024]
+        rationale: Linear mixed model with a random gel intercept (REML).
+      - id: perm
+        method: permutation
+        references: [blotRig2024]
+        rationale: Two-sided permutation test on the difference in means.
+
+  # Fixed in advance; R is defined relative to this universe.
+  default_universe:
+    background: rb2
+    band: rect
+    loading: hk
+    normalization: fixed
+    scale: log
+    test: welch
+
+  # Incoherent combinations, excluded and logged (they are not branches).
+  exclusions:
+    - id: local-background-overlap
+      when: {background: local}
+      condition: overlapping_neighbours
+      reason: local background strips overlap neighbouring bands or lanes
+    - id: no-total-protein-image
+      when: {loading: tp}
+      condition: total_protein_missing
+      reason: no total-protein image for every blot
+    - id: permutation-cannot-reach-alpha
+      when: {test: perm}
+      condition: permutation_underpowered
+      reason: too few replicates for the permutation test to reach alpha
+    - id: blot-sum-single-lane
+      when: {normalization: sum}
+      condition: single_lane_per_group
+      reason: blot-sum normalisation with one lane per group on a blot (anti-conservative)
+    - id: alignment-single-lane
+      when: {normalization: align}
+      condition: single_lane_per_group
+      reason: optimal alignment with one lane per group on a blot (anti-conservative)
+
+  qc:
+    saturation_min_pixels: 1      # a single pixel at the detector maximum flags the band
+    linear_range_min_slope: 0.8   # dilution series: log-log slope below this = saturation
+    linear_range_max_slope: 1.25  # ... above this = signal lost at low loads (v1.2)
+
+  # Provisional thresholds, to be calibrated at level 1 before freezing.
+  verdict:
+    robust_min_r: 0.9
+    fragile_min_r: 0.5
+    joint_alpha: 0.05
+
+  inference:
+    joint_permutations: 1000
+    test_max_permutations: 10000
+    seed: 20261024
+
+  # Every key used in a branch's 'references' must be defined here.
+  references:
+    Gassmann2009: "Gassmann M. et al. (2009) Quantifying Western blots: pitfalls of densitometry. Electrophoresis."
+    Degasperi2014: "Degasperi A. et al. (2014) Evaluating strategies to normalise biological replicates of Western blot data. PLOS ONE 9:e87293."
+    MisleadingWesterns2019: "Misleading Westerns: common quantification mistakes in Western blot densitometry and proposed corrective measures (2019). PMC6360618."
+    blotRig2024: "blotRig: improving rigor and reproducibility in western blot experiments (2024). Scientific Reports."
+    ImageJ-BackgroundSubtracter: "ImageJ Process > Subtract Background (rolling ball; ij.plugin.filter.BackgroundSubtracter)."
+    Fiji-GelAnalyzer: "ImageJ/Fiji Analyze > Gels (lane profile plots with drawn baselines)."
+    LICOR-Empiria-Background: "LI-COR Empiria Studio: Introduction to Background Subtraction."
+
+experiment: |
+  # Reconciled annotation (validation/level3/reconcile.py): lane mapping identical in
+  # annotator_a.yaml and annotator_b.yaml; geometry is the mean of the two.
+  name: 10_1016_j_celrep_2017_09_051
+  control_group: AL
+  blots:
+  - id: blot1
+    image: images/0701 fat23 Gapdh Fabp5 CL-CM.tif
+    reference_image: images/0619 fat21 Fasn AceS CL.tif
+    lanes:
+    - {group: AL, sample: AL_1}
+    - {group: AL, sample: AL_2}
+    - {group: AL, sample: AL_3}
+    - {group: AL, sample: AL_4}
+    - {group: AL, sample: AL_5}
+    - {group: AL, sample: AL_6}
+    - {group: CR, sample: CR_1}
+    - {group: CR, sample: CR_2}
+    - {group: CR, sample: CR_3}
+    - {group: CR, sample: CR_4}
+    - {group: CR, sample: CR_5}
+    - {group: CR, sample: CR_6}
+    annotation:
+      source: manual
+      band_half_height: 15
+      lanes:
+      - {x: 428.9, width: 45.5}
+      - {x: 491.1, width: 45.5}
+      - {x: 552.9, width: 45.5}
+      - {x: 608.5, width: 45.5}
+      - {x: 667.0, width: 45.5}
+      - {x: 721.5, width: 45.5}
+      - {x: 775.0, width: 45.5}
+      - {x: 831.0, width: 45.5}
+      - {x: 886.9, width: 45.5}
+      - {x: 939.6, width: 45.5}
+      - {x: 999.1, width: 45.5}
+      - {x: 1060.7, width: 45.5}
+      target_y: [450.5, 448.5, 451.5, 450.5, 451.5, 452.5, 453.0, 455.5, 455.0, 455.5, 456.0, 458.0]
+      reference_y: [450.5, 448.5, 451.5, 450.5, 451.5, 452.5, 453.0, 455.5, 455.0, 455.5, 456.0, 458.0]
+    reference_annotation:
+      source: manual
+      band_half_height: 11
+      lanes:
+      - {x: 451.4, width: 43.0}
+      - {x: 509.6, width: 43.0}
+      - {x: 566.6, width: 43.0}
+      - {x: 620.0, width: 43.0}
+      - {x: 675.1, width: 43.0}
+      - {x: 729.8, width: 43.0}
+      - {x: 783.1, width: 43.0}
+      - {x: 839.0, width: 43.0}
+      - {x: 895.2, width: 43.0}
+      - {x: 947.2, width: 43.0}
+      - {x: 997.6, width: 43.0}
+      - {x: 1052.3, width: 43.0}
+      target_y: [606.0, 609.0, 615.0, 618.5, 623.0, 626.0, 630.0, 629.0, 634.0, 635.0, 639.5, 643.0]
+      reference_y: [606.0, 609.0, 615.0, 618.5, 623.0, 626.0, 630.0, 629.0, 634.0, 635.0, 639.5, 643.0]
+
