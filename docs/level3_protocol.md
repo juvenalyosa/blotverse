@@ -1,9 +1,9 @@
 # Level 3: reanalysis of published western blots — protocol
 
-Status: **v1.0 draft**. It is not in force until it is frozen. Freezing means:
-
-1. it is committed;
-2. it is registered on OSF together with the spec, before the candidate frame is built.
+Status: **v1.0, frozen** in commit 377b2a4 (2026-10-27), together with
+[`validation/level3/annotation_prompt.md`](../validation/level3/annotation_prompt.md). It is
+registered on OSF together with the spec before the candidate frame is built.
+OSF registration: *pending*.
 
 No candidate image may be downloaded before the commit that freezes this file. The two
 pilot cases in [level3.md](level3.md) were processed before this protocol and are not part
