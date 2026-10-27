@@ -1,0 +1,40 @@
+# Reconciled annotation (validation/level3/reconcile.py): lane mapping identical in
+# annotator_a.yaml and annotator_b.yaml; geometry is the mean of the two.
+name: 10_1016_j_molcel_2017_04_024
+control_group: WT
+blots:
+- id: blot1
+  image: images/FigS7D_IB-Cdc48.tif
+  invert: true
+  reference_image: images/FigS7D_IB-Pgk1.tif
+  lanes:
+  - {group: WT, sample: WT_1}
+  - {group: cdc48-3, sample: cdc48-3_1}
+  - {group: WT, sample: WT_2}
+  - {group: cdc48-3, sample: cdc48-3_2}
+  - {group: WT, sample: WT_3}
+  - {group: cdc48-3, sample: cdc48-3_3}
+  annotation:
+    source: manual
+    band_half_height: 9
+    lanes:
+    - {x: 275.1, width: 35.0}
+    - {x: 323.5, width: 35.0}
+    - {x: 419.3, width: 35.0}
+    - {x: 470.6, width: 35.0}
+    - {x: 568.4, width: 35.0}
+    - {x: 621.5, width: 35.0}
+    target_y: [493.0, 494.0, 491.5, 491.0, 490.0, 490.0]
+    reference_y: [493.0, 494.0, 491.5, 491.0, 490.0, 490.0]
+  reference_annotation:
+    source: manual
+    band_half_height: 15
+    lanes:
+    - {x: 257.1, width: 42.0}
+    - {x: 306.8, width: 42.0}
+    - {x: 403.4, width: 42.0}
+    - {x: 455.7, width: 42.0}
+    - {x: 554.1, width: 42.0}
+    - {x: 605.8, width: 42.0}
+    target_y: [151.0, 152.0, 149.0, 148.0, 148.0, 148.0]
+    reference_y: [151.0, 152.0, 149.0, 148.0, 148.0, 148.0]
