@@ -1,0 +1,96 @@
+# Annotator A - Gilsbach, Ho et al. (2024) eLife 12:RP91083, Fig. 6B / 6D
+# Target: LRRK2 pS935 (UDD2); loading control: total LRRK2 (24D8), parallel membrane.
+# Bands are bright on a dark background (raw chemiluminescence): no invert.
+# Lane order on every membrane (Figure6_source_data_1_Annotation.png):
+#   wt, R1441G, G2019S, I2020T, K1906M, T1343A, T1343A/G2019S, Marker, PEI only, not transfected
+# Only lanes 1-7 are annotated. Evidence and choices: annotator_a.md.
+name: elife_91083_fig6B_pS935
+control_group: wt
+blots:
+  # Replicate 1: image A, left set. pS935 = top strip, 24D8 = third strip (same image).
+  - id: rep1_A_left
+    image: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+    lanes:
+      - {group: wt, sample: wt_r1}
+      - {group: R1441G, sample: R1441G_r1}
+      - {group: G2019S, sample: G2019S_r1}
+      - {group: I2020T, sample: I2020T_r1}
+      - {group: K1906M, sample: K1906M_r1}
+      - {group: T1343A, sample: T1343A_r1}
+      - {group: "T1343A/G2019S", sample: T1343A_G2019S_r1}
+    annotation:
+      lanes:
+        - {x: 61.5, width: 22}
+        - {x: 90.0, width: 22}
+        - {x: 118.5, width: 22}
+        - {x: 148.0, width: 22}
+        - {x: 178.0, width: 22}
+        - {x: 207.0, width: 22}
+        - {x: 236.0, width: 22}
+      target_y: [96, 98, 93, 92, 89, 86, 85]
+      reference_y: [413, 412, 412, 410, 408, 409, 409]
+      band_half_height: 12
+      source: manual
+  # Replicate 2: image A, right set. pS935 = top strip, 24D8 = third strip (same image).
+  - id: rep2_A_right
+    image: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+    lanes:
+      - {group: wt, sample: wt_r2}
+      - {group: R1441G, sample: R1441G_r2}
+      - {group: G2019S, sample: G2019S_r2}
+      - {group: I2020T, sample: I2020T_r2}
+      - {group: K1906M, sample: K1906M_r2}
+      - {group: T1343A, sample: T1343A_r2}
+      - {group: "T1343A/G2019S", sample: T1343A_G2019S_r2}
+    annotation:
+      lanes:
+        - {x: 632.0, width: 22}
+        - {x: 661.5, width: 22}
+        - {x: 692.0, width: 22}
+        - {x: 721.5, width: 22}
+        - {x: 752.0, width: 22}
+        - {x: 782.0, width: 22}
+        - {x: 811.5, width: 22}
+      target_y: [74, 74, 74, 72, 73, 73, 74]
+      reference_y: [402, 403, 404, 405, 406, 407, 407]
+      band_half_height: 11
+      source: manual
+  # Replicate 3: pS935 = image B, left membrane, top strip; total LRRK2 = image C (repeat blot
+  # of the same lysates, Fig. 6-figure supplement 2 legend).
+  - id: rep3_B_C
+    image: images/Figure6_source_data_1/B/2023-02-17_2x2-180s-05.tif
+    reference_image: images/Figure6_source_data_1/C/2023-02-20_24D8_2x2-180s-05.tif
+    lanes:
+      - {group: wt, sample: wt_r3}
+      - {group: R1441G, sample: R1441G_r3}
+      - {group: G2019S, sample: G2019S_r3}
+      - {group: I2020T, sample: I2020T_r3}
+      - {group: K1906M, sample: K1906M_r3}
+      - {group: T1343A, sample: T1343A_r3}
+      - {group: "T1343A/G2019S", sample: T1343A_G2019S_r3}
+    annotation:
+      lanes:
+        - {x: 80.0, width: 22}
+        - {x: 110.0, width: 22}
+        - {x: 138.5, width: 22}
+        - {x: 168.0, width: 22}
+        - {x: 197.5, width: 22}
+        - {x: 225.0, width: 22}
+        - {x: 255.5, width: 22}
+      target_y: [158, 157, 155, 153, 151, 150, 148]
+      reference_y: [158, 157, 155, 153, 151, 150, 148]  # unused: reference comes from reference_image
+      band_half_height: 8
+      source: manual
+    reference_annotation:
+      lanes:
+        - {x: 269.5, width: 22}
+        - {x: 299.5, width: 22}
+        - {x: 328.5, width: 22}
+        - {x: 356.0, width: 22}
+        - {x: 388.0, width: 22}
+        - {x: 416.5, width: 22}
+        - {x: 447.5, width: 22}
+      target_y: [219, 219, 219, 219, 218, 220, 219]
+      reference_y: [219, 219, 219, 219, 218, 220, 219]
+      band_half_height: 9
+      source: manual
