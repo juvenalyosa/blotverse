@@ -15,7 +15,7 @@ import yaml
 from PIL import Image, ImageDraw, ImageFont
 
 FONT = "/System/Library/Fonts/Supplemental/Arial Bold.ttf"
-COLOURS = ["#d62728", "#1f77b4", "#2ca02c", "#9467bd", "#ff7f0e", "#8c564b"]
+COLOURS = ["#d62728", "#1f77b4", "#2ca02c", "#9467bd", "#ff7f0e", "#8c564b", "#e377c2", "#17becf"]
 
 
 def raw(path):
@@ -49,19 +49,50 @@ def draw(img, ann, groups, scale_font):
         d.rectangle([x0, cy - h, x1, cy + h + 1], outline=c, width=2)
         d.text(((x0 + x1) / 2, cy - h - 4), str(i + 1), fill=c, font=font, anchor="ms")
     # one bracket and label under each run of consecutive lanes of the same group
-    i = 0
-    bottom = max(round(y) for y in ys) + h + 8
+    runs, i = [], 0
     while i < len(groups):
         j = i
         while j + 1 < len(groups) and groups[j + 1] == groups[i]:
             j += 1
+        runs.append((i, j))
+        i = j + 1
+    bottom = max(round(y) for y in ys) + h + 8
+    pitch = [ann["lanes"][j]["x"] - ann["lanes"][i]["x"] + ann["lanes"][i]["width"] for i, j in runs]
+    crowded = any(d.textlength(groups[i], font=small) > w for (i, _), w in zip(runs, pitch))
+    for i, j in runs:
         c = COLOURS[order.index(groups[i]) % len(COLOURS)]
         xa = ann["lanes"][i]["x"] - ann["lanes"][i]["width"] / 2
         xb = ann["lanes"][j]["x"] + ann["lanes"][j]["width"] / 2
         d.line([xa, bottom, xb, bottom], fill=c, width=3)
-        d.text(((xa + xb) / 2, bottom + 4), groups[i], fill=c, font=small, anchor="mt")
-        i = j + 1
-    return img
+        if not crowded:
+            d.text(((xa + xb) / 2, bottom + 4), groups[i], fill=c, font=small, anchor="mt")
+    return img, crowded
+
+
+def legend(img, groups):
+    """Lane number -> group, under the image (used when group labels do not fit)."""
+    font = ImageFont.truetype(FONT, 26)
+    order = list(dict.fromkeys(groups))
+    items = [(f"{i + 1} = {g}", COLOURS[order.index(g) % len(COLOURS)]) for i, g in enumerate(groups)]
+    d = ImageDraw.Draw(img)
+    lines, cur, w = [], [], 0
+    for t, c in items:
+        tw = d.textlength(t + "    ", font=font)
+        if cur and w + tw > img.width - 40:
+            lines.append(cur); cur, w = [], 0
+        cur.append((t, c)); w += tw
+    lines.append(cur)
+    out = Image.new("RGB", (img.width, img.height + 40 * len(lines) + 20), "white")
+    out.paste(img, (0, 0))
+    d = ImageDraw.Draw(out)
+    y = img.height + 10
+    for line in lines:
+        x = 20
+        for t, c in line:
+            d.text((x, y), t, fill=c, font=font)
+            x += d.textlength(t + "    ", font=font)
+        y += 40
+    return out
 
 
 def zoom_box(size, ann, ys, pad_y=None):
@@ -69,8 +100,8 @@ def zoom_box(size, ann, ys, pad_y=None):
     w = max(l["width"] for l in ann["lanes"])
     h = ann["band_half_height"]
     pad_y = pad_y or max(60, 4 * h)
-    return (max(0, int(min(xs) - 2 * w)), max(0, int(min(ys) - h - pad_y)),
-            min(size[0], int(max(xs) + 2 * w)), min(size[1], int(max(ys) + h + pad_y)))
+    return (max(0, int(min(xs) - 2.5 * w)), max(0, int(min(ys) - h - pad_y)),
+            min(size[0], int(max(xs) + 2.5 * w)), min(size[1], int(max(ys) + h + pad_y)))
 
 
 def main():
@@ -92,13 +123,15 @@ def main():
             a = raw(d / f)
             base = load(a, inv)
             fs = max(14, base.width // 60)
-            full = draw(base.copy(), ann, groups, fs)
+            full, crowded = draw(base.copy(), ann, groups, fs)
             full.save(out / f"{b['id']}_{kind}_full.png")
             box = zoom_box(base.size, ann, ys, pad_y=None if ann["band_half_height"] < 60 else 40)
-            z = draw(load(a, inv, box), ann, groups, fs).crop(box)
+            z = draw(load(a, inv, box), ann, groups, fs)[0].crop(box)
             if z.width < 1400:
                 k = 1400 / z.width
                 z = z.resize((1400, int(z.height * k)), Image.LANCZOS)
+            if crowded:
+                z = legend(z, groups)
             z.save(out / f"{b['id']}_{kind}_zoom.png")
             print(out / f"{b['id']}_{kind}_zoom.png", base.size)
 

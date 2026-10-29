@@ -105,15 +105,35 @@ const exps = [
     target: "Fabp5", ref: "Gapdh",
     extra: [],
   },
+  {
+    dir: "10_7554_elife_91083",
+    title: "Experimento 4 — eLife 2024 (Gilsbach, Ho et al.), Fig. 6B/6D — PROVISIONAL",
+    panelH: 620,
+    what: [
+      bullet([b("Provisional: "), "este experimento solo cuenta si en la Decisión 1 (Parte 2) usted elige que 6C y 6D son experimentos distintos. Si elige lo contrario, no hace falta calificarlo."]),
+      bullet([b("Qué se mide: "), "LRRK2 fosforilado en S935 (pS935), normalizado a LRRK2 total (anticuerpo 24D8), en células HEK293T transfectadas."]),
+      bullet([b("Grupos: "), "wt (control), R1441G, G2019S, I2020T, K1906M, T1343A, T1343A/G2019S; 3 réplicas."]),
+      bullet([b("Orden de carriles (rótulos de la figura de abajo, iguales en todas las membranas): "), "carriles 1–7 = las siete variantes; luego Marker, PEI only y not transfected, que no forman parte del experimento."]),
+      bullet([b("Réplicas, según los anotadores: "), "réplica 1 = panel A, lado izquierdo; réplica 2 = panel A, lado derecho; réplica 3 = panel B (pS935) con el panel C como su LRRK2 total (la leyenda dice que C es la repetición del blot de LRRK2 total de B)."]),
+      bullet([b("Nota de los anotadores: "), "en la réplica 1 las bandas de pS935 están corridas y dobles; el recuadro se puso sobre la banda inferior, más densa. En R1441G e I2020T la banda es muy débil."]),
+      bullet([b("Nota técnica (no requiere acción): "), "los dos anotadores asignaron igual todos los carriles. Solo escribieron de forma distinta que el LRRK2 total de las réplicas 1 y 2 está en la misma imagen; se unificó y se promediaron las posiciones."]),
+    ],
+    target: "pS935", ref: "LRRK2 total",
+    blotNames: ["Réplica 1 (panel A, izquierda)", "Réplica 2 (panel A, derecha)", "Réplica 3 (paneles B y C)"],
+    extra: [yesNo([
+      "¿Está de acuerdo en que el lado izquierdo y el lado derecho del panel A son dos réplicas biológicas distintas (réplicas 1 y 2)?",
+      "¿Está de acuerdo en que el panel C es el LRRK2 total que corresponde a la réplica 3 (panel B)?",
+    ])],
+  },
 ];
 
 const children = [];
 // ---------- Cover and instructions
 children.push(new Paragraph({ heading: HeadingLevel.TITLE, children: [new TextRun("Auditoría humana — BlotVerse, nivel 3")] }));
-children.push(p([b("Para: "), "Dr. Jorge Leyva.   ", b("Preparado: "), "29 de octubre de 2026 (versión del repositorio: rama level3-protocol, commit 26c197d)."]));
+children.push(p([b("Para: "), "Dr. Jorge Leyva.   ", b("Preparado: "), "29 de octubre de 2026 (versión del repositorio: rama level3-protocol, commit 5db970a)."]));
 children.push(h1("Qué le pedimos"));
 children.push(p("Usted no necesita instalar nada ni usar ningún programa: todo lo de computación ya está hecho. Solo tiene que mirar imágenes y marcar con una X en este mismo documento."));
-children.push(bullet([b("Parte 1 (tres experimentos): "), "dos programas de IA (anotadores A y B) marcaron, en las imágenes originales de los autores, qué carril pertenece a qué grupo y dónde está cada banda. Usted revisa si lo hicieron bien."]));
+children.push(bullet([b("Parte 1 (cuatro experimentos; el cuarto es provisional): "), "dos programas de IA (anotadores A y B) marcaron, en las imágenes originales de los autores, qué carril pertenece a qué grupo y dónde está cada banda. Usted revisa si lo hicieron bien."]));
 children.push(bullet([b("Parte 2 (tres decisiones): "), "casos donde el protocolo necesita el criterio de un experto."]));
 children.push(bullet([b("Al terminar: "), "guarde el documento y envíeselo a Juvenal. Si algo no se entiende, escriba la duda en la columna de comentarios; no hace falta resolverla."]));
 children.push(h1("Tres reglas"));
@@ -138,26 +158,33 @@ children.push(yesNo(["¿Acepta este criterio para calificar? (Si no, escriba el 
 // ---------- Part 1
 for (const e of exps) {
   const pk = path.join(PKG, e.dir);
-  const exp = fs.readFileSync(path.join(PKG, e.dir, "lanes.txt"), "utf8").trim().split("\n");
+  const nBlots = fs.readdirSync(pk).filter(f => /^lanes_blot\d+\.txt$/.test(f)).length;
+  const lanesOf = k => fs.readFileSync(path.join(pk, `lanes_blot${k}.txt`), "utf8").trim().split("\n");
+  const exp = lanesOf(1);
   children.push(brk());
   children.push(h1("Parte 1. " + e.title));
   children.push(...e.what);
   children.push(h2("Figura publicada por los autores"));
-  children.push(img(path.join(pk, "article_panel.png"), 900, 300));
-  children.push(h2(`Imagen A — ${e.target} (con los recuadros de los anotadores)`));
-  children.push(img(path.join(pk, "blot1_target_zoom.png")));
-  children.push(h2(`Imagen B — ${e.ref} (control de carga)`));
-  children.push(img(path.join(pk, "blot1_reference_zoom.png")));
+  children.push(img(path.join(pk, "article_panel.png"), 900, e.panelH || 300));
+  for (let k = 1; k <= nBlots; ++k) {
+    const tag = nBlots > 1 ? ` — ${e.blotNames[k - 1]}` : "";
+    children.push(h2(`Imagen A — ${e.target}${tag} (con los recuadros de los anotadores)`));
+    children.push(img(path.join(pk, `blot${k}_target_zoom.png`)));
+    children.push(h2(`Imagen B — ${e.ref}${tag} (control de carga)`));
+    children.push(img(path.join(pk, `blot${k}_reference_zoom.png`)));
+  }
   children.push(h2("Preguntas generales"));
   children.push(yesNo([
-    `¿La imagen A corresponde a la ${e.target} del panel publicado (misma membrana y misma banda)?`,
+    `¿La imagen A${nBlots > 1 ? " de cada réplica" : ""} corresponde a la ${e.target} del panel publicado (misma membrana y misma banda)?`,
     `¿La imagen B corresponde al control de carga (${e.ref}) de esos mismos carriles?`,
     "¿Están incluidos todos los carriles del experimento, y ninguno de más (marcadores, carriles vacíos, otras muestras)?",
     `¿El grupo control es el correcto (${exp[0]})?`,
   ]));
   children.push(...e.extra.flatMap(t => [p(""), t]));
-  children.push(h2("Calificación carril por carril"));
-  children.push(laneTable(exp, e.target, e.ref));
+  for (let k = 1; k <= nBlots; ++k) {
+    children.push(h2("Calificación carril por carril" + (nBlots > 1 ? ` — ${e.blotNames[k - 1]}` : "")));
+    children.push(laneTable(lanesOf(k), e.target, e.ref));
+  }
 }
 
 // ---------- Part 2
@@ -168,7 +195,7 @@ children.push(h2("Decisión 1 — eLife 91083 (Fig. 6): ¿uno o dos experimentos
 children.push(p("En la figura 6B hay un solo conjunto de blots, pero los autores cuantifican dos cosas distintas:"));
 children.push(bullet([b("6C: "), "pRab10 relativo a Rab10 total."]));
 children.push(bullet([b("6D: "), "LRRK2 fosforilado en S935 relativo a LRRK2 total."]));
-children.push(p("6C no se puede usar: en la tercera réplica, la tira de pRab10 está corrida casi un carril respecto a sus rótulos, y no se puede saber con certeza qué carril es de qué grupo. 6D sí cumple todos los criterios (WT frente a R1441G, 3 réplicas)."));
+children.push(p("6C no se puede usar: en la tercera réplica, la tira de pRab10 está corrida casi un carril respecto a sus rótulos, y no se puede saber con certeza qué carril es de qué grupo. 6D sí cumple todos los criterios (WT frente a R1441G, 3 réplicas). 6D es el Experimento 4 de la Parte 1."));
 children.push(p("El protocolo dice que se toma el primer panel cuantificado que cumpla los criterios. La pregunta es si 6C y 6D cuentan como dos experimentos distintos o como uno solo:"));
 children.push(choice([
   "Son experimentos distintos (cada uno mide una proteína distinta con su propio control). Se incluye 6D.",
@@ -206,7 +233,7 @@ children.push(p(""));
 children.push(p("Nombre: Jorge Leyva, PhD"));
 children.push(p("Fecha: ____________________"));
 children.push(p("Tiempo aproximado que le tomó: ____________________"));
-children.push(p("Habrá una segunda entrega igual a esta con los experimentos que faltan (Biomedicine & Pharmacotherapy 2019, eLife si se incluye, y quizá Cryobiology 2018)."));
+children.push(p("Habrá una segunda entrega, más corta, con los dos experimentos que aún esperan el artículo completo (Biomedicine & Pharmacotherapy 2019 y, si entra al estudio, Cryobiology 2018)."));
 
 const doc = new Document({
   styles: {
