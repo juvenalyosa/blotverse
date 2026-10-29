@@ -1,0 +1,116 @@
+# Reconciled annotation (validation/level3/reconcile.py): lane mapping identical in
+# annotator_a.yaml and annotator_b.yaml; geometry is the mean of the two.
+name: 10_7554_elife_91083
+control_group: wt
+blots:
+- id: blot1
+  image: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+  reference_image: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+  lanes:
+  - {group: wt, sample: wt_1}
+  - {group: R1441G, sample: R1441G_1}
+  - {group: G2019S, sample: G2019S_1}
+  - {group: I2020T, sample: I2020T_1}
+  - {group: K1906M, sample: K1906M_1}
+  - {group: T1343A, sample: T1343A_1}
+  - {group: T1343A/G2019S, sample: T1343A/G2019S_1}
+  annotation:
+    source: manual
+    band_half_height: 13
+    lanes:
+    - {x: 62.2, width: 22.0}
+    - {x: 91.5, width: 22.0}
+    - {x: 120.8, width: 22.0}
+    - {x: 150.5, width: 22.0}
+    - {x: 180.5, width: 22.0}
+    - {x: 210.0, width: 22.0}
+    - {x: 239.5, width: 22.0}
+    target_y: [96.5, 98.0, 92.0, 91.5, 89.0, 85.0, 84.0]
+    reference_y: [96.5, 98.0, 92.0, 91.5, 89.0, 85.0, 84.0]
+  reference_annotation:
+    source: manual
+    band_half_height: 11
+    lanes:
+    - {x: 61.8, width: 22.0}
+    - {x: 91.0, width: 22.0}
+    - {x: 120.8, width: 22.0}
+    - {x: 150.5, width: 22.0}
+    - {x: 180.5, width: 22.0}
+    - {x: 210.5, width: 22.0}
+    - {x: 240.0, width: 22.0}
+    target_y: [413.0, 412.0, 412.0, 409.5, 408.5, 409.0, 409.0]
+    reference_y: [413.0, 412.0, 412.0, 409.5, 408.5, 409.0, 409.0]
+- id: blot2
+  image: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+  reference_image: images/Figure6_source_data_1/A/2023-02-07_2x2-300s-07.tif
+  lanes:
+  - {group: wt, sample: wt_1}
+  - {group: R1441G, sample: R1441G_1}
+  - {group: G2019S, sample: G2019S_1}
+  - {group: I2020T, sample: I2020T_1}
+  - {group: K1906M, sample: K1906M_1}
+  - {group: T1343A, sample: T1343A_1}
+  - {group: T1343A/G2019S, sample: T1343A/G2019S_1}
+  annotation:
+    source: manual
+    band_half_height: 9
+    lanes:
+    - {x: 634.5, width: 22.0}
+    - {x: 664.2, width: 22.0}
+    - {x: 694.5, width: 22.0}
+    - {x: 723.8, width: 22.0}
+    - {x: 754.0, width: 22.0}
+    - {x: 784.0, width: 22.0}
+    - {x: 813.8, width: 22.0}
+    target_y: [74.0, 74.5, 73.5, 72.0, 72.5, 73.0, 74.0]
+    reference_y: [74.0, 74.5, 73.5, 72.0, 72.5, 73.0, 74.0]
+  reference_annotation:
+    source: manual
+    band_half_height: 10
+    lanes:
+    - {x: 633.5, width: 22.0}
+    - {x: 663.2, width: 22.0}
+    - {x: 693.0, width: 22.0}
+    - {x: 722.8, width: 22.0}
+    - {x: 752.5, width: 22.0}
+    - {x: 782.5, width: 22.0}
+    - {x: 812.2, width: 22.0}
+    target_y: [402.0, 403.0, 404.0, 405.0, 406.0, 407.0, 407.0]
+    reference_y: [402.0, 403.0, 404.0, 405.0, 406.0, 407.0, 407.0]
+- id: blot3
+  image: images/Figure6_source_data_1/B/2023-02-17_2x2-180s-05.tif
+  reference_image: images/Figure6_source_data_1/C/2023-02-20_24D8_2x2-180s-05.tif
+  lanes:
+  - {group: wt, sample: wt_1}
+  - {group: R1441G, sample: R1441G_1}
+  - {group: G2019S, sample: G2019S_1}
+  - {group: I2020T, sample: I2020T_1}
+  - {group: K1906M, sample: K1906M_1}
+  - {group: T1343A, sample: T1343A_1}
+  - {group: T1343A/G2019S, sample: T1343A/G2019S_1}
+  annotation:
+    source: manual
+    band_half_height: 7
+    lanes:
+    - {x: 80.0, width: 22.0}
+    - {x: 110.0, width: 22.0}
+    - {x: 138.8, width: 22.0}
+    - {x: 168.5, width: 22.0}
+    - {x: 198.2, width: 22.0}
+    - {x: 226.5, width: 22.0}
+    - {x: 256.8, width: 22.0}
+    target_y: [158.0, 157.0, 155.0, 153.0, 151.0, 150.0, 148.0]
+    reference_y: [158.0, 157.0, 155.0, 153.0, 151.0, 150.0, 148.0]
+  reference_annotation:
+    source: manual
+    band_half_height: 8
+    lanes:
+    - {x: 269.8, width: 22.0}
+    - {x: 299.8, width: 22.0}
+    - {x: 328.8, width: 22.0}
+    - {x: 357.5, width: 22.0}
+    - {x: 388.5, width: 22.0}
+    - {x: 417.2, width: 22.0}
+    - {x: 447.8, width: 22.0}
+    target_y: [219.0, 219.0, 219.0, 219.0, 218.5, 219.5, 219.0]
+    reference_y: [219.0, 219.0, 219.0, 219.0, 218.5, 219.5, 219.0]

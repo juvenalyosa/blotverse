@@ -48,10 +48,31 @@ def merge_annotation(a, b, diffs, where):
     return out
 
 
+def explicit_reference(blot, other):
+    """A loading control on the same image can be written two ways: reference rows in the
+    target annotation, or reference_image = the same file with its own reference_annotation.
+    When the other annotator used the second form, rewrite the first into it, keeping this
+    annotator's lanes, reference rows and half-height. Lane groups are not touched."""
+    if blot.get("reference_image") or other.get("reference_image") != blot["image"]:
+        return False
+    ann = blot["annotation"]
+    blot["reference_image"] = blot["image"]
+    blot["reference_annotation"] = {"lanes": ann["lanes"], "target_y": ann["reference_y"],
+                                    "reference_y": ann["reference_y"],
+                                    "band_half_height": ann["band_half_height"]}
+    ann["reference_y"] = ann["target_y"]
+    return True
+
+
 def main():
     d = Path(sys.argv[1])
     a = yaml.safe_load(open(d / "annotator_a.yaml"))
     b = yaml.safe_load(open(d / "annotator_b.yaml"))
+    for i, (ba, bb) in enumerate(zip(a.get("blots", []), b.get("blots", []))):
+        for name, x, y in (("A", ba, bb), ("B", bb, ba)):
+            if explicit_reference(x, y):
+                print(f"blot {i + 1}: annotator {name}'s same-image reference rewritten as "
+                      "reference_image + reference_annotation (geometry kept)")
     problems = []
     if a.get("control_group") != b.get("control_group"):
         problems.append(f"control group: {a.get('control_group')} vs {b.get('control_group')}")
